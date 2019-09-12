@@ -24,7 +24,20 @@ Especially, server-side pre-rendering is very slow and stressfull, because **it 
 dotnet add package Toolbelt.Blazor.HeadElement --version 0.0.1-preview1.0.1
 ```
 
-2. Open `Toolbelt.Blazor.HeadElement` namespace.
+2. Register "Head Element Helper" service at your Blazor app's `Startup`.
+
+```csharp
+using Toolbelt.Blazor.Extensions.DependencyInjection; // <- Add this, and...
+
+public class Startup
+{
+  public void ConfigureServices(IServiceCollection services)
+  {
+    services.AddHeadElementHelper(); // <- Add this.
+    ...
+```
+
+3. Open `Toolbelt.Blazor.HeadElement` namespace in `_Imports.razor` file.
 
 ```
 @* This is "_Imports.razor" *@
@@ -44,6 +57,33 @@ dotnet add package Toolbelt.Blazor.HeadElement --version 0.0.1-preview1.0.1
 The title of document will be changed.
 
 ![fig1](https://raw.githubusercontent.com/jsakamoto/Toolbelt.Blazor.HeadElement/master/.assets/fig1.png)
+
+### Server-side pre-rendering support
+
+If you want to get srever-side pre-rendering support, do this.
+
+1. Add `Toolbelt.Blazor.HeadElement.ServerPrerendering` package to your project like this.
+
+```shell
+dotnet add package Toolbelt.Blazor.HeadElement.ServerPrerendering --version 0.0.1-preview1.0.1
+```
+
+2. Register "Head Element Server Prerendering" middleware at your server-side Blazor app's `Startup`, before `appUseStaticFiles()`.
+
+```csharp
+using Toolbelt.Blazor.Extensions.DependencyInjection; // <- Add this, and...
+
+public class Startup
+{
+  public void Configure(IApplicationBuilder app)
+  {
+    app.UseHeadElementServerPrerendering(); // <- Add this.
+    ...
+    app.UseStaticFiles()
+    ...
+```
+
+![fig2](https://raw.githubusercontent.com/jsakamoto/Toolbelt.Blazor.HeadElement/master/.assets/fig2.png)
 
 ## License
 
