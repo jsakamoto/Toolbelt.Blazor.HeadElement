@@ -1,0 +1,29 @@
+﻿@using System.Text
+@using Microsoft.AspNetCore.Components.Rendering
+@using Microsoft.AspNetCore.Components.RenderTree
+
+@namespace Toolbelt.Blazor.HeadElement
+@inject Toolbelt.Blazor.HeadElement.IHeadElementHelper HeadElementHelper
+@code {
+    [Parameter]
+    public RenderFragment ChildContent { get; set; }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        var renderTreeBuilder = new RenderTreeBuilder();
+        this.ChildContent(renderTreeBuilder);
+
+        var frames = renderTreeBuilder.GetFrames();
+        var title = new StringBuilder();
+        for (var i = 0; i < frames.Count; i++)
+        {
+            var frame = frames.Array[i];
+            if (frame.FrameType == RenderTreeFrameType.Text)
+            {
+                title.Append(frame.TextContent);
+            }
+        }
+
+        await HeadElementHelper.SetTitleAsync(title.ToString());
+    }
+}
