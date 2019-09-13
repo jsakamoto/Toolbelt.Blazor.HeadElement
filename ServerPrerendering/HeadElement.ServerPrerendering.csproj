@@ -8,7 +8,7 @@
     <PackageOutputPath>..\_dist\</PackageOutputPath>
     <Copyright>Copyright © 2019 J.Sakamoto, Mozilla Public License 2.0</Copyright>
     <Authors>J.Sakamoto</Authors>
-    <Version>0.0.1-preview1.0.1</Version>
+    <Version>0.0.1-preview1.0.2</Version>
     <PackageLicenseExpression>MPL-2.0</PackageLicenseExpression>
     <PackageLicenseUrl></PackageLicenseUrl>
     <PackageProjectUrl>https://github.com/jsakamoto/Toolbelt.Blazor.HeadElement/</PackageProjectUrl>
@@ -17,6 +17,11 @@
     <AssemblyName>Toolbelt.Blazor.HeadElement.ServerPrerendering</AssemblyName>
     <RootNamespace>Toolbelt.Blazor.HeadElement</RootNamespace>
     <DocumentationFile>bin\$(Configuration)\$(TargetFramework)\$(AssemblyName).xml</DocumentationFile>
+    <PackageReleaseNotes>v.0.0.1-preview1.0.2
+- Improve response filtering
+v.0.0.1-preview1.0.1
+- Initial preview release
+</PackageReleaseNotes>
   </PropertyGroup>
 
   <ItemGroup>

@@ -6,6 +6,6 @@
 
   <ItemGroup>
     <PackageReference Include="Toolbelt.Blazor.HeadElement" Version="0.0.1-preview1.0.1" />
-    <PackageReference Include="Toolbelt.Blazor.HeadElement.ServerPrerendering" Version="0.0.1-preview1.0.1" />
+    <PackageReference Include="Toolbelt.Blazor.HeadElement.ServerPrerendering" Version="0.0.1-preview1.0.2" />
   </ItemGroup>
 </Project>
