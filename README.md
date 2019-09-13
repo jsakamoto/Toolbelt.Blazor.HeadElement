@@ -65,7 +65,7 @@ If you want to get srever-side pre-rendering support, do this.
 1. Add `Toolbelt.Blazor.HeadElement.ServerPrerendering` package to your project like this.
 
 ```shell
-dotnet add package Toolbelt.Blazor.HeadElement.ServerPrerendering --version 0.0.1-preview1.0.1
+dotnet add package Toolbelt.Blazor.HeadElement.ServerPrerendering --version 0.0.1-preview1.0.2
 ```
 
 2. Register "Head Element Server Prerendering" middleware at your server-side Blazor app's `Startup`, before `appUseStaticFiles()`.
