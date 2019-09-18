@@ -21,6 +21,9 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Components" Version="3.0.0-preview9.19424.4" />
-    <PackageReference Include="Toolbelt.Blazor.HeadElement.Abstractions" Version="0.0.1-preview1.0.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Abstractions\HeadElement.Abstractions.csproj" />
   </ItemGroup>
 </Project>

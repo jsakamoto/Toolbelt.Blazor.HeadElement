@@ -18,7 +18,10 @@
     <RootNamespace>Toolbelt.Blazor.HeadElement</RootNamespace>
     <DocumentationFile>bin\$(Configuration)\$(TargetFramework)\$(AssemblyName).xml</DocumentationFile>
   </PropertyGroup>
+
   <ItemGroup>
     <PackageReference Include="System.Threading.Tasks.Extensions" Version="4.5.3" />
+    <PackageReference Include="System.Text.Json" Version="4.6.0-preview9.19421.4" />
   </ItemGroup>
+
 </Project>

@@ -43,6 +43,9 @@ else
     protected override async Task OnInitializedAsync()
     {
         await HeadElementHelper.SetTitleAsync("Fetch data - Server Side App");
+        await HeadElementHelper.RemoveMetaByNameAsync("description");
+        await HeadElementHelper.RemoveMetaByPropertyAsync("og:title");
+
         forecasts = await ForecastService.GetForecastAsync(DateTime.Now);
     }
 }
