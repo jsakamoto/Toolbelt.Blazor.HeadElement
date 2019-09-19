@@ -12,10 +12,7 @@
     <PackageReference Include="Microsoft.AspNetCore.Blazor.Build" Version="3.0.0-preview9.19457.4" PrivateAssets="all" />
     <PackageReference Include="Microsoft.AspNetCore.Blazor.HttpClient" Version="3.0.0-preview9.19457.4" />
     <PackageReference Include="Microsoft.AspNetCore.Blazor.DevServer" Version="3.0.0-preview9.19457.4" PrivateAssets="all" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\..\Components\HeadElement.csproj" />
+    <PackageReference Include="Toolbelt.Blazor.HeadElement" Version="0.0.1-preview2.0.2" />
   </ItemGroup>
 
 </Project>

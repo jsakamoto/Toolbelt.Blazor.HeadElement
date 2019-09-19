@@ -8,20 +8,21 @@
     <PackageOutputPath>..\_dist\</PackageOutputPath>
     <Copyright>Copyright © 2019 J.Sakamoto, Mozilla Public License 2.0</Copyright>
     <Authors>J.Sakamoto</Authors>
-    <Version>0.0.1-preview1.0.1</Version>
+    <Version>0.0.1-preview2.0.2</Version>
+    <Description>Head element support (change the document title, "meta" elements such as OGP) for Blazor apps.</Description>
+    <PackageTags>blazor,head,title,meta,OGP</PackageTags>
     <PackageLicenseExpression>MPL-2.0</PackageLicenseExpression>
     <PackageLicenseUrl></PackageLicenseUrl>
     <PackageProjectUrl>https://github.com/jsakamoto/Toolbelt.Blazor.HeadElement/</PackageProjectUrl>
-    <Description>Head element support (change the document title) for Blazor apps.</Description>
-    <PackageTags>blazor,head,title</PackageTags>
     <AssemblyName>Toolbelt.Blazor.HeadElement.Services</AssemblyName>
     <RootNamespace>Toolbelt.Blazor.HeadElement</RootNamespace>
     <DocumentationFile>bin\$(Configuration)\$(TargetFramework)\$(AssemblyName).xml</DocumentationFile>
+    <TypeScriptCompileBlocked>true</TypeScriptCompileBlocked>
   </PropertyGroup>
 
   <ItemGroup>
     <None Remove="script.js" />
-    <EmbeddedResource Include="script.js" />
+    <EmbeddedResource Include="script.js"/>
   </ItemGroup>
 
   <ItemGroup>
@@ -30,10 +31,7 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-  </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\Abstractions\HeadElement.Abstractions.csproj" />
+    <PackageReference Include="Toolbelt.Blazor.HeadElement.Abstractions" Version="0.0.1-preview2.0.2" />
   </ItemGroup>
 
   <PropertyGroup>

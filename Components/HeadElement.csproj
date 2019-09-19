@@ -10,12 +10,12 @@
     <PackageOutputPath>..\_dist\</PackageOutputPath>
     <Copyright>Copyright © 2019 J.Sakamoto, Mozilla Public License 2.0</Copyright>
     <Authors>J.Sakamoto</Authors>
-    <Version>0.0.1-preview1.0.1</Version>
+    <Version>0.0.1-preview2.0.2</Version>
+    <Description>Head element support (change the document title, "meta" elements such as OGP) for Blazor apps.</Description>
+    <PackageTags>blazor,head,title,meta,OGP</PackageTags>
     <PackageLicenseExpression>MPL-2.0</PackageLicenseExpression>
     <PackageLicenseUrl></PackageLicenseUrl>
     <PackageProjectUrl>https://github.com/jsakamoto/Toolbelt.Blazor.HeadElement/</PackageProjectUrl>
-    <Description>Head element support (change the document title) for Blazor apps.</Description>
-    <PackageTags>blazor,head,title</PackageTags>
     <AssemblyName>Toolbelt.Blazor.HeadElement</AssemblyName>
     <RootNamespace>Toolbelt.Blazor.HeadElement</RootNamespace>
     <DocumentationFile>bin\$(Configuration)\$(TargetFramework)\$(AssemblyName).xml</DocumentationFile>
@@ -23,9 +23,6 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="3.0.0-rc1.19457.4" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\Services\HeadElement.Services.csproj" />
+    <PackageReference Include="Toolbelt.Blazor.HeadElement.Services" Version="0.0.1-preview2.0.2" />
   </ItemGroup>
 </Project>
