@@ -13,6 +13,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HeadElement.Services", "Ser
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HeadElement.ServerPrerendering", "ServerPrerendering\HeadElement.ServerPrerendering.csproj", "{1BFAEDA7-266D-480B-9B7A-E5A73CE99A17}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HeadElement", "Components\HeadElement.csproj", "{CE73A543-216A-459A-B78E-A0FBF770CDF4}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,6 +41,10 @@ Global
 		{1BFAEDA7-266D-480B-9B7A-E5A73CE99A17}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1BFAEDA7-266D-480B-9B7A-E5A73CE99A17}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1BFAEDA7-266D-480B-9B7A-E5A73CE99A17}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CE73A543-216A-459A-B78E-A0FBF770CDF4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CE73A543-216A-459A-B78E-A0FBF770CDF4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CE73A543-216A-459A-B78E-A0FBF770CDF4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CE73A543-216A-459A-B78E-A0FBF770CDF4}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

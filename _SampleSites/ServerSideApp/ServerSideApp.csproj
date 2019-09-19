@@ -12,8 +12,8 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\Components\HeadElement.csproj" />
     <ProjectReference Include="..\..\ServerPrerendering\HeadElement.ServerPrerendering.csproj" />
-    <ProjectReference Include="..\..\Services\HeadElement.Services.csproj" />
   </ItemGroup>
 
   <PropertyGroup Condition="'$(Configuration)' == 'Debug'">

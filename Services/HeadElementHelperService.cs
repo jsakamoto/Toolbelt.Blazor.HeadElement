@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
+using System.IO;
+using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Routing;
@@ -9,7 +10,7 @@ using Toolbelt.Blazor.HeadElement.Internals;
 
 namespace Toolbelt.Blazor.HeadElement
 {
-    public class HeadElementHelper : IHeadElementHelper, IDisposable
+    public class HeadElementHelperService : HeadElementHelper, IDisposable
     {
         private readonly IJSRuntime _JS;
 
@@ -19,7 +20,9 @@ namespace Toolbelt.Blazor.HeadElement
 
         private const string NS = "Toolbelt.Head.MetaTag.";
 
-        public HeadElementHelper(IJSRuntime js, NavigationManager navigationManager, IHeadElementHelperStore internalStore)
+        private bool _ScriptEnabled = false;
+
+        public HeadElementHelperService(IJSRuntime js, NavigationManager navigationManager, IHeadElementHelperStore internalStore)
         {
             this._JS = js;
             this._NavigationManager = navigationManager;
@@ -32,9 +35,31 @@ namespace Toolbelt.Blazor.HeadElement
             _NavigationManager.LocationChanged -= _NavigationManager_LocationChanged;
         }
 
-        public ValueTask SetTitleAsync(string title) => SetTitleCoreAsync(title, delay: true);
+        private async ValueTask EnsureScriptEnabledAsync()
+        {
+            if (_ScriptEnabled) return;
 
-        public ValueTask<string> GetTitleAsync() => new ValueTask<string>(_Store.Title);
+            using var resStream = typeof(HeadElementHelperService).Assembly.GetManifestResourceStream("Toolbelt.Blazor.HeadElement.script.js");
+            using var reader = new StreamReader(resStream);
+            var scriptText = new StringBuilder();
+            while (!reader.EndOfStream)
+            {
+                var line = reader.ReadLine();
+                if (line.StartsWith(" ")) line = " " + line.TrimStart(' ');
+                scriptText.Append(line);
+            }
+
+            try
+            {
+                await _JS.InvokeVoidAsync("eval", scriptText.ToString());
+                _ScriptEnabled = true;
+            }
+            catch { }
+        }
+
+        public override ValueTask SetTitleAsync(string title) => SetTitleCoreAsync(title, delay: true);
+
+        public override ValueTask<string> GetTitleAsync() => new ValueTask<string>(_Store.Title);
 
         private void _NavigationManager_LocationChanged(object sender, LocationChangedEventArgs e)
         {
@@ -68,13 +93,13 @@ namespace Toolbelt.Blazor.HeadElement
             try { await _JS.InvokeVoidAsync("eval", $"document.title='{encodedTitle}'"); } catch (Exception) { }
         }
 
-        public ValueTask SetDefaultTitleAsync(string defaultTitle)
+        public override ValueTask SetDefaultTitleAsync(string defaultTitle)
         {
             _Store.DefaultTitle = defaultTitle;
             return new ValueTask();
         }
 
-        public async ValueTask<string> GetDefaultTitleAsync()
+        public override async ValueTask<string> GetDefaultTitleAsync()
         {
             if (_Store.DefaultTitle == null)
             {
@@ -84,32 +109,47 @@ namespace Toolbelt.Blazor.HeadElement
             return _Store.DefaultTitle;
         }
 
-        public async ValueTask<IEnumerable<MetaEntry>> GetDefaultMetaElementsAsync()
+        public override async ValueTask<IEnumerable<MetaEntry>> GetDefaultMetaElementsAsync()
         {
             if (_Store.DefaultMetaElements == null)
             {
-                try { _Store.DefaultMetaElements = await _JS.InvokeAsync<MetaEntry[]>(NS + "query"); } catch { }
+                try
+                {
+                    await EnsureScriptEnabledAsync();
+                    _Store.DefaultMetaElements = await _JS.InvokeAsync<MetaEntry[]>(NS + "query");
+                }
+                catch { }
             }
             return _Store.DefaultMetaElements;
         }
 
-        public async ValueTask SetMetaElementAsync(MetaEntry metaEntry)
+        public override async ValueTask SetMetaElementAsync(MetaEntry metaEntry)
         {
             await GetDefaultMetaElementsAsync();
             await Task.Delay(1);
 
-            try { await _JS.InvokeVoidAsync(NS + "set", metaEntry); } catch { }
+            try
+            {
+                await EnsureScriptEnabledAsync();
+                await _JS.InvokeVoidAsync(NS + "set", metaEntry);
+            }
+            catch { }
 
             _Store.MetaEntryCommands.Add(new MetaEntryCommand { Operation = MetaEntryOperations.Set, Entry = metaEntry });
             _Store.UrlLastSet = _NavigationManager.Uri;
         }
 
-        public async ValueTask RemoveMetaElementAsync(MetaEntry metaEntry)
+        public override async ValueTask RemoveMetaElementAsync(MetaEntry metaEntry)
         {
             await GetDefaultMetaElementsAsync();
             await Task.Delay(1);
 
-            try { await _JS.InvokeVoidAsync(NS + "del", metaEntry); } catch { }
+            try
+            {
+                await EnsureScriptEnabledAsync();
+                await _JS.InvokeVoidAsync(NS + "del", metaEntry);
+            }
+            catch { }
 
             _Store.MetaEntryCommands.Add(new MetaEntryCommand { Operation = MetaEntryOperations.Remove, Entry = metaEntry });
             _Store.UrlLastSet = _NavigationManager.Uri;
@@ -117,7 +157,12 @@ namespace Toolbelt.Blazor.HeadElement
 
         private async ValueTask ResetMetaElementsAsync()
         {
-            try { await _JS.InvokeVoidAsync(NS + "reset", _Store.DefaultMetaElements); } catch { }
+            try
+            {
+                await EnsureScriptEnabledAsync();
+                await _JS.InvokeVoidAsync(NS + "reset", _Store.DefaultMetaElements);
+            }
+            catch { }
         }
     }
 }

@@ -9,7 +9,7 @@ namespace Toolbelt.Blazor.Extensions.DependencyInjection
         public static IServiceCollection AddHeadElementHelper(this IServiceCollection services)
         {
             services.AddScoped<IHeadElementHelperStore, HeadElementHelperStore>();
-            services.AddScoped<IHeadElementHelper, HeadElementHelper>();
+            services.AddScoped<HeadElementHelper, HeadElementHelperService>();
             return services;
         }
     }

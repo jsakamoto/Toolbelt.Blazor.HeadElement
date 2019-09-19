@@ -1,6 +1,6 @@
 ﻿@page "/counter"
-@inject IHeadElementHelper HeadElementHelper
-@*<Title>Counter(@currentCount) - Server Side App</Title>*@
+@inject HeadElementHelper HeadElementHelper
+<Title>Counter(@currentCount) - Server Side App</Title>
 
 <h1>Counter</h1>
 
@@ -13,18 +13,11 @@
 
     protected override async Task OnInitializedAsync()
     {
-        await UpdateTitleAsync();
         await HeadElementHelper.SetMetaByNameAsync("keyword", "blazor,counter");
     }
 
-    async Task IncrementCount()
+    void IncrementCount()
     {
         currentCount++;
-        await UpdateTitleAsync();
-    }
-
-    private async Task UpdateTitleAsync()
-    {
-        await HeadElementHelper.SetTitleAsync($"Counter({currentCount}) - Server Side App");
     }
 }

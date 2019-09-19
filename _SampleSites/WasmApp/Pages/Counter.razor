@@ -1,6 +1,7 @@
 ﻿@page "/counter"
-
 <Title>Counter(@currentCount) - WebAssembly App</Title>
+<Meta Property="og:title" Content="@Title" />
+<Meta Name="keywords" Content="blazor,counter" />
 
 <h1>Counter</h1>
 
@@ -10,6 +11,8 @@
 
 @code {
     int currentCount = 0;
+
+    string Title => $"Counter({currentCount}) - WebAssembly App";
 
     void IncrementCount()
     {

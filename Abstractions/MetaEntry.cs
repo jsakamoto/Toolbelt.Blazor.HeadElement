@@ -1,6 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace Toolbelt.Blazor.HeadElement.Internals
+namespace Toolbelt.Blazor.HeadElement
 {
     public class MetaEntry
     {

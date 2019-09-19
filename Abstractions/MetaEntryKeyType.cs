@@ -1,4 +1,4 @@
-﻿namespace Toolbelt.Blazor.HeadElement.Internals
+﻿namespace Toolbelt.Blazor.HeadElement
 {
     public enum MetaEntryKeyType
     {
