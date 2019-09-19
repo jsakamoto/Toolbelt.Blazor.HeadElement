@@ -9,7 +9,7 @@ namespace Toolbelt.Blazor.HeadElement.Middlewares
 {
     internal delegate Task WriteAsyncInvoker(byte[] buffer, int offset, int count, CancellationToken cancellationToken);
 
-    internal delegate void FlushInvoker();
+    internal delegate Task FlushAsyncInvoker(CancellationToken cancellationToken);
 
     internal class FilterStream : Stream
     {
@@ -25,7 +25,7 @@ namespace Toolbelt.Blazor.HeadElement.Middlewares
 
         private WriteAsyncInvoker WriteAsyncInvoker;
 
-        private FlushInvoker FlushInvoker;
+        private FlushAsyncInvoker FlushAsyncInvoker;
 
         public override bool CanRead => false;
 
@@ -52,7 +52,7 @@ namespace Toolbelt.Blazor.HeadElement.Middlewares
             this.HttpContext.Response.Body = this;
 
             this.WriteAsyncInvoker = DefaultWriteAsyncInvoker;
-            this.FlushInvoker = DefaultFlushInvoker;
+            this.FlushAsyncInvoker = DefaultFlushAsyncInvoker;
         }
 
         private Task DefaultWriteAsyncInvoker(byte[] buffer, int offset, int count, CancellationToken cancellationToken)
@@ -60,17 +60,17 @@ namespace Toolbelt.Blazor.HeadElement.Middlewares
             return RebindInvokers().WriteAsync(buffer, offset, count, cancellationToken);
         }
 
-        private void DefaultFlushInvoker()
+        private Task DefaultFlushAsyncInvoker(CancellationToken cancellationToken)
         {
-            RebindInvokers().Flush();
+            return RebindInvokers().FlushAsync(cancellationToken);
         }
 
         private Stream RebindInvokers()
         {
             _IsCaptured = (HttpContext.Response.ContentType?.StartsWith("text/html") == true && (InternalStore.Title != null || InternalStore.MetaEntryCommands.Count > 0));
             var stream = _IsCaptured ? MemoryStream : OriginalStream;
-            this.FlushInvoker = stream.Flush;
             this.WriteAsyncInvoker = stream.WriteAsync;
+            this.FlushAsyncInvoker = stream.FlushAsync;
             return stream;
         }
 
@@ -89,7 +89,12 @@ namespace Toolbelt.Blazor.HeadElement.Middlewares
             return WriteAsyncInvoker(buffer, offset, count, cancellationToken);
         }
 
-        public override void Flush() => FlushInvoker();
+        public override void Flush() => throw new NotSupportedException();
+
+        public override Task FlushAsync(CancellationToken cancellationToken)
+        {
+            return FlushAsyncInvoker(cancellationToken);
+        }
 
         protected override void Dispose(bool disposing)
         {
