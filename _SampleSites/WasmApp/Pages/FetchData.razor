@@ -1,6 +1,7 @@
 ﻿@page "/fetchdata"
+@using WasmApp.Data
 @inject HttpClient Http
-@inject IHeadElementHelper HeadElementHelper
+@inject HeadElementHelper HeadElementHelper
 
 <h1>Weather forecast</h1>
 
@@ -41,17 +42,9 @@ else
     protected override async Task OnInitializedAsync()
     {
         await HeadElementHelper.SetTitleAsync("Fetch data - WebAssembly App");
+        await HeadElementHelper.RemoveMetaByNameAsync("description");
+        await HeadElementHelper.RemoveMetaByPropertyAsync("og:title");
+
         forecasts = await Http.GetJsonAsync<WeatherForecast[]>("sample-data/weather.json");
-    }
-
-    public class WeatherForecast
-    {
-        public DateTime Date { get; set; }
-
-        public int TemperatureC { get; set; }
-
-        public string Summary { get; set; }
-
-        public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
     }
 }
