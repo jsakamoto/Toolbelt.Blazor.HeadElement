@@ -111,6 +111,27 @@ app {
     color: red;
 }
 
+
+.main-footer {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    padding: 12px 12px;
+    background-color: #444;
+}
+
+    .main-footer p {
+        color: #ccc;
+        margin: 0;
+        padding: 0;
+        line-height: 1.5em;
+    }
+
+        .main-footer p a {
+            color: #00ffff;
+        }
+
 .places-list li {
     margin: 20px 0;
 }
