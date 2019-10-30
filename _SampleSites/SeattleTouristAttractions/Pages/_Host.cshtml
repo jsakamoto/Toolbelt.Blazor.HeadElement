@@ -1,0 +1,28 @@
+﻿@page "/"
+@namespace SeattleTouristAttractions.Pages
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+
+<!DOCTYPE html>
+<html prefix="og: http://ogp.me/ns#">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Seattle Tourist Attractions</title>
+    <meta name="description" content="The demonstration site of &quot;Blazor HeadElementHelper library&quot;. (https://j.mp/blazor-head)" />
+    <base href="~/" />
+    <meta property="og:site_name" content="Seattle Tourist Attractions" />
+    <meta property="og:type" content="artcle" />
+    <meta property="og:title" content="Attractions List" />
+    <meta property="og:description" content="The demonstration site of &quot;Blazor HeadElementHelper library&quot;. (https://j.mp/blazor-head)" />
+    <meta name="twitter:card" content="summary" />
+    <link href="css/bootstrap/bootstrap.min.css" rel="stylesheet" />
+    <link href="css/site.css" rel="stylesheet" />
+</head>
+<body>
+    <app>
+        @(await Html.RenderComponentAsync<App>(RenderMode.ServerPrerendered))
+    </app>
+
+    <script src="_framework/blazor.server.js"></script>
+</body>
+</html>

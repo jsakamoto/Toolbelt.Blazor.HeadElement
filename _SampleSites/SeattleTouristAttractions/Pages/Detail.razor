@@ -1,0 +1,52 @@
+﻿@page "/places/{id:int}"
+@inject PlacesService PlacesService
+@inject HeadElementHelper HeadElementHelper
+@inject NavigationManager NavigationManager
+
+@if (Place != null)
+{
+    <Title>@Place.Title - Seattle Tourist Attractions</Title>
+
+    <h1>@Place.Title</h1>
+
+    <div class="detail-content">
+
+        <img src="@PictureRelativeUrl" class="img-thumbnail rounded float-left" />
+
+        <blockquote class="blockquote description">
+            <p class="mb-0">@Place.Description</p>
+            <footer class="blockquote-footer">Source: Wikipedia (<a href="@Place.WikipediaUrl" target="_blank">@Place.WikipediaUrl</a>)</footer>
+        </blockquote>
+
+    </div>
+
+    <div>
+        <p>
+            <a class="btn btn-info" href="/">Back</a>
+        </p>
+    </div>
+}
+
+@code
+{
+    [Parameter]
+    public int Id { get; set; }
+
+    Place Place;
+
+    string PictureRelativeUrl => $"/assets/images/places/{Id}.jpg";
+
+    protected override async Task OnInitializedAsync()
+    {
+        var places = await PlacesService.GetPlacesAsync();
+        Place = places.FirstOrDefault(p => p.Id == Id);
+
+        var description = $"[This is the demo site of \"Blazor Head Element Helper\"] {Place.Description}";
+        await HeadElementHelper.SetMetaByPropertyAsync("og:title", Place.Title);
+        await HeadElementHelper.SetMetaByPropertyAsync("og:url", NavigationManager.ToAbsoluteUri($"/places/{Id}").AbsoluteUri);
+        await HeadElementHelper.SetMetaByPropertyAsync("og:image", NavigationManager.ToAbsoluteUri(PictureRelativeUrl).AbsoluteUri);
+        await HeadElementHelper.SetMetaByPropertyAsync("og:description", description);
+        await HeadElementHelper.SetMetaByNameAsync("description", description);
+        await HeadElementHelper.SetMetaByNameAsync("twitter:card", "summary_large_image");
+    }
+}
