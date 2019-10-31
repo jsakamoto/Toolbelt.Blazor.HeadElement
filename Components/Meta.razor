@@ -1,22 +1,22 @@
 ﻿@namespace Toolbelt.Blazor.HeadElement
-@inject Toolbelt.Blazor.HeadElement.HeadElementHelper HeadElementHelper
+@inject Toolbelt.Blazor.HeadElement.IHeadElementHelper HeadElementHelper
 
 @code {
     [Parameter]
-    public string Name { get; set; }
+    public string Name { get; set; } = "";
 
     [Parameter]
-    public string Property { get; set; }
+    public string Property { get; set; } = "";
 
     [Parameter]
-    public string Content { get; set; }
+    public string Content { get; set; } = "";
 
     protected override async Task OnParametersSetAsync()
     {
-        await HeadElementHelper.SetMetaElementAsync(new MetaEntry
+        await HeadElementHelper.SetMetaElementsAsync(new MetaElement
         {
-            KeyType = Name != null ? MetaEntryKeyType.Name : MetaEntryKeyType.Property,
-            Key = Name ?? Property,
+            Name = this.Name,
+            Property = this.Property,
             Content = Content
         });
     }

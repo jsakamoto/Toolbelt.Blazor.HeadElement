@@ -22,7 +22,7 @@
 
   <ItemGroup>
     <None Remove="script.js" />
-    <EmbeddedResource Include="script.js"/>
+    <EmbeddedResource Include="script.js" />
   </ItemGroup>
 
   <ItemGroup>
@@ -31,7 +31,10 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="Toolbelt.Blazor.HeadElement.Abstractions" Version="0.0.1-preview2.0.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Abstractions\HeadElement.Abstractions.csproj" />
   </ItemGroup>
 
   <PropertyGroup>

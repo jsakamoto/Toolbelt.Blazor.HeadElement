@@ -23,6 +23,9 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="3.0.0-rc1.19457.4" />
-    <PackageReference Include="Toolbelt.Blazor.HeadElement.Services" Version="0.0.1-preview2.0.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Services\HeadElement.Services.csproj" />
   </ItemGroup>
 </Project>

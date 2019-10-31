@@ -1,14 +1,13 @@
-﻿using System;
+﻿using System.IO;
 using System.Linq;
-using System.IO;
 using System.Text;
+using System.Text.Json;
 using System.Threading.Tasks;
 using AngleSharp.Html;
 using AngleSharp.Html.Dom;
 using AngleSharp.Html.Parser;
 using Microsoft.AspNetCore.Http;
 using Toolbelt.Blazor.HeadElement.Internals;
-using System.Text.Json;
 
 namespace Toolbelt.Blazor.HeadElement.Middlewares
 {
@@ -61,40 +60,40 @@ namespace Toolbelt.Blazor.HeadElement.Middlewares
 
         private void SetMetaElements(IHeadElementHelperStore store, IHtmlDocument doc)
         {
-            if (store.MetaEntryCommands.Count == 0) return;
+            if (store.MetaElementCommands.Count == 0) return;
 
             var metaTags = doc.Head.QuerySelectorAll("meta[name],meta[property]").Cast<IHtmlMetaElement>().ToList();
 
-            var metaEnries = metaTags.Select(m => new MetaEntry
+            var metaElements = metaTags.Select(m => new MetaElement
             {
-                KeyType = m.GetAttribute("property") == null ? MetaEntryKeyType.Name : MetaEntryKeyType.Property,
-                Key = m.GetAttribute("property") ?? m.Name,
+                Name = m.Name ?? "",
+                Property = m.GetAttribute("property") ?? "",
                 Content = m.Content
             });
             var script = doc.CreateElement("script");
-            script.TextContent = JsonSerializer.Serialize(metaEnries);
+            script.TextContent = JsonSerializer.Serialize(metaElements);
             script.SetAttribute("type", "text/default-meta-elements");
             doc.Head.AppendChild(script);
 
-            foreach (var cmd in store.MetaEntryCommands)
+            foreach (var cmd in store.MetaElementCommands)
             {
-                var meta = metaTags.FirstOrDefault(m => cmd.Entry.Key == (cmd.Entry.KeyType == MetaEntryKeyType.Name ? m.Name : m.GetAttribute("property")));
+                var meta = metaTags.FirstOrDefault(m => (cmd.Element.Name != "" && cmd.Element.Name == m.Name) || (cmd.Element.Property != "" && cmd.Element.Property == m.GetAttribute("property")));
 
-                if (cmd.Operation == MetaEntryOperations.Set)
+                if (cmd.Operation == MetaElementOperations.Set)
                 {
                     if (meta == null)
                     {
                         meta = doc.CreateElement("meta") as IHtmlMetaElement;
-                        if (cmd.Entry.KeyType == MetaEntryKeyType.Name)
-                            meta.Name = cmd.Entry.Key;
-                        else
-                            meta.SetAttribute("property", cmd.Entry.Key);
+                        if (cmd.Element.Name != "")
+                            meta.Name = cmd.Element.Name;
+                        if (cmd.Element.Property != "")
+                            meta.SetAttribute("property", cmd.Element.Property);
                         doc.Head.AppendChild(meta);
                         metaTags.Add(meta);
                     }
-                    meta.Content = cmd.Entry.Content;
+                    meta.Content = cmd.Element.Content;
                 }
-                else if (cmd.Operation == MetaEntryOperations.Remove)
+                else if (cmd.Operation == MetaElementOperations.Remove)
                 {
                     if (meta != null)
                     {

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Components;
@@ -10,7 +11,7 @@ using Toolbelt.Blazor.HeadElement.Internals;
 
 namespace Toolbelt.Blazor.HeadElement
 {
-    public class HeadElementHelperService : HeadElementHelper, IDisposable
+    public class HeadElementHelperService : IHeadElementHelper, IDisposable
     {
         private readonly IJSRuntime _JS;
 
@@ -57,13 +58,13 @@ namespace Toolbelt.Blazor.HeadElement
             catch { }
         }
 
-        public override ValueTask SetTitleAsync(string title) => SetTitleCoreAsync(title, delay: true);
+        public ValueTask SetTitleAsync(string title) => SetTitleCoreAsync(title, delay: true);
 
-        public override ValueTask<string> GetTitleAsync() => new ValueTask<string>(_Store.Title);
+        public ValueTask<string> GetTitleAsync() => new ValueTask<string>(_Store.Title);
 
         private void _NavigationManager_LocationChanged(object sender, LocationChangedEventArgs e)
         {
-            _Store.MetaEntryCommands.Clear();
+            _Store.MetaElementCommands.Clear();
 
             if (_Store.UrlLastSet != e.Location)
             {
@@ -93,13 +94,13 @@ namespace Toolbelt.Blazor.HeadElement
             try { await _JS.InvokeVoidAsync("eval", $"document.title='{encodedTitle}'"); } catch (Exception) { }
         }
 
-        public override ValueTask SetDefaultTitleAsync(string defaultTitle)
+        public ValueTask SetDefaultTitleAsync(string defaultTitle)
         {
             _Store.DefaultTitle = defaultTitle;
             return new ValueTask();
         }
 
-        public override async ValueTask<string> GetDefaultTitleAsync()
+        public async ValueTask<string> GetDefaultTitleAsync()
         {
             if (_Store.DefaultTitle == null)
             {
@@ -109,21 +110,21 @@ namespace Toolbelt.Blazor.HeadElement
             return _Store.DefaultTitle;
         }
 
-        public override async ValueTask<IEnumerable<MetaEntry>> GetDefaultMetaElementsAsync()
+        public async ValueTask<IEnumerable<MetaElement>> GetDefaultMetaElementsAsync()
         {
             if (_Store.DefaultMetaElements == null)
             {
                 try
                 {
                     await EnsureScriptEnabledAsync();
-                    _Store.DefaultMetaElements = await _JS.InvokeAsync<MetaEntry[]>(NS + "query");
+                    _Store.DefaultMetaElements = await _JS.InvokeAsync<MetaElement[]>(NS + "query");
                 }
                 catch { }
             }
             return _Store.DefaultMetaElements;
         }
 
-        public override async ValueTask SetMetaElementAsync(MetaEntry metaEntry)
+        public async ValueTask SetMetaElementsAsync(params MetaElement[] elements)
         {
             await GetDefaultMetaElementsAsync();
             await Task.Delay(1);
@@ -131,15 +132,19 @@ namespace Toolbelt.Blazor.HeadElement
             try
             {
                 await EnsureScriptEnabledAsync();
-                await _JS.InvokeVoidAsync(NS + "set", metaEntry);
+                await _JS.InvokeVoidAsync(NS + "set", new object[] { elements });
             }
             catch { }
 
-            _Store.MetaEntryCommands.Add(new MetaEntryCommand { Operation = MetaEntryOperations.Set, Entry = metaEntry });
+            var commands = elements.Select(elem => new MetaElementCommand { Operation = MetaElementOperations.Set, Element = elem });
+            foreach (var command in commands)
+            {
+                _Store.MetaElementCommands.Add(command);
+            }
             _Store.UrlLastSet = _NavigationManager.Uri;
         }
 
-        public override async ValueTask RemoveMetaElementAsync(MetaEntry metaEntry)
+        public async ValueTask RemoveMetaElementsAsync(params MetaElement[] elements)
         {
             await GetDefaultMetaElementsAsync();
             await Task.Delay(1);
@@ -147,11 +152,15 @@ namespace Toolbelt.Blazor.HeadElement
             try
             {
                 await EnsureScriptEnabledAsync();
-                await _JS.InvokeVoidAsync(NS + "del", metaEntry);
+                await _JS.InvokeVoidAsync(NS + "del", new object[] { elements });
             }
             catch { }
 
-            _Store.MetaEntryCommands.Add(new MetaEntryCommand { Operation = MetaEntryOperations.Remove, Entry = metaEntry });
+            var commands = elements.Select(elem => new MetaElementCommand { Operation = MetaElementOperations.Remove, Element = elem });
+            foreach (var command in commands)
+            {
+                _Store.MetaElementCommands.Add(command);
+            }
             _Store.UrlLastSet = _NavigationManager.Uri;
         }
 

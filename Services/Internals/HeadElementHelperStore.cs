@@ -10,8 +10,8 @@ namespace Toolbelt.Blazor.HeadElement.Internals
 
         public string UrlLastSet { get; set; }
 
-        public IEnumerable<MetaEntry> DefaultMetaElements { get; set; }
+        public IEnumerable<MetaElement> DefaultMetaElements { get; set; }
 
-        public IList<MetaEntryCommand> MetaEntryCommands { get; } = new List<MetaEntryCommand>();
+        public IList<MetaElementCommand> MetaElementCommands { get; } = new List<MetaElementCommand>();
     }
 }

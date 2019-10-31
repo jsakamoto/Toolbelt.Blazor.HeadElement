@@ -1,11 +1,14 @@
 ﻿@page "/places/{id:int}"
 @inject PlacesService PlacesService
-@inject HeadElementHelper HeadElementHelper
+@inject IHeadElementHelper HeadElementHelper
 @inject NavigationManager NavigationManager
+@using static Toolbelt.Blazor.HeadElement.MetaElement
 
 @if (Place != null)
 {
     <Title>@Place.Title - Seattle Tourist Attractions</Title>
+    <Meta Property="og:title" Content="@Place.Title" />
+    <Meta Name="twitter:card" Content="summary_large_image" />
 
     <h1>@Place.Title</h1>
 
@@ -42,11 +45,11 @@
         Place = places.FirstOrDefault(p => p.Id == Id);
 
         var description = $"[This is the demo site of \"Blazor Head Element Helper\"] {Place.Description}";
-        await HeadElementHelper.SetMetaByPropertyAsync("og:title", Place.Title);
-        await HeadElementHelper.SetMetaByPropertyAsync("og:url", NavigationManager.ToAbsoluteUri($"/places/{Id}").AbsoluteUri);
-        await HeadElementHelper.SetMetaByPropertyAsync("og:image", NavigationManager.ToAbsoluteUri(PictureRelativeUrl).AbsoluteUri);
-        await HeadElementHelper.SetMetaByPropertyAsync("og:description", description);
-        await HeadElementHelper.SetMetaByNameAsync("description", description);
-        await HeadElementHelper.SetMetaByNameAsync("twitter:card", "summary_large_image");
+        await HeadElementHelper.SetMetaElementsAsync(
+            ByProp("og:url", NavigationManager.ToAbsoluteUri($"/places/{Id}").AbsoluteUri),
+            ByProp("og:image", NavigationManager.ToAbsoluteUri(PictureRelativeUrl).AbsoluteUri),
+            ByProp("og:description", description),
+            ByName("description", description)
+        );
     }
 }
