@@ -9,7 +9,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Components\HeadElement.csproj" />
-    <ProjectReference Include="..\..\ServerPrerendering\HeadElement.ServerPrerendering.csproj" />
+    <PackageReference Include="Toolbelt.Blazor.HeadElement" Version="1.0.0.0" />
+    <PackageReference Include="Toolbelt.Blazor.HeadElement.ServerPrerendering" Version="1.0.0.0" />
   </ItemGroup>
 </Project>

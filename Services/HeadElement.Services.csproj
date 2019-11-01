@@ -40,7 +40,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Abstractions\HeadElement.Abstractions.csproj" />
+    <PackageReference Include="Toolbelt.Blazor.HeadElement.Abstractions" Version="1.0.0.0" />
   </ItemGroup>
 
   <PropertyGroup>

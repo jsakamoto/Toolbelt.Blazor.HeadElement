@@ -29,6 +29,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Services\HeadElement.Services.csproj" />
+    <PackageReference Include="Toolbelt.Blazor.HeadElement.Services" Version="1.0.0.0" ExcludeAssets="build;buildMultitargeting;buildTransitive" />
   </ItemGroup>
 </Project>
