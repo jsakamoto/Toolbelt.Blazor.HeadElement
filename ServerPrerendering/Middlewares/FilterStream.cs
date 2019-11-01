@@ -67,7 +67,7 @@ namespace Toolbelt.Blazor.HeadElement.Middlewares
 
         private Stream RebindInvokers()
         {
-            _IsCaptured = (HttpContext.Response.ContentType?.StartsWith("text/html") == true && (InternalStore.Title != null || InternalStore.MetaEntryCommands.Count > 0));
+            _IsCaptured = (HttpContext.Response.ContentType?.StartsWith("text/html") == true && (InternalStore.Title != null || InternalStore.MetaElementCommands.Count > 0));
             var stream = _IsCaptured ? MemoryStream : OriginalStream;
             this.WriteAsyncInvoker = stream.WriteAsync;
             this.FlushAsyncInvoker = stream.FlushAsync;

@@ -10,8 +10,8 @@ namespace Toolbelt.Blazor.HeadElement.Internals
 
         string Title { get; set; }
 
-        IEnumerable<MetaEntry> DefaultMetaElements { get; set; }
+        IEnumerable<MetaElement> DefaultMetaElements { get; set; }
 
-        IList<MetaEntryCommand> MetaEntryCommands { get; }
+        IList<MetaElementCommand> MetaElementCommands { get; }
     }
 }

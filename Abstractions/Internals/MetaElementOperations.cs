@@ -1,6 +1,6 @@
 ﻿namespace Toolbelt.Blazor.HeadElement.Internals
 {
-    public enum MetaEntryOperations
+    public enum MetaElementOperations
     {
         Set,
         Remove
