@@ -1,7 +1,8 @@
 ﻿@page "/fetchdata"
 @using ServerSideApp.Data
 @inject WeatherForecastService ForecastService
-@inject HeadElementHelper HeadElementHelper
+@inject IHeadElementHelper HeadElementHelper
+@using static Toolbelt.Blazor.HeadElement.MetaElement
 
 <h1>Weather forecast</h1>
 
@@ -42,8 +43,9 @@ else
     protected override async Task OnInitializedAsync()
     {
         await HeadElementHelper.SetTitleAsync("Fetch data - Server Side App");
-        await HeadElementHelper.RemoveMetaByNameAsync("description");
-        await HeadElementHelper.RemoveMetaByPropertyAsync("og:title");
+        await HeadElementHelper.RemoveMetaElementsAsync(
+            ByName("description"),
+            ByProp("og:title"));
 
         forecasts = await ForecastService.GetForecastAsync(DateTime.Now);
     }

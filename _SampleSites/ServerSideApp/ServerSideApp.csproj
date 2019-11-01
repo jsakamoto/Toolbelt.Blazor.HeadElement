@@ -21,7 +21,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Toolbelt.Blazor.HeadElement" Version="0.0.1-preview2.0.2" />
-    <PackageReference Include="Toolbelt.Blazor.HeadElement.ServerPrerendering" Version="0.0.1-preview2.0.2" />
+    <PackageReference Include="Toolbelt.Blazor.HeadElement" Version="1.0.0.0" />
+    <PackageReference Include="Toolbelt.Blazor.HeadElement.ServerPrerendering" Version="1.0.0.0" />
   </ItemGroup>
 </Project>
