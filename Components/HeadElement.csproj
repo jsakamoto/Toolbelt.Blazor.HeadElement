@@ -29,6 +29,15 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Toolbelt.Blazor.HeadElement.Services" Version="1.0.0.0" ExcludeAssets="build;buildMultitargeting;buildTransitive" />
+    <PackageReference Include="Toolbelt.Blazor.HeadElement.Services" Version="1.0.0.0" />
   </ItemGroup>
+
+  <Target Name="ExcludeStaticWebAssetsManifestFromPackage" AfterTargets="GenerateStaticWebAssetsManifest">
+    <ItemGroup>
+      <Content Update="$(_GeneratedStaticWebAssetsDevelopmentManifest)">
+        <Pack>false</Pack>
+      </Content>
+    </ItemGroup>
+  </Target>
+
 </Project>
