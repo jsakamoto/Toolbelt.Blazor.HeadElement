@@ -54,11 +54,11 @@ The title of document will be changed.
 
 ![fig1](https://raw.githubusercontent.com/jsakamoto/Toolbelt.Blazor.HeadElement/master/.assets/fig1.png)
 
-### Note - IHeadElementService
+### Note - IHeadElementHelper
 
-You can do these tasks by using `IHeadElementService` instead of using `<Title>` and `<Meta>` components.
+You can do these tasks by using `IHeadElementHelper` service instead of using `<Title>` and `<Meta>` components.
 
-You can get the `IHeadElementService` instnace by "Dependency Injection" mechanism.
+You can get the `IHeadElementHelper` service instnace by "Dependency Injection" mechanism.
 
 ```csharp
 @inject IHeadElementHelper HeadElementHelper
