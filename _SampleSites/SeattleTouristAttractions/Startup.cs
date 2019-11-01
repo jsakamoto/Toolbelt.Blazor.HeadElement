@@ -44,7 +44,7 @@ namespace SeattleTouristAttractions
 
             app.UseHeadElementServerPrerendering();
 
-            //app.UseHttpsRedirection();
+            app.UseHttpsRedirection();
             app.UseStaticFiles();
 
             app.UseRouting();

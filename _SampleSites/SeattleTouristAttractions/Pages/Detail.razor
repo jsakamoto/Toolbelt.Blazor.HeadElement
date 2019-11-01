@@ -19,7 +19,7 @@
 
         <blockquote class="blockquote description">
             <p class="mb-0">@Place.Description</p>
-            <footer class="blockquote-footer">Source: Wikipedia (<a href="@Place.WikipediaUrl" target="_blank">@Place.WikipediaUrl</a>)</footer>
+            <footer class="blockquote-footer" style="clear:both;">Source: Wikipedia (<a href="@Place.WikipediaUrl" target="_blank">@Place.WikipediaUrl</a>)</footer>
         </blockquote>
 
     </div>
@@ -27,7 +27,7 @@
     <div>
         <p style="display: inline-flex;align-items: flex-end;justify-content: space-between;width: 150px;">
             <a class="btn btn-info" href="/">Back</a>
-            <TwitterShareButton Url="@AbsoluteUrlOfThisPage" Size="large"></TwitterShareButton>
+            <TwitterShareButton Url="@AbsoluteUrlOfThisPage" Size="large" Text="@($"[This is a demonstration of \"Blazor Head Element Helper\"] {Place.Title} - {Place.Description}")"></TwitterShareButton>
         </p>
     </div>
 }
