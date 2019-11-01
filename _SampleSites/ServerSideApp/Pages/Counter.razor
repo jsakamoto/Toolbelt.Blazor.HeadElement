@@ -1,5 +1,7 @@
 ﻿@page "/counter"
-@inject HeadElementHelper HeadElementHelper
+@inject IHeadElementHelper HeadElementHelper
+@using static Toolbelt.Blazor.HeadElement.MetaElement
+
 <Title>Counter(@currentCount) - Server Side App</Title>
 
 <h1>Counter</h1>
@@ -13,7 +15,7 @@
 
     protected override async Task OnInitializedAsync()
     {
-        await HeadElementHelper.SetMetaByNameAsync("keyword", "blazor,counter");
+        await HeadElementHelper.SetMetaElementsAsync(ByName("keyword", "blazor,counter"));
     }
 
     void IncrementCount()

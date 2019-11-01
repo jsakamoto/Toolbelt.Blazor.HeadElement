@@ -12,7 +12,8 @@
     <PackageReference Include="Microsoft.AspNetCore.Blazor.Build" Version="3.1.0-preview1.19508.20" PrivateAssets="all" />
     <PackageReference Include="Microsoft.AspNetCore.Blazor.HttpClient" Version="3.1.0-preview1.19508.20" />
     <PackageReference Include="Microsoft.AspNetCore.Blazor.DevServer" Version="3.1.0-preview1.19508.20" PrivateAssets="all" />
-    <PackageReference Include="Toolbelt.Blazor.HeadElement" Version="0.0.1-preview2.0.2" />
+    <PackageReference Include="Toolbelt.Blazor.HeadElement" Version="1.0.0.0" />
+    <PackageReference Include="Toolbelt.Blazor.HeadElement.Services" Version="1.0.0.0" />
   </ItemGroup>
 
 </Project>
