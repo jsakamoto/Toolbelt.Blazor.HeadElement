@@ -2,20 +2,11 @@
 
 ## Summary
 
-This component and services allows you to **change the title of document, "meta" elements such as OGP, on your Blazor app**.
+This components and services allows you to **change the title of document and "meta" elements such as OGP, on your Blazor app**.
 
 This package supports both seiver-side Blazor and client-side Blazor WebAssembly app.
 
 And also supports server-side pre-rendering on your server-side Blazor app.
-
-### NOTICE! - This is "Preview" Release
-
-This package is **"preview" release** at this time.
-
-Some implementations of this packages depends on internals of ASP.NET Core Components.
-
-~~Especially, server-side pre-rendering is very slow and stressfull, because **it captures all requests and buffering all responses on memory.**~~  
-_19 Sep, 2019 - Fixed this issue at v.0.0.1-preview2._
 
 ## How to use
 
@@ -24,7 +15,7 @@ _19 Sep, 2019 - Fixed this issue at v.0.0.1-preview2._
 1. Add package to your project like this.
 
 ```shell
-dotnet add package Toolbelt.Blazor.HeadElement --version 0.0.2-preview2.0.2
+dotnet add package Toolbelt.Blazor.HeadElement
 ```
 
 2. Register "Head Element Helper" service at your Blazor app's `Startup`.
@@ -48,7 +39,7 @@ public class Startup
 @using Toolbelt.Blazor.HeadElement
 ```
 
-### A. Change the title of document
+### A. Change the title of the document
 
 3. Markup `<Title>` component in your .razor file.
 
@@ -62,6 +53,28 @@ public class Startup
 The title of document will be changed.
 
 ![fig1](https://raw.githubusercontent.com/jsakamoto/Toolbelt.Blazor.HeadElement/master/.assets/fig1.png)
+
+### Note - IHeadElementService
+
+You can do these tasks by using `IHeadElementService` instead of using `<Title>` and `<Meta>` components.
+
+You can get the `IHeadElementService` instnace by "Dependency Injection" mechanism.
+
+```csharp
+@inject IHeadElementHelper HeadElementHelper
+@using static Toolbelt.Blazor.HeadElement.MetaElement
+...
+@code {
+  protected override async Task OnInitializedAsync()
+  {
+    await HeadElementHelper.SetTitleAsync("Wow!");
+    await HeadElementHelper.SetMetaElementsAsync(
+      ByName("description", "Foo bar..."),
+      ByProp("og:title", "WoW!")
+    );
+    ...
+```
+
 
 ### B. Change "meta" elements
 
@@ -82,10 +95,10 @@ If you want to get srever-side pre-rendering support, do this.
 1. Add `Toolbelt.Blazor.HeadElement.ServerPrerendering` package to your project like this.
 
 ```shell
-dotnet add package Toolbelt.Blazor.HeadElement.ServerPrerendering --version 0.0.1-preview2.0.2
+dotnet add package Toolbelt.Blazor.HeadElement.ServerPrerendering
 ```
 
-2. Register "Head Element Server Prerendering" middleware at your server-side Blazor app's `Startup`, before `appUseStaticFiles()`.
+2. Register "Head Element Server Prerendering" middleware at your server-side Blazor app's `Startup`, before `app.UseStaticFiles()`.
 
 ```csharp
 using Toolbelt.Blazor.Extensions.DependencyInjection; // <- Add this, and...
