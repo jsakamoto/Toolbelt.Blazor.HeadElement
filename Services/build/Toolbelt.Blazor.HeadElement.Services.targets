@@ -1,0 +1,17 @@
+﻿<Project>
+
+  <!-- FOR PUBLISHING -->
+  <Target Name="ToolbeltBlazorHeadElementServices_GetCopyToPublishDirectoryItems"
+          BeforeTargets="GetCopyToPublishDirectoryItems"
+          Condition="'$(OutputType.ToLowerInvariant())'=='exe' AND '$(BlazorPublishDistDir)' != ''">
+    <ItemGroup>
+      <StaticWebAsset Remove="$(MSBuildThisFileDirectory)..\staticwebassets\**" />
+      <_ToolbeltBlazorHeadElementServicesStaticWebAssets Include="$(MSBuildThisFileDirectory)..\staticwebassets\**" />
+      <ContentWithTargetPath Include="@(_ToolbeltBlazorHeadElementServicesStaticWebAssets)">
+        <TargetPath>$(BlazorPublishDistDir)_content\Toolbelt.Blazor.HeadElement.Services\%(RecursiveDir)%(FileName)%(Extension)</TargetPath>
+        <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+      </ContentWithTargetPath>
+    </ItemGroup>
+  </Target>
+
+</Project>

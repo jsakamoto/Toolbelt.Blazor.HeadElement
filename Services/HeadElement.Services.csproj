@@ -37,6 +37,10 @@
   <ItemGroup>
     <Content Remove="bundleconfig.json" />
     <None Include="bundleconfig.json" />
+    <None Update="build\Toolbelt.Blazor.HeadElement.Services.targets">
+      <PackagePath>build\Toolbelt.Blazor.HeadElement.Services.targets</PackagePath>
+      <Pack>true</Pack>
+    </None>
   </ItemGroup>
 
   <ItemGroup>
