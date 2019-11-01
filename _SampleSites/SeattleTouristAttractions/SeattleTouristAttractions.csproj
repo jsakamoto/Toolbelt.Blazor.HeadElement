@@ -5,6 +5,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Toolbelt.Blazor.TwitterShareButton" Version="7.0.0.31" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\..\Components\HeadElement.csproj" />
     <ProjectReference Include="..\..\ServerPrerendering\HeadElement.ServerPrerendering.csproj" />
   </ItemGroup>

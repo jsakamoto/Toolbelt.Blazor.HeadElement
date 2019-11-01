@@ -7,8 +7,9 @@
 @if (Place != null)
 {
     <Title>@Place.Title - Seattle Tourist Attractions</Title>
-    <Meta Property="og:title" Content="@Place.Title" />
     <Meta Name="twitter:card" Content="summary_large_image" />
+    <Meta Property="og:url" Content="@AbsoluteUrlOfThisPage" />
+    <Meta Property="og:title" Content="@Place.Title" />
 
     <h1>@Place.Title</h1>
 
@@ -24,8 +25,9 @@
     </div>
 
     <div>
-        <p>
+        <p style="display: inline-flex;align-items: flex-end;justify-content: space-between;width: 150px;">
             <a class="btn btn-info" href="/">Back</a>
+            <TwitterShareButton Url="@AbsoluteUrlOfThisPage" Size="large"></TwitterShareButton>
         </p>
     </div>
 }
@@ -39,6 +41,8 @@
 
     string PictureRelativeUrl => $"/assets/images/places/{Id}.jpg";
 
+    string AbsoluteUrlOfThisPage => NavigationManager.ToAbsoluteUri($"/places/{Id}").AbsoluteUri;
+
     protected override async Task OnInitializedAsync()
     {
         var places = await PlacesService.GetPlacesAsync();
@@ -46,7 +50,6 @@
 
         var description = $"[This is the demo site of \"Blazor Head Element Helper\"] {Place.Description}";
         await HeadElementHelper.SetMetaElementsAsync(
-            ByProp("og:url", NavigationManager.ToAbsoluteUri($"/places/{Id}").AbsoluteUri),
             ByProp("og:image", NavigationManager.ToAbsoluteUri(PictureRelativeUrl).AbsoluteUri),
             ByProp("og:description", description),
             ByName("description", description)
