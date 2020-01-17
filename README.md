@@ -2,7 +2,7 @@
 
 ## Summary
 
-This components and services allows you to **change the title of document and "meta" elements such as OGP, on your Blazor app**.
+This components and services allows you to **change the title of document, "meta" elements such as OGP, and "link" elements on your Blazor app**.
 
 This package supports both seiver-side Blazor and client-side Blazor WebAssembly app.
 
@@ -56,9 +56,31 @@ The title of document will be changed.
 
 ![fig1](https://raw.githubusercontent.com/jsakamoto/Toolbelt.Blazor.HeadElement/master/.assets/fig1.png)
 
-### Note - IHeadElementHelper
+### B. Change "meta" elements
 
-You can do these tasks by using `IHeadElementHelper` service instead of using `<Title>` and `<Meta>` components.
+You can also add or override "meta" elements at runtime dynamically using `<Meta>` component like this.
+
+```html
+@* This is "Pages/Counter.razor" *@
+@page "/counter"
+
+<Meta Property="ogp:title" Content="Counter" />
+```
+
+### C. Change "link" elements
+
+You can add or override "link" elements at runtime dynamically using `<Link>` component like this.
+
+```html
+@* This is "Pages/Counter.razor" *@
+@page "/counter"
+
+<Link Rel="next" Href="https://foo.com/fetchdata" />
+```
+
+### D. IHeadElementHelper
+
+You can do these tasks by using `IHeadElementHelper` service instead of using `<Title>`, `<Meta>`, and `<Link>` components.
 
 You can get the `IHeadElementHelper` service instnace by "Dependency Injection" mechanism.
 
@@ -74,23 +96,13 @@ You can get the `IHeadElementHelper` service instnace by "Dependency Injection" 
       ByName("description", "Foo bar..."),
       ByProp("og:title", "WoW!")
     );
+    await HeadElementHelper.SetLinkElementsAsync(
+      new LinkElement("canonical", "https://foo.com/bar")
+    );
     ...
 ```
 
-
-### B. Change "meta" elements
-
-You can also add or override "meta" elements at runtime dynamically using `<Meta>` component like this.
-
-```html
-@* This is "Pages/Counter.razor" *@
-@page "/counter"
-
-<Meta Property="ogp:title" Content="Counter" />
-```
-
-
-### C. Server-side pre-rendering support
+### E. Server-side pre-rendering support
 
 If you want to get srever-side pre-rendering support, do this.
 

@@ -1,0 +1,35 @@
+﻿@namespace Toolbelt.Blazor.HeadElement
+@inject Toolbelt.Blazor.HeadElement.IHeadElementHelper HeadElementHelper
+
+@code {
+    [Parameter]
+    public string Rel { get; set; } = "";
+
+    [Parameter]
+    public string Href { get; set; } = "";
+
+    [Parameter]
+    public string Sizez { get; set; } = "";
+
+    [Parameter]
+    public string Type { get; set; } = "";
+
+    [Parameter]
+    public string Title { get; set; } = "";
+
+    [Parameter]
+    public string Media { get; set; } = "";
+
+    protected override async Task OnParametersSetAsync()
+    {
+        await HeadElementHelper.SetLinkElementsAsync(new LinkElement
+        {
+            Rel = Rel,
+            Href = Href,
+            Sizes = Sizez,
+            Type = Type,
+            Title = Title,
+            Media = Media
+        });
+    }
+}

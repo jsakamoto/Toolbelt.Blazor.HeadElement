@@ -13,5 +13,9 @@ namespace Toolbelt.Blazor.HeadElement.Internals
         public IEnumerable<MetaElement> DefaultMetaElements { get; set; }
 
         public IList<MetaElementCommand> MetaElementCommands { get; } = new List<MetaElementCommand>();
+
+        public IEnumerable<LinkElement> DefaultLinkElements { get; set; }
+
+        public IList<LinkElementCommand> LinkElementCommands { get; } = new List<LinkElementCommand>();
     }
 }

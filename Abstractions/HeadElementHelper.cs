@@ -18,5 +18,11 @@ namespace Toolbelt.Blazor.HeadElement
         ValueTask<IEnumerable<MetaElement>> GetDefaultMetaElementsAsync();
 
         ValueTask RemoveMetaElementsAsync(params MetaElement[] elements);
+
+        ValueTask SetLinkElementsAsync(params LinkElement[] elements);
+
+        ValueTask<IEnumerable<LinkElement>> GetDefaultLinkElementsAsync();
+
+        ValueTask RemoveLinkElementsAsync(params LinkElement[] elements);
     }
 }

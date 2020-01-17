@@ -14,14 +14,20 @@
   </PropertyGroup>
 
   <PropertyGroup>
-    <Version>1.0.0.0</Version>
+    <Version>1.1.0.0</Version>
     <Authors>J.Sakamoto</Authors>
-    <Copyright>Copyright © 2019 J.Sakamoto, Mozilla Public License 2.0</Copyright>
+    <Copyright>Copyright © 2019-2020 J.Sakamoto, Mozilla Public License 2.0</Copyright>
     <Description>Head element support (change the document title, "meta" elements such as OGP) for Blazor apps.</Description>
-    <PackageTags>blazor,head,title,meta,OGP</PackageTags>
+    <PackageTags>blazor,head,title,meta,OGP,link</PackageTags>
     <PackageLicenseExpression>MPL-2.0</PackageLicenseExpression>
     <PackageLicenseUrl></PackageLicenseUrl>
     <PackageProjectUrl>https://github.com/jsakamoto/Toolbelt.Blazor.HeadElement/</PackageProjectUrl>
+    <PackageReleaseNotes>
+      v.1.1.0
+      - Add suuport for manipuration of "link" element.
+      v.1.0.0
+      - Official release.
+    </PackageReleaseNotes>
   </PropertyGroup>
 
   <ItemGroup>
@@ -35,16 +41,13 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Content Remove="bundleconfig.json" />
-    <None Include="bundleconfig.json" />
-    <None Update="build\Toolbelt.Blazor.HeadElement.Services.targets">
-      <PackagePath>build\Toolbelt.Blazor.HeadElement.Services.targets</PackagePath>
-      <Pack>true</Pack>
-    </None>
+    <Content Update="**\*.json">
+      <Pack>false</Pack>
+    </Content>
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Toolbelt.Blazor.HeadElement.Abstractions" Version="1.0.0.0" />
+    <PackageReference Include="Toolbelt.Blazor.HeadElement.Abstractions" Version="1.1.0" />
   </ItemGroup>
 
   <PropertyGroup>

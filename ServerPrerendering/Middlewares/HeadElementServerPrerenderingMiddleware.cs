@@ -1,7 +1,9 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Text.Json;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using AngleSharp.Html;
 using AngleSharp.Html.Dom;
@@ -34,6 +36,7 @@ namespace Toolbelt.Blazor.HeadElement.Middlewares
 
                 SetDocumentTitle(store, doc);
                 SetMetaElements(store, doc);
+                SetLinkElements(store, doc);
 
                 filter.MemoryStream.SetLength(0);
                 var encoding = Encoding.UTF8;
@@ -45,6 +48,19 @@ namespace Toolbelt.Blazor.HeadElement.Middlewares
             }
         }
 
+        public static void SaveDefault(IHtmlDocument doc, string text, string type)
+        {
+            var script = doc.CreateElement("script");
+            script.TextContent = text;
+            script.SetAttribute("type", type);
+            doc.Head.AppendChild(script);
+        }
+
+        public static void SaveDefault<T>(IHtmlDocument doc, T defaultElements, string type)
+        {
+            SaveDefault(doc, JsonSerializer.Serialize(defaultElements), type);
+        }
+
         private static void SetDocumentTitle(IHeadElementHelperStore store, AngleSharp.Html.Dom.IHtmlDocument doc)
         {
             if (store.Title == null) return;
@@ -52,10 +68,7 @@ namespace Toolbelt.Blazor.HeadElement.Middlewares
             store.DefaultTitle = doc.Title ?? "";
             doc.Title = store.Title;
 
-            var script = doc.CreateElement("script");
-            script.TextContent = store.DefaultTitle;
-            script.SetAttribute("type", "text/default-title");
-            doc.Head.AppendChild(script);
+            SaveDefault(doc, store.DefaultTitle, "text/default-title");
         }
 
         private void SetMetaElements(IHeadElementHelperStore store, IHtmlDocument doc)
@@ -70,10 +83,7 @@ namespace Toolbelt.Blazor.HeadElement.Middlewares
                 Property = m.GetAttribute("property") ?? "",
                 Content = m.Content
             });
-            var script = doc.CreateElement("script");
-            script.TextContent = JsonSerializer.Serialize(metaElements);
-            script.SetAttribute("type", "text/default-meta-elements");
-            doc.Head.AppendChild(script);
+            SaveDefault(doc, metaElements, "text/default-meta-elements");
 
             foreach (var cmd in store.MetaElementCommands)
             {
@@ -100,6 +110,64 @@ namespace Toolbelt.Blazor.HeadElement.Middlewares
                         doc.Head.RemoveChild(meta);
                         metaTags.Remove(meta);
                     }
+                }
+            }
+        }
+
+
+        private void SetLinkElements(IHeadElementHelperStore store, IHtmlDocument doc)
+        {
+            static string Href(string href) { return Regex.Replace(href ?? "", "^about:///", ""); }
+            static bool SameLink(IHtmlLinkElement m, LinkElement a)
+            {
+                return m.Relation == a.Rel && (
+                    (new[] { "canonical", "prev", "next" }.Contains(a.Rel)) ||
+                    (a.Rel == "icon" && (m.Sizes?.ToString() ?? "") == a.Sizes) ||
+                    (a.Rel == "alternate" && m.Type == a.Type && m.Media == a.Media) ||
+                    (Href(m.Href) == a.Href)
+                );
+            };
+
+            if (store.LinkElementCommands.Count == 0) return;
+
+            var linkTags = doc.Head.QuerySelectorAll("link").Cast<IHtmlLinkElement>().ToList();
+
+            var linkElements = linkTags.Select(m => new LinkElement
+            {
+                Rel = m.Relation ?? "",
+                Href = Href(m.Href),
+                Sizes = m.Sizes?.ToString() ?? "",
+                Type = m.Type ?? "",
+                Title = m.Title ?? "",
+                Media = m.Media ?? ""
+            });
+            SaveDefault(doc, linkElements, "text/default-link-elements");
+
+            foreach (var cmd in store.LinkElementCommands)
+            {
+                var e = cmd.Element;
+                var link = linkTags.FirstOrDefault(m => SameLink(m, e));
+
+                if (cmd.Operation == LinkElementOperations.Set)
+                {
+                    if (link == null)
+                    {
+                        link = doc.CreateElement("link") as IHtmlLinkElement;
+                        doc.Head.AppendChild(link);
+                        linkTags.Add(link);
+                    }
+                    link.Relation = e.Rel;
+                    link.Href = e.Href;
+                    foreach (var prop in new[] { ("sizez", e.Sizes), ("type", e.Type), ("title", e.Title), ("media", e.Media) })
+                    {
+                        if (string.IsNullOrEmpty(prop.Item2)) link.RemoveAttribute(prop.Item1);
+                        else link.SetAttribute(prop.Item1, prop.Item2);
+                    }
+                }
+                else if (cmd.Operation == LinkElementOperations.Remove && link != null)
+                {
+                    doc.Head.RemoveChild(link);
+                    linkTags.Remove(link);
                 }
             }
         }
