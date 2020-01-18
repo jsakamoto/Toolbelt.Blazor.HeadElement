@@ -2,7 +2,7 @@
 
 ## Summary
 
-This components and services allows you to **change the title of document, "meta" elements such as OGP, and "link" elements on your Blazor app**.
+This components and services allows you to **change the title of document, "meta" elements such as OGP, and "link" elements such as canonical url, favicon etc. on your Blazor app**.
 
 This package supports both seiver-side Blazor and client-side Blazor WebAssembly app.
 
