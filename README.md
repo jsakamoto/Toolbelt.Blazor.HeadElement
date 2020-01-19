@@ -75,8 +75,11 @@ You can add or override "link" elements at runtime dynamically using `<Link>` co
 @* This is "Pages/Counter.razor" *@
 @page "/counter"
 
-<Link Rel="next" Href="https://foo.com/fetchdata" />
+<Link Rel="icon" Href="@($"/favicons/{GetFaviconName()}")" />
 ```
+
+![fig3](https://raw.githubusercontent.com/jsakamoto/Toolbelt.Blazor.HeadElement/master/.assets/fig3.gif)
+
 
 ### D. IHeadElementHelper
 

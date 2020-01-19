@@ -5,6 +5,7 @@
 <Link Rel="canonical" Href="http://localhost/counter" />
 <Link Rel="prev" Href="/home" />
 <Link Rel="next" Href="/fetchdata" />
+<Link Rel="icon" Href="@($"/_content/SampleSite.Components/favicons/{GetFaviconName()}")" />
 
 <h1>Counter</h1>
 
@@ -20,5 +21,10 @@
     private void IncrementCount()
     {
         currentCount++;
+    }
+
+    private string GetFaviconName()
+    {
+        return currentCount > 9 ? "counter-9-plus.png" : $"counter-{currentCount}.png";
     }
 }
