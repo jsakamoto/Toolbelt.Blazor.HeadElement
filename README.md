@@ -33,6 +33,22 @@ public class Startup
     ...
 ```
 
+If the project is Blazor WebAssembly App v.3.2+, you should do it in `Program` class, instead.
+
+```csharp
+using Toolbelt.Blazor.Extensions.DependencyInjection; // <- Add this, and...
+...
+public class Program
+{
+  public static async Task Main(string[] args)
+  {
+    var builder = WebAssemblyHostBuilder.CreateDefault(args);
+    ...
+    builder.Services.AddHeadElementHelper(); // <- Add this.
+    ...
+```
+
+
 3. Open `Toolbelt.Blazor.HeadElement` namespace in `_Imports.razor` file.
 
 ```
@@ -119,9 +135,15 @@ dotnet add package Toolbelt.Blazor.HeadElement.ServerPrerendering
 
 ```csharp
 using Toolbelt.Blazor.Extensions.DependencyInjection; // <- Add this, and...
-
+...
 public class Startup
 {
+  ...
+  public void ConfigureServices(IServiceCollection services)
+  {
+    services.AddHeadElementHelper(); // <!- Don't miss this line, and...
+    ...
+
   public void Configure(IApplicationBuilder app)
   {
     app.UseHeadElementServerPrerendering(); // <- Add this.
