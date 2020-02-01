@@ -4,6 +4,8 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using SampleSite.Components.Services;
+using SampleSite.Host.Services;
 using Toolbelt.Blazor.Extensions.DependencyInjection;
 
 namespace SampleSite.Host
@@ -18,9 +20,10 @@ namespace SampleSite.Host
             {
                 //options.DisableClientScriptAutoInjection = true;
             });
+            services.AddSingleton<IWeatherForecastService, DummyWeatherForecastService>();
 
             services.AddRazorPages();
-            services.AddControllers();
+            services.AddMvc();
             services.AddResponseCompression(opts =>
             {
                 opts.MimeTypes = ResponseCompressionDefaults.MimeTypes.Concat(
@@ -41,13 +44,13 @@ namespace SampleSite.Host
 
             app.UseHeadElementServerPrerendering();
             app.UseStaticFiles();
-            app.UseClientSideBlazorFiles<Client.Startup>();
+            app.UseClientSideBlazorFiles<Client.Program>();
 
             app.UseRouting();
 
             app.UseEndpoints(endpoints =>
             {
-                endpoints.MapControllers();
+                endpoints.MapDefaultControllerRoute();
                 endpoints.MapFallbackToPage("/_Host");
             });
         }
