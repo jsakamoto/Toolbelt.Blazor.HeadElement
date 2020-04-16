@@ -18,9 +18,16 @@
         for (var i = 0; i < frames.Count; i++)
         {
             var frame = frames.Array[i];
-            if (frame.FrameType == RenderTreeFrameType.Text)
+            switch (frame.FrameType)
             {
-                title.Append(frame.TextContent);
+                case RenderTreeFrameType.Text:
+                    title.Append(frame.TextContent);
+                    break;
+                case RenderTreeFrameType.Markup:
+                    title.Append(frame.MarkupContent);
+                    break;
+                default:
+                    break;
             }
         }
 
