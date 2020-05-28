@@ -2,7 +2,7 @@ var Toolbelt;
 (function (Toolbelt) {
     var Head;
     (function (Head) {
-        const selectorForMata = 'meta[name],meta[property]';
+        const selectorForMata = 'meta[name],meta[property],meta[http-equiv]';
         const selectorForLinks = 'link';
         const selectorForScript = 'script[type="text/default-';
         const property = 'property';
@@ -50,7 +50,7 @@ var Toolbelt;
                 q(selectorForMata).filter(m => !args.some(arg => sameMeta(m, arg))).forEach(removeChild);
             },
             del: (args) => args.forEach(arg => q(selectorForMata).filter(m => sameMeta(m, arg)).forEach(removeChild)),
-            query: () => JSON.parse((q(selectorForScript + 'meta-elements"]').pop() || { text: 'null' }).text) || q(selectorForMata).map(m => (p => ({ p: p || '', n: m.name || '', c: m.content || '' }))(getAttr(m, property)))
+            query: () => JSON.parse((q(selectorForScript + 'meta-elements"]').pop() || { text: 'null' }).text) || q(selectorForMata).map(m => (p => ({ p: p || '', n: m.name || '', h: m.httpEquiv || '', c: m.content || '' }))(getAttr(m, property)))
         };
         Head.LinkTag = {
             set: (args) => {
