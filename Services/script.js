@@ -6,6 +6,7 @@ var Toolbelt;
         const selectorForLinks = 'link';
         const selectorForScript = 'script[type="text/default-';
         const property = 'property';
+        const httpEquiv = 'httpEquiv';
         const href = 'href';
         const undef = 'undefined';
         const d = document;
@@ -15,7 +16,7 @@ var Toolbelt;
         const removeChild = (m) => head.removeChild(m);
         const getAttr = (e, attrName) => e.getAttribute(attrName);
         const setAttr = (e, attrName, value) => e.setAttribute(attrName, value);
-        const sameMeta = (m, a) => a.n !== '' ? m.name === a.n : getAttr(m, property) === a.p;
+        const sameMeta = (m, a) => a.n !== '' ? m.name === a.n : (a.h !== '' ? m.httpEquiv === a.h : getAttr(m, property) === a.p);
         const sameLink = (m, a) => m.rel === a.r && ((['canonical', 'prev', 'next'].indexOf(a.r) !== -1) ||
             (a.r === 'icon' && ('' + m.sizes) === a.s) ||
             (a.r === 'alternate' && m.type === a.p && m.media === a.m) ||
@@ -33,6 +34,8 @@ var Toolbelt;
                         meta = crealeElem('meta');
                         n = meta;
                     }
+                    if (arg.h !== '')
+                        setAttr(meta, httpEquiv, arg.h);
                     if (arg.p !== '')
                         setAttr(meta, property, arg.p);
                     if (arg.n !== '')

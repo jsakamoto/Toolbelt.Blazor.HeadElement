@@ -9,6 +9,9 @@
     public string Property { get; set; } = "";
 
     [Parameter]
+    public string HttpEquiv { get; set; } = "";
+
+    [Parameter]
     public string Content { get; set; } = "";
 
     protected override async Task OnParametersSetAsync()
@@ -17,6 +20,7 @@
         {
             Name = this.Name,
             Property = this.Property,
+            HttpEquiv = this.HttpEquiv,
             Content = Content
         });
     }
