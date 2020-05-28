@@ -41,13 +41,13 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Content Update="**\*.json">
-      <Pack>false</Pack>
-    </Content>
+    <ProjectReference Include="..\Abstractions\HeadElement.Abstractions.csproj" />
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Toolbelt.Blazor.HeadElement.Abstractions" Version="1.1.0.1" />
+    <Content Update="**\*.json">
+      <Pack>false</Pack>
+    </Content>
   </ItemGroup>
 
   <PropertyGroup>

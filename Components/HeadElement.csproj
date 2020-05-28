@@ -31,14 +31,14 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Toolbelt.Blazor.HeadElement.Services" Version="1.1.0.1" />
-  </ItemGroup>
-
-  <ItemGroup>
     <None Include="..\.assets\nupkg-icon.png">
       <Pack>True</Pack>
       <PackagePath></PackagePath>
     </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Services\HeadElement.Services.csproj" />
   </ItemGroup>
 
   <Target Name="ExcludeStaticWebAssetsManifestFromPackage" AfterTargets="GenerateStaticWebAssetsManifest">
