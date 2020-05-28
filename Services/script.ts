@@ -26,7 +26,7 @@
     const selectorForLinks = 'link';
     const selectorForScript = 'script[type="text/default-';
     const property = 'property';
-    const httpEquiv = 'httpEquiv';
+    const httpEquiv = 'http-equiv';
     const href = 'href';
     const undef = 'undefined';
 
