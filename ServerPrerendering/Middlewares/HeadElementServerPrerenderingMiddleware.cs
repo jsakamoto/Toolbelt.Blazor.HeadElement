@@ -81,7 +81,7 @@ namespace Toolbelt.Blazor.HeadElement.Middlewares
             {
                 Name = m.Name ?? "",
                 Property = m.GetAttribute("property") ?? "",
-                HttpEquiv = m.GetAttribute("httpEquiv") ?? "",
+                HttpEquiv = m.HttpEquivalent ?? "",
                 Content = m.Content
             });
             SaveDefault(doc, metaElements, "text/default-meta-elements");
@@ -100,8 +100,8 @@ namespace Toolbelt.Blazor.HeadElement.Middlewares
                             meta.Name = cmd.Element.Name;
                         if (cmd.Element.Property != "")
                             meta.SetAttribute("property", cmd.Element.Property);
-                        if (cmd.Element.Property != "")
-                            meta.SetAttribute("httpEquiv", cmd.Element.HttpEquiv);
+                        if (cmd.Element.HttpEquiv != "")
+                            meta.HttpEquivalent = cmd.Element.HttpEquiv;
                         doc.Head.AppendChild(meta);
                         metaTags.Add(meta);
                     }
