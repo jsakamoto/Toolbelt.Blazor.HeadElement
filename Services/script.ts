@@ -3,6 +3,7 @@
     interface MetaElement {
         n: string;
         p: string;
+        h: string;
         c: string;
     }
 
@@ -21,10 +22,11 @@
         m: string;
     }
 
-    const selectorForMata = 'meta[name],meta[property]';
+    const selectorForMata = 'meta[name],meta[property],meta[http-equiv]';
     const selectorForLinks = 'link';
     const selectorForScript = 'script[type="text/default-';
     const property = 'property';
+    const httpEquiv = 'http-equiv';
     const href = 'href';
     const undef = 'undefined';
 
@@ -37,7 +39,7 @@
     const removeChild = (m: HTMLMetaElement | HTMLLinkElement) => head.removeChild(m);
     const getAttr = (e: HTMLElement, attrName: string) => e.getAttribute(attrName);
     const setAttr = (e: HTMLElement, attrName: string, value: string) => e.setAttribute(attrName, value);
-    const sameMeta = (m: HTMLMetaElement, a: MetaElement) => a.n !== '' ? m.name === a.n : getAttr(m, property) === a.p;
+    const sameMeta = (m: HTMLMetaElement, a: MetaElement) => a.n !== '' ? m.name === a.n : (a.h !== '' ? m.httpEquiv === a.h : getAttr(m, property) === a.p);
     const sameLink = (m: HTMLLinkElement, a: LinkElement) => m.rel === a.r && (
         (['canonical', 'prev', 'next'].indexOf(a.r) !== -1) ||
         (a.r === 'icon' && ('' + m.sizes) === a.s) ||
@@ -62,6 +64,7 @@
                     meta = crealeElem('meta');
                     n = meta;
                 }
+                if (arg.h !== '') setAttr(meta, httpEquiv, arg.h);
                 if (arg.p !== '') setAttr(meta, property, arg.p);
                 if (arg.n !== '') meta.name = arg.n;
                 meta.content = arg.c;
@@ -76,7 +79,7 @@
 
         del: (args: MetaElement[]) => args.forEach(arg => q(selectorForMata).filter(m => sameMeta(m, arg)).forEach(removeChild)),
 
-        query: () => JSON.parse((q(selectorForScript + 'meta-elements"]').pop() || { text: 'null' }).text) || q(selectorForMata).map(m => (p => ({ p: p || '', n: m.name || '', c: m.content || '' }))(getAttr(m, property)))
+        query: () => JSON.parse((q(selectorForScript + 'meta-elements"]').pop() || { text: 'null' }).text) || q(selectorForMata).map(m => (p => ({ p: p || '', n: m.name || '', h: m.httpEquiv || '', c: m.content || '' }))(getAttr(m, property)))
     }
 
     export const LinkTag = {

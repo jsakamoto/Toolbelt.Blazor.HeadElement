@@ -2,10 +2,11 @@ var Toolbelt;
 (function (Toolbelt) {
     var Head;
     (function (Head) {
-        const selectorForMata = 'meta[name],meta[property]';
+        const selectorForMata = 'meta[name],meta[property],meta[http-equiv]';
         const selectorForLinks = 'link';
         const selectorForScript = 'script[type="text/default-';
         const property = 'property';
+        const httpEquiv = 'http-equiv';
         const href = 'href';
         const undef = 'undefined';
         const d = document;
@@ -15,7 +16,7 @@ var Toolbelt;
         const removeChild = (m) => head.removeChild(m);
         const getAttr = (e, attrName) => e.getAttribute(attrName);
         const setAttr = (e, attrName, value) => e.setAttribute(attrName, value);
-        const sameMeta = (m, a) => a.n !== '' ? m.name === a.n : getAttr(m, property) === a.p;
+        const sameMeta = (m, a) => a.n !== '' ? m.name === a.n : (a.h !== '' ? m.httpEquiv === a.h : getAttr(m, property) === a.p);
         const sameLink = (m, a) => m.rel === a.r && ((['canonical', 'prev', 'next'].indexOf(a.r) !== -1) ||
             (a.r === 'icon' && ('' + m.sizes) === a.s) ||
             (a.r === 'alternate' && m.type === a.p && m.media === a.m) ||
@@ -33,6 +34,8 @@ var Toolbelt;
                         meta = crealeElem('meta');
                         n = meta;
                     }
+                    if (arg.h !== '')
+                        setAttr(meta, httpEquiv, arg.h);
                     if (arg.p !== '')
                         setAttr(meta, property, arg.p);
                     if (arg.n !== '')
@@ -47,7 +50,7 @@ var Toolbelt;
                 q(selectorForMata).filter(m => !args.some(arg => sameMeta(m, arg))).forEach(removeChild);
             },
             del: (args) => args.forEach(arg => q(selectorForMata).filter(m => sameMeta(m, arg)).forEach(removeChild)),
-            query: () => JSON.parse((q(selectorForScript + 'meta-elements"]').pop() || { text: 'null' }).text) || q(selectorForMata).map(m => (p => ({ p: p || '', n: m.name || '', c: m.content || '' }))(getAttr(m, property)))
+            query: () => JSON.parse((q(selectorForScript + 'meta-elements"]').pop() || { text: 'null' }).text) || q(selectorForMata).map(m => (p => ({ p: p || '', n: m.name || '', h: m.httpEquiv || '', c: m.content || '' }))(getAttr(m, property)))
         };
         Head.LinkTag = {
             set: (args) => {
