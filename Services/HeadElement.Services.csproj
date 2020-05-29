@@ -30,6 +30,7 @@
       v.1.0.0
       - Official release.
     </PackageReleaseNotes>
+    <PackageIcon>nupkg-icon.png</PackageIcon>
   </PropertyGroup>
 
   <ItemGroup>
@@ -67,5 +68,13 @@
     <TypeScriptMapRoot />
     <TypeScriptSourceRoot />
   </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="..\.assets\nupkg-icon.png">
+      <Pack>True</Pack>
+      <PackagePath></PackagePath>
+      <Visible>false</Visible>
+    </None>
+  </ItemGroup>
 
 </Project>

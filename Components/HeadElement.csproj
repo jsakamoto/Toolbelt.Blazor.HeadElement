@@ -38,6 +38,7 @@
     <None Include="..\.assets\nupkg-icon.png">
       <Pack>True</Pack>
       <PackagePath></PackagePath>
+      <Visible>false</Visible>
     </None>
   </ItemGroup>
 

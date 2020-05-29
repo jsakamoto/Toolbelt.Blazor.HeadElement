@@ -32,6 +32,7 @@
       v.0.0.1-preview1.0.1
       - Initial preview release
     </PackageReleaseNotes>
+    <PackageIcon>nupkg-icon.png</PackageIcon>
   </PropertyGroup>
 
   <ItemGroup>
@@ -42,4 +43,13 @@
   <ItemGroup>
     <PackageReference Include="Toolbelt.Blazor.HeadElement.Services" Version="1.2.0-beta" />
   </ItemGroup>
+
+  <ItemGroup>
+    <None Include="..\.assets\nupkg-icon.png">
+      <Pack>True</Pack>
+      <PackagePath></PackagePath>
+      <Visible>false</Visible>
+    </None>
+  </ItemGroup>
+
 </Project>

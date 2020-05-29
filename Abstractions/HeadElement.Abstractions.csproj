@@ -28,11 +28,20 @@
       v.1.0.0
       - Official release.
     </PackageReleaseNotes>
+    <PackageIcon>nupkg-icon.png</PackageIcon>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="System.Threading.Tasks.Extensions" Version="4.5.3" />
     <PackageReference Include="System.Text.Json" Version="4.6.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="..\.assets\nupkg-icon.png">
+      <Pack>True</Pack>
+      <PackagePath></PackagePath>
+      <Visible>false</Visible>
+    </None>
   </ItemGroup>
 
 </Project>
