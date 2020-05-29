@@ -1,11 +1,14 @@
 ﻿v.1.2.0
 - Add suuport for manipuration of "meta http-equiv" element.
 
-v.1.1.1
-- Fix: title is empty when it includes non-ASCII characters.
-
 v.1.1.0
 - Add suuport for manipuration of "link" element.
 
 v.1.0.0
 - Official release.
+
+v.0.0.1-preview1.0.2
+- Improve response filtering
+
+v.0.0.1-preview1.0.1
+- Initial preview release

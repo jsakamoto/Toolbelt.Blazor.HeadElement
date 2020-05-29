@@ -75,19 +75,21 @@ namespace Toolbelt.Blazor.HeadElement.Middlewares
         {
             if (store.MetaElementCommands.Count == 0) return;
 
-            var metaTags = doc.Head.QuerySelectorAll("meta[name],meta[property]").Cast<IHtmlMetaElement>().ToList();
+            var metaTags = doc.Head.QuerySelectorAll("meta[name],meta[property],meta[http-equiv]").Cast<IHtmlMetaElement>().ToList();
 
             var metaElements = metaTags.Select(m => new MetaElement
             {
                 Name = m.Name ?? "",
                 Property = m.GetAttribute("property") ?? "",
+                HttpEquiv = m.HttpEquivalent ?? "",
                 Content = m.Content
             });
             SaveDefault(doc, metaElements, "text/default-meta-elements");
 
             foreach (var cmd in store.MetaElementCommands)
             {
-                var meta = metaTags.FirstOrDefault(m => (cmd.Element.Name != "" && cmd.Element.Name == m.Name) || (cmd.Element.Property != "" && cmd.Element.Property == m.GetAttribute("property")));
+                var meta = metaTags.FirstOrDefault(m => (cmd.Element.Name != "" && cmd.Element.Name == m.Name) || (cmd.Element.Property != "" && cmd.Element.Property == m.GetAttribute("property"))
+                                                                                                               || (cmd.Element.HttpEquiv != "" && cmd.Element.HttpEquiv == m.GetAttribute("httpEquiv")));
 
                 if (cmd.Operation == MetaElementOperations.Set)
                 {
@@ -98,6 +100,8 @@ namespace Toolbelt.Blazor.HeadElement.Middlewares
                             meta.Name = cmd.Element.Name;
                         if (cmd.Element.Property != "")
                             meta.SetAttribute("property", cmd.Element.Property);
+                        if (cmd.Element.HttpEquiv != "")
+                            meta.HttpEquivalent = cmd.Element.HttpEquiv;
                         doc.Head.AppendChild(meta);
                         metaTags.Add(meta);
                     }
