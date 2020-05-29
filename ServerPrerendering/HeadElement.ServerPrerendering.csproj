@@ -12,7 +12,7 @@
   </PropertyGroup>
 
   <PropertyGroup>
-    <Version>1.1.0.1</Version>
+    <Version>1.2.0.0-beta</Version>
     <Authors>J.Sakamoto</Authors>
     <Copyright>Copyright © 2019-2020 J.Sakamoto, Mozilla Public License 2.0</Copyright>
     <Description>Head element support (change the document title, "meta" elements such as OGP, and "link" elements such as canonical url, favicon) for Blazor apps.</Description>
@@ -21,6 +21,8 @@
     <PackageLicenseUrl></PackageLicenseUrl>
     <PackageProjectUrl>https://github.com/jsakamoto/Toolbelt.Blazor.HeadElement/</PackageProjectUrl>
     <PackageReleaseNotes>
+      v.1.2.0
+      - Add suuport for manipuration of "meta http-equiv" element.
       v.1.1.0
       - Add suuport for manipuration of "link" element.
       v.1.0.0
@@ -38,6 +40,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Toolbelt.Blazor.HeadElement.Services" Version="1.1.0.1" />
+    <PackageReference Include="Toolbelt.Blazor.HeadElement.Services" Version="1.2.0-beta" />
   </ItemGroup>
 </Project>

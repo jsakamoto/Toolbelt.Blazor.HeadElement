@@ -1,4 +1,7 @@
-﻿v.1.1.1
+﻿v.1.2.0
+- Add suuport for manipuration of "meta http-equiv" element.
+
+v.1.1.1
 - Fix: title is empty when it includes non-ASCII characters.
 
 v.1.1.0
