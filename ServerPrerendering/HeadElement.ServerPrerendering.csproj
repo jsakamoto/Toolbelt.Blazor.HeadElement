@@ -20,18 +20,7 @@
     <PackageLicenseExpression>MPL-2.0</PackageLicenseExpression>
     <PackageLicenseUrl></PackageLicenseUrl>
     <PackageProjectUrl>https://github.com/jsakamoto/Toolbelt.Blazor.HeadElement/</PackageProjectUrl>
-    <PackageReleaseNotes>
-      v.1.2.0
-      - Add suuport for manipuration of "meta http-equiv" element.
-      v.1.1.0
-      - Add suuport for manipuration of "link" element.
-      v.1.0.0
-      - Official release.
-      v.0.0.1-preview1.0.2
-      - Improve response filtering
-      v.0.0.1-preview1.0.1
-      - Initial preview release
-    </PackageReleaseNotes>
+    <PackageReleaseNotes>(Please write the package release notes in "RELEASE NOTES.txt".)</PackageReleaseNotes>
     <PackageIcon>nupkg-icon.png</PackageIcon>
   </PropertyGroup>
 
@@ -51,5 +40,14 @@
       <Visible>false</Visible>
     </None>
   </ItemGroup>
+
+  <Target Name="PreparePackageReleaseNotesFromFile" BeforeTargets="GenerateNuspec">
+    <ReadLinesFromFile File="RELEASE-NOTES.txt">
+      <Output TaskParameter="Lines" ItemName="ReleaseNoteLines" />
+    </ReadLinesFromFile>
+    <PropertyGroup>
+      <PackageReleaseNotes>@(ReleaseNoteLines, '%0a')</PackageReleaseNotes>
+    </PropertyGroup>
+  </Target>
 
 </Project>
