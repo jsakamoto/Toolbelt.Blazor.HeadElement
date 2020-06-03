@@ -55,5 +55,21 @@ namespace HeadElement.E2ETest
                 .ToArray();
             return metaElements;
         }
+
+        public static string[] DumpLinkElements(this IWebDriver driver)
+        {
+            var metaElements = driver.FindElements(By.XPath("//link"))
+                .Select(m => (
+                    Rel: m.GetAttribute("rel") ?? "",
+                    Href: Uri.TryCreate(m.GetAttribute("href"), UriKind.Absolute, out var u) ? u.PathAndQuery : "",
+                    Type: m.GetAttribute("type") ?? "",
+                    Media: m.GetAttribute("media") ?? "",
+                    Title: m.GetAttribute("title") ?? "",
+                    Sizes: m.GetAttribute("sizes") ?? ""))
+                .OrderBy(m => m.Rel).ThenBy(m => m.Href)
+                .Select(m => $"rel:{m.Rel}, href:{m.Href}, type:{m.Type}, media:{m.Media}, title:{m.Title}, sizes:{m.Sizes}")
+                .ToArray();
+            return metaElements;
+        }
     }
 }

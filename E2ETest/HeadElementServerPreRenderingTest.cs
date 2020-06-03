@@ -111,5 +111,56 @@ namespace HeadElement.E2ETest
                 .Select(m => $"'{m.Name}','{m.Property}','{m.HttpEquiv}','{m.Content}'")
                 .ToArray();
         }
+
+        [Theory(DisplayName = "Change link elements on Server")]
+        [MemberData(nameof(HostingModels))]
+        public async Task ChangeLinkElements_on_Server_Test(HostingModel hostingModel)
+        {
+            _TestContext.StartHost(hostingModel);
+
+            var httpClient = new HttpClient();
+
+            var contentOfHome = await httpClient.GetStringAsync(_TestContext.GetHostUrl(hostingModel));
+            DumpLinkElements(contentOfHome).Is(
+                "rel:icon, href:/_content/SampleSite.Components/favicons/favicon.ico, type:, media:, title:, sizes:",
+                "rel:stylesheet, href:_content/SampleSite.Components/css/bootstrap/bootstrap.min.css, type:, media:, title:, sizes:",
+                "rel:stylesheet, href:_content/SampleSite.Components/css/custom-A.css, type:, media:, title:custom, sizes:",
+                "rel:stylesheet, href:_content/SampleSite.Components/css/site.css, type:, media:, title:, sizes:"
+            );
+
+            var contentOfCounter = await httpClient.GetStringAsync(_TestContext.GetHostUrl(hostingModel).TrimEnd('/') + "/counter");
+            DumpLinkElements(contentOfCounter).Is(
+                "rel:canonical, href:http://localhost/counter, type:, media:, title:link-B, sizes:",
+                "rel:icon, href:/_content/SampleSite.Components/favicons/counter-0.png, type:image/png, media:, title:, sizes:",
+                "rel:stylesheet, href:_content/SampleSite.Components/css/bootstrap/bootstrap.min.css, type:, media:, title:, sizes:",
+                "rel:stylesheet, href:_content/SampleSite.Components/css/site.css, type:, media:, title:, sizes:"
+            );
+
+            var contentOfFetchdata = await httpClient.GetStringAsync(_TestContext.GetHostUrl(hostingModel).TrimEnd('/') + "/fetchdata");
+            DumpLinkElements(contentOfFetchdata).Is(
+                "rel:canonical, href:http://localhost/fetchdata, type:, media:, title:link-C, sizes:",
+                "rel:stylesheet, href:_content/SampleSite.Components/css/bootstrap/bootstrap.min.css, type:, media:, title:, sizes:",
+                "rel:stylesheet, href:_content/SampleSite.Components/css/custom-A.css, type:, media:, title:custom, sizes:",
+                "rel:stylesheet, href:_content/SampleSite.Components/css/custom-C.css, type:, media:print, title:, sizes:",
+                "rel:stylesheet, href:_content/SampleSite.Components/css/site.css, type:, media:, title:, sizes:"
+            );
+        }
+
+        private IEnumerable<string> DumpLinkElements(string content)
+        {
+            return Regex.Matches(content, @"<link[ \t]+[^>]*>")
+                .Select(m => (
+                    Rel: Regex.Match(m.Value, "rel=\"(?<t>[^\"]+)\"").Groups["t"].Value,
+                    Href: Regex.Match(m.Value, "href=\"(?<t>[^\"]+)\"").Groups["t"].Value,
+                    Type: Regex.Match(m.Value, "type=\"(?<t>[^\"]+)\"").Groups["t"].Value,
+                    Media: Regex.Match(m.Value, "media=\"(?<t>[^\"]+)\"").Groups["t"].Value,
+                    Title: Regex.Match(m.Value, "title=\"(?<t>[^\"]+)\"").Groups["t"].Value,
+                    Sizes: Regex.Match(m.Value, "sizes=\"(?<t>[^\"]+)\"").Groups["t"].Value
+                ))
+                .Where(m => !m.Href.StartsWith("data:text/css,.loading%7B")) // exclude style for "Loading..." element.
+                .OrderBy(m => m.Rel).ThenBy(m => m.Href)
+                .Select(m => $"rel:{m.Rel}, href:{m.Href}, type:{m.Type}, media:{m.Media}, title:{m.Title}, sizes:{m.Sizes}")
+                .ToArray();
+        }
     }
 }

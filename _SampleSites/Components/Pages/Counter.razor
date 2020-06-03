@@ -3,10 +3,8 @@
 
 <Title>Counter(@currentCount)</Title>
 
-<Link Rel="canonical" Href="http://localhost/counter" />
-<Link Rel="prev" Href="/home" />
-<Link Rel="next" Href="/fetchdata" />
-<Link Rel="icon" Href="@($"/_content/SampleSite.Components/favicons/{GetFaviconName()}")" />
+<Link Rel="icon" Href="@($"/_content/SampleSite.Components/favicons/{GetFaviconName()}")" Type="image/png" />
+<Link Rel="canonical" Href="http://localhost/counter" Title="link-B" />
 
 <h1>Counter</h1>
 
@@ -32,6 +30,8 @@
             ByName("meta-N3"),
             ByProp("meta-P3"),
             ByHttpEquiv("meta-H3"));
+        await HeadElementHelper.RemoveLinkElementsAsync(
+            new LinkElement(rel: "stylesheet", href: "_content/SampleSite.Components/css/custom-A.css"));
     }
 
     private void IncrementCount()

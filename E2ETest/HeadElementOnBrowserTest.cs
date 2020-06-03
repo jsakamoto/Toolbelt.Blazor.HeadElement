@@ -172,11 +172,10 @@ namespace HeadElement.E2ETest
             _TestContext.StartHost(hostingModel);
             var driver = _TestContext.WebDriver;
 
-            // Navigate to Home
+            // Navigate to "Counter"
             driver.GoToUrlAndWait(_TestContext.GetHostUrl(hostingModel), "/counter");
 
             // Validate meta elements of "Counter"
-            var dump = driver.DumpMetaElements();
             driver.DumpMetaElements().Is(
                 "'','','',''",
                 "'meta-N0','','','value-N0-A'",
@@ -206,6 +205,78 @@ namespace HeadElement.E2ETest
                 "'','','meta-H0','value-H0-A'",
                 "'','','meta-H2','value-H2-A'",
                 "'','','meta-H3','value-H3-A'");
+        }
+
+
+        [Theory(DisplayName = "Change link elements on Browser (from Home)")]
+        [MemberData(nameof(HostingModels))]
+        public void ChangeLinkElements_on_Browser_Start_from_Home_Test(HostingModel hostingModel)
+        {
+            _TestContext.StartHost(hostingModel);
+            var driver = _TestContext.WebDriver;
+
+            // Navigate to "Home", and validate link elements of "Home"
+            driver.GoToUrlAndWait(_TestContext.GetHostUrl(hostingModel));
+            driver.DumpLinkElements().Is(
+                "rel:icon, href:/_content/SampleSite.Components/favicons/favicon.ico, type:, media:, title:, sizes:",
+                "rel:stylesheet, href:/_content/SampleSite.Components/css/bootstrap/bootstrap.min.css, type:, media:, title:, sizes:",
+                "rel:stylesheet, href:/_content/SampleSite.Components/css/custom-A.css, type:, media:, title:custom, sizes:",
+                "rel:stylesheet, href:/_content/SampleSite.Components/css/site.css, type:, media:, title:, sizes:"
+            );
+
+            // Navigate to "Counter", and validate link elements of "Counter"
+            driver.ClickCounter();
+            driver.DumpLinkElements().Is(
+                "rel:canonical, href:/counter, type:, media:, title:link-B, sizes:",
+                "rel:icon, href:/_content/SampleSite.Components/favicons/counter-0.png, type:image/png, media:, title:, sizes:",
+                "rel:stylesheet, href:/_content/SampleSite.Components/css/bootstrap/bootstrap.min.css, type:, media:, title:, sizes:",
+                "rel:stylesheet, href:/_content/SampleSite.Components/css/site.css, type:, media:, title:, sizes:"
+            );
+
+            // Navigate to "Fetch data", and validate link elements of "Fetch data"
+            driver.ClickFetchData();
+            driver.DumpLinkElements().Is(
+                "rel:canonical, href:/fetchdata, type:, media:, title:link-C, sizes:",
+                "rel:stylesheet, href:/_content/SampleSite.Components/css/bootstrap/bootstrap.min.css, type:, media:, title:, sizes:",
+                "rel:stylesheet, href:/_content/SampleSite.Components/css/custom-A.css, type:, media:, title:custom, sizes:",
+                "rel:stylesheet, href:/_content/SampleSite.Components/css/custom-C.css, type:, media:print, title:, sizes:",
+                "rel:stylesheet, href:/_content/SampleSite.Components/css/site.css, type:, media:, title:, sizes:"
+            );
+
+            // Go back to "Home", and validate link elements of "Home" were restored.
+            driver.ClickHome();
+            driver.DumpLinkElements().Is(
+                "rel:icon, href:/_content/SampleSite.Components/favicons/favicon.ico, type:, media:, title:, sizes:",
+                "rel:stylesheet, href:/_content/SampleSite.Components/css/bootstrap/bootstrap.min.css, type:, media:, title:, sizes:",
+                "rel:stylesheet, href:/_content/SampleSite.Components/css/custom-A.css, type:, media:, title:custom, sizes:",
+                "rel:stylesheet, href:/_content/SampleSite.Components/css/site.css, type:, media:, title:, sizes:"
+            );
+        }
+
+        [Theory(DisplayName = "Change link elements on Browser (from Counter)")]
+        [MemberData(nameof(HostingModels))]
+        public void ChangeLinkElements_on_Browser_Start_from_Counter_Test(HostingModel hostingModel)
+        {
+            _TestContext.StartHost(hostingModel);
+            var driver = _TestContext.WebDriver;
+
+            // Navigate to "Counter", and validate link elements of "Counter"
+            driver.GoToUrlAndWait(_TestContext.GetHostUrl(hostingModel), "/counter");
+            driver.DumpLinkElements().Is(
+                "rel:canonical, href:/counter, type:, media:, title:link-B, sizes:",
+                "rel:icon, href:/_content/SampleSite.Components/favicons/counter-0.png, type:image/png, media:, title:, sizes:",
+                "rel:stylesheet, href:/_content/SampleSite.Components/css/bootstrap/bootstrap.min.css, type:, media:, title:, sizes:",
+                "rel:stylesheet, href:/_content/SampleSite.Components/css/site.css, type:, media:, title:, sizes:"
+            );
+
+            // Go back to "Home", and validate link elements of "Home" were restored.
+            driver.ClickHome();
+            driver.DumpLinkElements().Is(
+                "rel:icon, href:/_content/SampleSite.Components/favicons/favicon.ico, type:, media:, title:, sizes:",
+                "rel:stylesheet, href:/_content/SampleSite.Components/css/bootstrap/bootstrap.min.css, type:, media:, title:, sizes:",
+                "rel:stylesheet, href:/_content/SampleSite.Components/css/custom-A.css, type:, media:, title:custom, sizes:",
+                "rel:stylesheet, href:/_content/SampleSite.Components/css/site.css, type:, media:, title:, sizes:"
+            );
         }
     }
 }

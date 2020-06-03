@@ -54,8 +54,10 @@ else
             ByProp("meta-P2"),
             ByHttpEquiv("meta-H2"));
         await HeadElementHelper.SetLinkElementsAsync(
-            new LinkElement(rel: "canonical", href: "http://localhost/fetchdata"),
-            new LinkElement(rel: "prev", href: "/counter"));
+            new LinkElement(rel: "stylesheet", href: "_content/SampleSite.Components/css/custom-C.css", media: "print"),
+            new LinkElement(rel: "canonical", href: "http://localhost/fetchdata", title: "link-C"));
+        await HeadElementHelper.RemoveLinkElementsAsync(
+            new LinkElement(rel: "icon", href: ""));
 
         forecasts = await WeatherForecastService.GetForecastAsync();
     }
