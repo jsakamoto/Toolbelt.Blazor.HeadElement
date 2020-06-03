@@ -14,8 +14,7 @@ namespace HeadElement.E2ETest
             this._TestContext = testContext;
         }
 
-        public static IEnumerable<object[]> HostingModels =>
-        new List<object[]>
+        public static IEnumerable<object[]> HostingModels { get; } = new List<object[]>
         {
             new object[] { HostingModel.Wasm },
             new object[] { HostingModel.WasmHosted },
