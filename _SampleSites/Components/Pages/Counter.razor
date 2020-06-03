@@ -1,7 +1,8 @@
 ﻿@page "/counter"
+@inject IHeadElementHelper HeadElementHelper
+
 <Title>Counter(@currentCount)</Title>
-<Meta Property="og:title" Content="@Title" />
-<Meta Name="keywords" Content="blazor,counter" />
+
 <Link Rel="canonical" Href="http://localhost/counter" />
 <Link Rel="prev" Href="/home" />
 <Link Rel="next" Href="/fetchdata" />
@@ -17,6 +18,21 @@
     private int currentCount = 0;
 
     private string Title => $"Counter({currentCount})";
+
+    protected override async Task OnInitializedAsync()
+    {
+        await HeadElementHelper.SetMetaElementsAsync(
+            ByName("meta-N1", "value-N1-B"),
+            ByName("meta-N2", "value-N2-B"),
+            ByProp("meta-P1", "value-P1-B"),
+            ByProp("meta-P2", "value-P2-B"),
+            ByHttpEquiv("meta-H1", "value-H1-B"),
+            ByHttpEquiv("meta-H2", "value-H2-B"));
+        await HeadElementHelper.RemoveMetaElementsAsync(
+            ByName("meta-N3"),
+            ByProp("meta-P3"),
+            ByHttpEquiv("meta-H3"));
+    }
 
     private void IncrementCount()
     {
