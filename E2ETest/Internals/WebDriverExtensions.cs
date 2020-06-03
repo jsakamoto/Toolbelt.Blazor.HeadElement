@@ -18,7 +18,9 @@ namespace HeadElement.E2ETest
 
         public static WebDriverWait Wait(this IWebDriver driver, int millisecondsTimeout)
         {
-            return new WebDriverWait(driver, TimeSpan.FromMilliseconds(millisecondsTimeout));
+            var wait = new WebDriverWait(driver, TimeSpan.FromMilliseconds(millisecondsTimeout));
+            wait.PollingInterval = TimeSpan.FromMilliseconds(200);
+            return wait;
         }
 
         public static void ClickCounter(this IWebDriver driver)
@@ -39,6 +41,13 @@ namespace HeadElement.E2ETest
         {
             driver.FindElement(By.CssSelector("a.navbar-brand")).Click();
             driver.Wait(1000).Until(_ => driver.FindElement(By.XPath("//h1[text()='Hello, world!']")));
+            Thread.Sleep(200);
+        }
+
+        public static void ClickRedirect(this IWebDriver driver)
+        {
+            driver.FindElement(By.CssSelector("a[href=redirect]")).Click();
+            driver.Wait(1000).Until(_ => driver.FindElement(By.XPath("//h1[text()='Redirect to Home']")));
             Thread.Sleep(200);
         }
 

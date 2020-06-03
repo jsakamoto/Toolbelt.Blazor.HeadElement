@@ -1,4 +1,7 @@
+using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Threading;
 using OpenQA.Selenium;
 using Xunit;
 
@@ -277,6 +280,98 @@ namespace HeadElement.E2ETest
                 "rel:stylesheet, href:/_content/SampleSite.Components/css/custom-A.css, type:, media:, title:custom, sizes:",
                 "rel:stylesheet, href:/_content/SampleSite.Components/css/site.css, type:, media:, title:, sizes:"
             );
+        }
+
+        [Theory(DisplayName = "Refresh on Browser (from Home)")]
+        [MemberData(nameof(HostingModels))]
+        public void Refresh_on_Browser_Start_from_Home_Test(HostingModel hostingModel)
+        {
+            _TestContext.StartHost(hostingModel);
+            var driver = _TestContext.WebDriver;
+
+            driver.GoToUrlAndWait(_TestContext.GetHostUrl(hostingModel));
+            driver.ClickRedirect();
+            driver.DumpMetaElements()
+                .Contains("'','','refresh','3;url=/'") // <- added 'refresh'
+                .IsTrue();
+
+            // Wait for redirected...
+            Thread.Sleep(5000);
+
+            // Validate current page is "Home".
+            driver.Wait(1000).Until(_ => driver.FindElement(By.XPath("//h1[text()='Hello, world!']")));
+            driver.Url.TrimEnd('/').Is(_TestContext.GetHostUrl(hostingModel).TrimEnd('/'));
+        }
+
+        [Theory(DisplayName = "Refresh and Cancel on Browser (from Home)")]
+        [MemberData(nameof(HostingModels))]
+        public void Refresh_and_Cancel_on_Browser_Start_from_Home_Test(HostingModel hostingModel)
+        {
+            _TestContext.StartHost(hostingModel);
+            var driver = _TestContext.WebDriver;
+
+            driver.GoToUrlAndWait(_TestContext.GetHostUrl(hostingModel));
+            driver.ClickRedirect();
+            driver.DumpMetaElements()
+                .Contains("'','','refresh','3;url=/'") // <- added 'refresh'
+                .IsTrue();
+
+            // Navigate to "Counter"
+            driver.ClickCounter();
+
+            // Wait for redirected...
+            Thread.Sleep(5000);
+
+            // Validate current page is not redirected, stay on "Counter".
+            driver.Wait(1000).Until(_ => driver.FindElement(By.XPath("//h1[text()='Counter']")));
+            driver.Url.TrimEnd('/').Is(_TestContext.GetHostUrl(hostingModel).TrimEnd('/') + "/counter");
+        }
+
+        [Theory(DisplayName = "Refresh on Browser (from Redirect)")]
+        [MemberData(nameof(HostingModels))]
+        public void Refresh_on_Browser_Start_from_Redirect_Test(HostingModel hostingModel)
+        {
+            _TestContext.StartHost(hostingModel);
+            var driver = _TestContext.WebDriver;
+
+            driver.Navigate().GoToUrl(_TestContext.GetHostUrl(hostingModel).TrimEnd('/') + "/redirect");
+            driver.Wait(5000).Until(_ => driver.FindElement(By.XPath("//h1[text()='Redirect to Home']")));
+            Thread.Sleep(200);
+            driver.DumpMetaElements()
+                .Contains("'','','refresh','3;url=/'") // <- added 'refresh'
+                .IsTrue();
+
+            // Wait for redirected...
+            Thread.Sleep(5000);
+
+            // Validate current page is "Home".
+            driver.Wait(1000).Until(_ => driver.FindElement(By.XPath("//h1[text()='Hello, world!']")));
+            driver.Url.TrimEnd('/').Is(_TestContext.GetHostUrl(hostingModel).TrimEnd('/'));
+        }
+
+        [Theory(DisplayName = "Refresh and Cancel on Browser (from Redirect)")]
+        [MemberData(nameof(HostingModels))]
+        public void Refresh_and_Cancel_on_Browser_Start_from_Redirect_Test(HostingModel hostingModel)
+        {
+            _TestContext.StartHost(hostingModel);
+            var driver = _TestContext.WebDriver;
+
+            driver.Navigate().GoToUrl(_TestContext.GetHostUrl(hostingModel).TrimEnd('/') + "/redirect");
+            driver.Wait(5000).Until(_ => driver.FindElement(By.XPath("//h1[text()='Redirect to Home']")));
+            Thread.Sleep(200);
+            driver.DumpMetaElements()
+                .Contains("'','','refresh','3;url=/'") // <- added 'refresh'
+                .IsTrue();
+
+            // Navigate to "Fetch data"
+            driver.ClickFetchData();
+
+            // Wait for redirected...
+            Thread.Sleep(5000);
+
+            // Validate current page is not redirected, stay on "Counter".
+            driver.Wait(1000).Until(_ => driver.FindElement(By.XPath("//h1[text()='Weather forecast']")));
+            driver.Url.TrimEnd('/').Is(_TestContext.GetHostUrl(hostingModel).TrimEnd('/') + "/fetchdata");
         }
     }
 }
