@@ -88,8 +88,10 @@ namespace Toolbelt.Blazor.HeadElement.Middlewares
 
             foreach (var cmd in store.MetaElementCommands)
             {
-                var meta = metaTags.FirstOrDefault(m => (cmd.Element.Name != "" && cmd.Element.Name == m.Name) || (cmd.Element.Property != "" && cmd.Element.Property == m.GetAttribute("property"))
-                                                                                                               || (cmd.Element.HttpEquiv != "" && cmd.Element.HttpEquiv == m.GetAttribute("httpEquiv")));
+                var meta = metaTags.FirstOrDefault(m =>
+                    (cmd.Element.Name != "" && cmd.Element.Name == m.Name) ||
+                    (cmd.Element.Property != "" && cmd.Element.Property == m.GetAttribute("property")) ||
+                    (cmd.Element.HttpEquiv != "" && cmd.Element.HttpEquiv == m.HttpEquivalent));
 
                 if (cmd.Operation == MetaElementOperations.Set)
                 {

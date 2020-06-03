@@ -67,7 +67,6 @@ namespace HeadElement.E2ETest
                 "'','','meta-H3','value-H3-A'");
 
             var contentOfCounter = await httpClient.GetStringAsync(_TestContext.GetHostUrl(hostingModel).TrimEnd('/') + "/counter");
-            var dump = DumpMetaElements(contentOfCounter);
             DumpMetaElements(contentOfCounter).Is(
                 "'','','',''",
                 "'meta-N0','','','value-N0-A'",
