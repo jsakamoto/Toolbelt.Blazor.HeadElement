@@ -1,6 +1,14 @@
 ﻿@page "/fetchdata"
 @inject IWeatherForecastService WeatherForecastService
 @inject IHeadElementHelper HeadElementHelper
+@**@
+
+<Meta Name="meta-N1" Content="value-N1-C" />
+<Meta Name="meta-N4" Content="value-N4-C" />
+<Meta Property="meta-P1" Content="value-P1-C" />
+<Meta Property="meta-P4" Content="value-P4-C" />
+<Meta HttpEquiv="meta-H1" Content="value-H1-C" />
+<Meta HttpEquiv="meta-H4" Content="value-H4-C" />
 
 <h1>Weather forecast</h1>
 
@@ -42,13 +50,15 @@ else
     {
         await HeadElementHelper.SetTitleAsync("Fetch data");
         await HeadElementHelper.RemoveMetaElementsAsync(
-            ByName("description"),
-            ByProp("og:title"));
+            ByName("meta-N2"),
+            ByProp("meta-P2"),
+            ByHttpEquiv("meta-H2"));
         await HeadElementHelper.SetLinkElementsAsync(
-            new LinkElement(rel: "canonical", href: "http://localhost/fetchdata"),
-            new LinkElement(rel: "prev", href: "/counter"));
+            new LinkElement(rel: "stylesheet", href: "_content/SampleSite.Components/css/custom-C.css", media: "print"),
+            new LinkElement(rel: "canonical", href: "http://localhost/fetchdata", title: "link-C"));
+        await HeadElementHelper.RemoveLinkElementsAsync(
+            new LinkElement(rel: "icon", href: ""));
 
         forecasts = await WeatherForecastService.GetForecastAsync();
     }
-
 }
