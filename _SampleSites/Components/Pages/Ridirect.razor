@@ -1,19 +1,13 @@
 ﻿@page "/redirect"
-@inject IHeadElementHelper HeadElementHelper
 
-<Meta HttpEquiv="refresh" Content="5;url=/" />
+<Meta HttpEquiv="refresh" Content="3;url=/" />
 
 <h1>Redirect to Home</h1>
 
 <p>Redirect to Home after <b>@currentCount seconds</b>...</p>
 
 @code {
-    private int currentCount = 5;
-
-    protected override async Task OnInitializedAsync()
-    {
-        await this.HeadElementHelper.SetMetaElementsAsync(ByHttpEquiv("Set-Cookie", "fizz=buzz"));
-    }
+    private int currentCount = 3;
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {

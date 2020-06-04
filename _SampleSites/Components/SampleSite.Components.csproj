@@ -11,7 +11,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Toolbelt.Blazor.HeadElement" Version="1.2.0-beta" />
+    <PackageReference Include="Toolbelt.Blazor.HeadElement" Version="1.2.0" />
   </ItemGroup>
 
 </Project>
