@@ -17,8 +17,8 @@ namespace SampleSite.Client
             var builder = WebAssemblyHostBuilder.CreateDefault(args);
             builder.RootComponents.Add<App>("app");
             builder.Services
-                .AddTransient(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) })
-                .AddSingleton<IWeatherForecastService, WeatherForecastService>()
+                .AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) })
+                .AddScoped<IWeatherForecastService, WeatherForecastService>()
                 .AddHeadElementHelper();
 
             await builder.Build().RunAsync();
