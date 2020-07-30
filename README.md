@@ -8,7 +8,10 @@ This package supports both seiver-side Blazor and client-side Blazor WebAssembly
 
 And also supports server-side pre-rendering on your server-side Blazor app.
 
-See also [the live demonstration site.](https://demo-blazor-headelement.azurewebsites.net/)
+See also following the live demonstration sites.
+
+- [Blazor WebAssembly (Client-side Blazor) edition](https://demo-blazor-headelement-wasm.azurewebsites.net/)
+- [Blazor Server (Server-side Blazor) edition](https://demo-blazor-headelement.azurewebsites.net/)
 
 ## How to use
 
