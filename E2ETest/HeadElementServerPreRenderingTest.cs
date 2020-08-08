@@ -146,6 +146,21 @@ namespace HeadElement.E2ETest
             );
         }
 
+        [Theory(DisplayName = "Add link elements only on Server")]
+        [MemberData(nameof(HostingModels))]
+        public async Task AddLinkElementsOnly_on_Server_Test(HostingModel hostingModel)
+        {
+            _TestContext.StartHost(hostingModel);
+            var httpClient = new HttpClient();
+            var urlOfCanonical = _TestContext.GetHostUrl(hostingModel).TrimEnd('/') + "/canonical";
+
+            var contentOfCanonical = await httpClient.GetStringAsync(urlOfCanonical);
+
+            DumpLinkElements(contentOfCanonical).Any(
+                elemnt => elemnt == $"rel:canonical, href:{urlOfCanonical}, type:, media:, title:, sizes:"
+            ).IsTrue();
+        }
+
         private IEnumerable<string> DumpLinkElements(string content)
         {
             return Regex.Matches(content, @"<link[ \t]+[^>]*>")

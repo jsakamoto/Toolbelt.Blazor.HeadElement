@@ -32,7 +32,6 @@ namespace HeadElement.E2ETest
 
         public TestContext()
         {
-            File.AppendAllText(@"c:\work\log.txt", $"{DateTime.Now:HH:mm:ss} Start\n");
         }
 
         public void StartHost(HostingModel hostingModel)
@@ -49,8 +48,6 @@ namespace HeadElement.E2ETest
         {
             Parallel.ForEach(SampleSites.Values, sampleSite => sampleSite.Stop());
             _WebDriver?.Quit();
-
-            File.AppendAllText(@"c:\work\log.txt", $"{DateTime.Now:HH:mm:ss} End\n");
         }
     }
 

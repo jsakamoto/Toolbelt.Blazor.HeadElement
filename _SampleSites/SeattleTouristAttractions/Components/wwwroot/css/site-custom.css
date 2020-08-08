@@ -1,0 +1,42 @@
+﻿#blazor-error-ui {
+    background: lightyellow;
+    bottom: 0;
+    box-shadow: 0 -1px 2px rgba(0, 0, 0, 0.2);
+    display: none;
+    left: 0;
+    padding: 0.6rem 1.25rem 0.7rem 1.25rem;
+    position: fixed;
+    width: 100%;
+    z-index: 1000;
+}
+
+    #blazor-error-ui .dismiss {
+        cursor: pointer;
+        position: absolute;
+        right: 0.75rem;
+        top: 0.5rem;
+    }
+
+.places-list li {
+    margin: 20px 0;
+}
+
+.places-list img {
+    width: 50px;
+    height: 50px;
+    object-fit: cover;
+    display: inline-block;
+}
+
+.places-list h5 {
+    display: inline-block;
+}
+
+.detail-content blockquote p {
+    font-style: italic;
+}
+
+.detail-content img {
+    width: 60vw;
+    margin-right: 40px;
+}

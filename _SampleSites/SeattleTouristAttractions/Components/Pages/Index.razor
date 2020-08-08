@@ -1,0 +1,32 @@
+﻿@page "/"
+@inject IPlacesService PlacesService
+@inject NavigationManager NavigationManager
+<Link Rel="canonical" Href="@AbsoluteUrlOfThisPage" />
+
+<h1>Atractions List</h1>
+
+@if (Places != null)
+{
+    <ul class="list-unstyled places-list">
+        @foreach (var place in Places)
+        {
+            <li class="media">
+                <a href="/places/@place.Id">
+                    <img src="_content/SeattleTouristAttractions.Components/assets/images/places/@(place.Id).jpg" class="mr-3" alt="@place.Title"><h5 class="mt-0 mb-1">@place.Title</h5>
+                </a>
+            </li>
+        }
+    </ul>
+}
+
+@code
+{
+    string AbsoluteUrlOfThisPage => NavigationManager.ToAbsoluteUri("/").AbsoluteUri;
+
+    Place[] Places;
+
+    protected override async Task OnInitializedAsync()
+    {
+        Places = await PlacesService.GetPlacesAsync();
+    }
+}
