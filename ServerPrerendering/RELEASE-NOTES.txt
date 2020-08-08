@@ -1,4 +1,7 @@
-﻿v.1.2.0
+﻿v.1.2.1
+- Fix: manipulation only of the "link" element is not server-side pre-rendered.
+
+v.1.2.0
 - Add suuport for manipuration of "meta http-equiv" element.
 
 v.1.1.0
