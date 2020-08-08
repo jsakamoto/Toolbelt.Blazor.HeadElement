@@ -31,15 +31,15 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Toolbelt.Blazor.HeadElement.Services" Version="1.2.0" />
-  </ItemGroup>
-
-  <ItemGroup>
     <None Include="..\.assets\nupkg-icon.png">
       <Pack>True</Pack>
       <PackagePath></PackagePath>
       <Visible>false</Visible>
     </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Services\HeadElement.Services.csproj" />
   </ItemGroup>
 
   <Target Name="ExcludeStaticWebAssetsManifestFromPackage" AfterTargets="GenerateStaticWebAssetsManifest">
@@ -56,6 +56,7 @@
     </ReadLinesFromFile>
     <PropertyGroup>
       <PackageReleaseNotes>@(ReleaseNoteLines, '%0a')</PackageReleaseNotes>
+      <PackageReleaseNotes>$([System.Text.RegularExpressions.Regex]::Match($(PackageReleaseNotes), "^(v\.[\d\.]+.+?)v\.[\d\.]+", System.Text.RegularExpressions.RegexOptions.Singleline).Groups[1].Value)</PackageReleaseNotes>
     </PropertyGroup>
   </Target>
 
