@@ -1,0 +1,21 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <UserSecretsId>ab4f6e1e-c247-4558-83f9-eb2b5876a301</UserSecretsId>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Toolbelt.Blazor.TwitterShareButton" Version="7.0.0.31" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Toolbelt.Blazor.HeadElement" Version="1.2.0" />
+    <PackageReference Include="Toolbelt.Blazor.HeadElement.ServerPrerendering" Version="1.2.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Components\SeattleTouristAttractions.Components.csproj" />
+    <ProjectReference Include="..\Services\SeattleTouristAttractions.Services.csproj" />
+  </ItemGroup>
+</Project>
