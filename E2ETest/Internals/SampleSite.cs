@@ -32,8 +32,6 @@ namespace HeadElement.E2ETest
             while (!Directory.GetDirectories(workDir, "_SampleSites").Any()) workDir = Path.GetDirectoryName(workDir);
             workDir = Path.Combine(workDir, "_SampleSites", ProjectSubFolder);
 
-            File.AppendAllText(@"c:\work\log.txt", $"{DateTime.Now:HH:mm:ss} {workDir}\n");
-
             dotnetCLI = new Process
             {
                 EnableRaisingEvents = true,

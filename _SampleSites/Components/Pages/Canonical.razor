@@ -1,0 +1,5 @@
+﻿@page "/canonical"
+@inject NavigationManager NavigationManager
+<Link Rel="canonical" Href="@NavigationManager.ToAbsoluteUri("/canonical").AbsoluteUri" />
+
+<h1>This page has canonical URL link element</h1>
