@@ -1,12 +1,14 @@
 ﻿@page "/places/{id:int}"
 @inject IPlacesService PlacesService
-@inject IHeadElementHelper HeadElementHelper
+@inject Toolbelt.Blazor.HeadElement.IHeadElementHelper HeadElementHelper
 @inject NavigationManager NavigationManager
 @using static Toolbelt.Blazor.HeadElement.MetaElement
 
 @if (Place != null)
 {
     <Title>@Place.Title - Seattle Tourist Attractions</Title>
+    @*<Title Value="@($"{Place.Title} - Seattle Tourist Attractions")"></Title>*@
+
     <Meta Name="twitter:card" Content="summary_large_image" />
     <Link Rel="canonical" Href="@AbsoluteUrlOfThisPage" />
     <Meta Property="og:url" Content="@AbsoluteUrlOfThisPage" />
