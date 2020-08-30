@@ -1,6 +1,6 @@
 ﻿@page "/fetchdata"
 @inject IWeatherForecastService WeatherForecastService
-@inject IHeadElementHelper HeadElementHelper
+@inject Toolbelt.Blazor.HeadElement.IHeadElementHelper HeadElementHelper
 @**@
 
 <Meta Name="meta-N1" Content="value-N1-C" />
@@ -54,10 +54,10 @@ else
             ByProp("meta-P2"),
             ByHttpEquiv("meta-H2"));
         await HeadElementHelper.SetLinkElementsAsync(
-            new LinkElement(rel: "stylesheet", href: "_content/SampleSite.Components/css/custom-C.css", media: "print"),
-            new LinkElement(rel: "canonical", href: "http://localhost/fetchdata", title: "link-C"));
+            new Toolbelt.Blazor.HeadElement.LinkElement(rel: "stylesheet", href: "_content/SampleSite.Components/css/custom-C.css", media: "print"),
+            new Toolbelt.Blazor.HeadElement.LinkElement(rel: "canonical", href: "http://localhost/fetchdata", title: "link-C"));
         await HeadElementHelper.RemoveLinkElementsAsync(
-            new LinkElement(rel: "icon", href: ""));
+            new Toolbelt.Blazor.HeadElement.LinkElement(rel: "icon", href: ""));
 
         forecasts = await WeatherForecastService.GetForecastAsync();
     }
