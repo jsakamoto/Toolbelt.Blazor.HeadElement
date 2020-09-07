@@ -19,8 +19,8 @@ namespace HeadElement.E2ETest
 
         public static IEnumerable<object[]> HostingModels { get; } = new List<object[]>
         {
-            new object[] { HostingModel.Wasm },
-            new object[] { HostingModel.WasmHosted },
+            //new object[] { HostingModel.Wasm },
+            //new object[] { HostingModel.WasmHosted },
             new object[] { HostingModel.Server },
         };
 
