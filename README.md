@@ -13,6 +13,24 @@ See also following the live demonstration sites.
 - [Blazor WebAssembly (Client-side Blazor) edition](https://demo-blazor-headelement-wasm.azurewebsites.net/)
 - [Blazor Server (Server-side Blazor) edition](https://demo-blazor-headelement.azurewebsites.net/)
 
+### Notice
+
+Blazor since .NET 5.0 Preview 8 also started to provide `Title`, `Link`, and `Meta` components by `Microsoft.AspNetCore.Components.Web.Extensions` NuGet package.
+
+However, I'll continue to provide this package and keep to maintain, because this library still has some advantages.
+
+To know what differences are there between this library and Microsoft.AspNetCore.Components.Web.Extensions 5.0 preview 8, please see the following table.
+
+Feature                               | This library            | .NET5 Preview 8  
+--------------------------------------|-------------------------|--------------------------------------------  
+Server Pre-Rendering                  | Supported.              | Not Supported, yet.  
+Respecting pre-rendered title         | Yes.                    | No. It is never recovered if any components override it.  
+Overriding pre-rendered meta or link  | Can handle it properly. | Just append it. it may cause duplication.  
+Canceling "meta http-equiv=refresh"   | Works well.             | There is no support.  
+Using it as a service, not components | Supported.              | Not Supported.  
+To Including helper JavaScript        | Automatic.              | Required manually.
+
+
 ## How to use
 
 ### Installation
