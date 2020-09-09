@@ -25,26 +25,32 @@ namespace Toolbelt.Blazor.HeadElement.Middlewares
         public async Task InvokeAsync(HttpContext context, IHeadElementHelperStore store)
         {
             var filter = new FilterStream(context, store);
-
-            await _next(context);
-
-            if (filter.IsCaptured())
+            try
             {
-                filter.MemoryStream.Seek(0, SeekOrigin.Begin);
-                var parser = new HtmlParser();
-                using var doc = parser.ParseDocument(filter.MemoryStream);
+                await _next(context);
 
-                SetDocumentTitle(store, doc);
-                SetMetaElements(store, doc);
-                SetLinkElements(store, doc);
+                if (filter.IsCaptured())
+                {
+                    filter.MemoryStream.Seek(0, SeekOrigin.Begin);
+                    var parser = new HtmlParser();
+                    using var doc = parser.ParseDocument(filter.MemoryStream);
 
-                filter.MemoryStream.SetLength(0);
-                var encoding = Encoding.UTF8;
-                using var writer = new StreamWriter(filter.MemoryStream, bufferSize: -1, leaveOpen: true, encoding: encoding) { AutoFlush = true };
-                doc.ToHtml(writer, new PrettyMarkupFormatter());
+                    SetDocumentTitle(store, doc);
+                    SetMetaElements(store, doc);
+                    SetLinkElements(store, doc);
 
-                filter.MemoryStream.Seek(0, SeekOrigin.Begin);
-                await filter.MemoryStream.CopyToAsync(filter.OriginalStream);
+                    filter.MemoryStream.SetLength(0);
+                    var encoding = Encoding.UTF8;
+                    using var writer = new StreamWriter(filter.MemoryStream, bufferSize: -1, leaveOpen: true, encoding: encoding) { AutoFlush = true };
+                    doc.ToHtml(writer, new PrettyMarkupFormatter());
+
+                    filter.MemoryStream.Seek(0, SeekOrigin.Begin);
+                    await filter.MemoryStream.CopyToAsync(filter.OriginalStream);
+                }
+            }
+            finally
+            {
+                filter.RevertResponseBodyHooking();
             }
         }
 
