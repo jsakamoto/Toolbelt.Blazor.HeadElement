@@ -1,4 +1,7 @@
-﻿v.1.2.0
+﻿v.5.0.0
+- Add support for .NET 5.0
+
+v.1.2.0
 - Add suuport for manipuration of "meta http-equiv" element.
 
 v.1.1.1
