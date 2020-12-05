@@ -1,4 +1,7 @@
-﻿v.1.2.2
+﻿v.1.2.3
+- Fix: server-side pre-rendering break the text format inside of <pre> and <code> elements.
+
+v.1.2.2
 - Fix: server-side pre-rendering causes "ObjectDisposedException" in some cases.
 
 v.1.2.1
