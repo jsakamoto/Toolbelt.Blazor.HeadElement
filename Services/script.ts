@@ -20,6 +20,8 @@
         t: string;
         /** media */
         m: string;
+        /** as */
+        a: string;
     }
 
     const selectorForMata = 'meta[name],meta[property],meta[http-equiv]';
@@ -40,11 +42,16 @@
     const getAttr = (e: HTMLElement, attrName: string) => e.getAttribute(attrName);
     const setAttr = (e: HTMLElement, attrName: string, value: string) => e.setAttribute(attrName, value);
     const sameMeta = (m: HTMLMetaElement, a: MetaElement) => a.n !== '' ? m.name === a.n : (a.h !== '' ? m.httpEquiv === a.h : getAttr(m, property) === a.p);
+    const linkComparer: { [key: string]: (m: HTMLLinkElement, a: LinkElement) => boolean } = {
+        canonical: () => true,
+        prev: () => true,
+        next: () => true,
+        icon: (m, a) => ('' + m.sizes) === a.s,
+        alternate: (m, a) => m.type === a.p && m.media === a.m,
+        preload: (m, a) => getAttr(m, href) === a.h && m.media === a.m,
+    };
     const sameLink = (m: HTMLLinkElement, a: LinkElement) => m.rel === a.r && (
-        (['canonical', 'prev', 'next'].indexOf(a.r) !== -1) ||
-        (a.r === 'icon' && ('' + m.sizes) === a.s) ||
-        (a.r === 'alternate' && m.type === a.p && m.media === a.m) ||
-        (getAttr(m, href) === a.h) // rel='stylesheet'
+        (linkComparer[a.r] || ((m, a) => getAttr(m, href) === a.h))(m, a)
     );
 
     export const Title = {
@@ -87,18 +94,18 @@
         set: (args: LinkElement[]) => {
             args.forEach(arg => {
                 let link = q<HTMLLinkElement>('link').find(m => sameLink(m, arg));
-                let n: HTMLLinkElement | null = null;
+                let newLink: HTMLLinkElement | null = null;
                 if (typeof link === undef) {
                     link = crealeElem('link');
-                    n = link;
+                    newLink = link;
                 }
                 [
-                    ['rel', arg.r], [href, arg.h], ['sizes', arg.s], ['type', arg.p], ['title', arg.t], ['media', arg.m]
+                    ['rel', arg.r], [href, arg.h], ['sizes', arg.s], ['type', arg.p], ['title', arg.t], ['media', arg.m], ['as', arg.a]
                 ].forEach(prop => {
                     if (prop[1] === '') link.removeAttribute(prop[0]);
                     else if (getAttr(link, prop[0]) !== prop[1]) setAttr(link, prop[0], prop[1]);
                 });
-                if (n !== null) head.appendChild(n);
+                if (newLink !== null) head.appendChild(newLink);
             });
         },
 
@@ -107,8 +114,15 @@
             q<HTMLLinkElement>(selectorForLinks).filter(m => !args.some(arg => sameLink(m, arg))).forEach(removeChild);
         },
 
-        del: (args: LinkElement[]) => args.forEach(a => q<HTMLLinkElement>(selectorForLinks).filter(m => sameLink(m, a)).forEach(removeChild)),
+        del: (args: LinkElement[]) => args.forEach(a => {
+            q<HTMLLinkElement>(selectorForLinks).filter(m => sameLink(m, a)).forEach(removeChild)
+        }),
 
-        query: () => JSON.parse((q<HTMLScriptElement>(selectorForScript + 'link-elements"]').pop() || { text: 'null' }).text) || q<HTMLLinkElement>(selectorForLinks).map(m => ({ r: m.rel, h: getAttr(m, href), s: '' + m.sizes, p: m.type, t: m.title, m: m.media }))
+        query: () =>
+            JSON.parse(
+                (q<HTMLScriptElement>(selectorForScript + 'link-elements"]').pop() || { text: 'null' }).text
+            ) || q<HTMLLinkElement>(selectorForLinks).map(m => ({
+                r: m.rel, h: getAttr(m, href), s: '' + m.sizes, p: m.type, t: m.title, m: m.media, a: m.as
+            }))
     }
 }

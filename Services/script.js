@@ -18,10 +18,15 @@ var Toolbelt;
         const getAttr = (e, attrName) => e.getAttribute(attrName);
         const setAttr = (e, attrName, value) => e.setAttribute(attrName, value);
         const sameMeta = (m, a) => a.n !== '' ? m.name === a.n : (a.h !== '' ? m.httpEquiv === a.h : getAttr(m, property) === a.p);
-        const sameLink = (m, a) => m.rel === a.r && ((['canonical', 'prev', 'next'].indexOf(a.r) !== -1) ||
-            (a.r === 'icon' && ('' + m.sizes) === a.s) ||
-            (a.r === 'alternate' && m.type === a.p && m.media === a.m) ||
-            (getAttr(m, href) === a.h));
+        const linkComparer = {
+            canonical: () => true,
+            prev: () => true,
+            next: () => true,
+            icon: (m, a) => ('' + m.sizes) === a.s,
+            alternate: (m, a) => m.type === a.p && m.media === a.m,
+            preload: (m, a) => getAttr(m, href) === a.h && m.media === a.m,
+        };
+        const sameLink = (m, a) => m.rel === a.r && ((linkComparer[a.r] || ((m, a) => getAttr(m, href) === a.h))(m, a));
         Head.Title = {
             set: (t) => { d.title = t; },
             query: () => (q(selectorForScript + 'title"]').pop() || { text: d.title }).text
@@ -57,29 +62,33 @@ var Toolbelt;
             set: (args) => {
                 args.forEach(arg => {
                     let link = q('link').find(m => sameLink(m, arg));
-                    let n = null;
+                    let newLink = null;
                     if (typeof link === undef) {
                         link = crealeElem('link');
-                        n = link;
+                        newLink = link;
                     }
                     [
-                        ['rel', arg.r], [href, arg.h], ['sizes', arg.s], ['type', arg.p], ['title', arg.t], ['media', arg.m]
+                        ['rel', arg.r], [href, arg.h], ['sizes', arg.s], ['type', arg.p], ['title', arg.t], ['media', arg.m], ['as', arg.a]
                     ].forEach(prop => {
                         if (prop[1] === '')
                             link.removeAttribute(prop[0]);
                         else if (getAttr(link, prop[0]) !== prop[1])
                             setAttr(link, prop[0], prop[1]);
                     });
-                    if (n !== null)
-                        head.appendChild(n);
+                    if (newLink !== null)
+                        head.appendChild(newLink);
                 });
             },
             reset: (args) => {
                 Head.LinkTag.set(args);
                 q(selectorForLinks).filter(m => !args.some(arg => sameLink(m, arg))).forEach(removeChild);
             },
-            del: (args) => args.forEach(a => q(selectorForLinks).filter(m => sameLink(m, a)).forEach(removeChild)),
-            query: () => JSON.parse((q(selectorForScript + 'link-elements"]').pop() || { text: 'null' }).text) || q(selectorForLinks).map(m => ({ r: m.rel, h: getAttr(m, href), s: '' + m.sizes, p: m.type, t: m.title, m: m.media }))
+            del: (args) => args.forEach(a => {
+                q(selectorForLinks).filter(m => sameLink(m, a)).forEach(removeChild);
+            }),
+            query: () => JSON.parse((q(selectorForScript + 'link-elements"]').pop() || { text: 'null' }).text) || q(selectorForLinks).map(m => ({
+                r: m.rel, h: getAttr(m, href), s: '' + m.sizes, p: m.type, t: m.title, m: m.media, a: m.as
+            }))
         };
     })(Head = Toolbelt.Head || (Toolbelt.Head = {}));
 })(Toolbelt || (Toolbelt = {}));
