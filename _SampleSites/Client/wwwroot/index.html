@@ -20,12 +20,19 @@
     <meta http-equiv="meta-H2" content="value-H2-A" />
     <meta http-equiv="meta-H3" content="value-H3-A" />
 
+    <!-- test for <link rel=preload as=... /> -->
+    <link rel="preload" href="_content/SampleSite.Components/css/red.png" as="image" media="(max-width: 600px)" /><!-- 'red.png max-width:600' will be removed at fetch-data. -->
+    <link rel="preload" href="_content/SampleSite.Components/css/red.png" as="image" media="(min-width: 601px)" /><!-- 'red.png min-width:601' will be removed at counter. -->
+    <link rel="preload" href="_content/SampleSite.Components/css/orange.png" as="image" />
+    <link rel="preload" href="_content/SampleSite.Components/css/custom-X.css" as="style" /><!-- 'custom-X.css' will be removed at counter. -->
+
     <title>Sample Site</title>
     <base href="/" />
     <link rel="icon" href="/_content/SampleSite.Components/favicons/favicon.ico" />
     <link rel="stylesheet" href="_content/SampleSite.Components/css/bootstrap/bootstrap.min.css" />
     <link rel="stylesheet" href="_content/SampleSite.Components/css/site.css" />
     <link rel="stylesheet" href="_content/SampleSite.Components/css/custom-A.css" title="custom" />
+    <link rel="stylesheet" href="_content/SampleSite.Components/css/custom-X.css" /><!-- will be stayed. -->
 </head>
 
 <body>

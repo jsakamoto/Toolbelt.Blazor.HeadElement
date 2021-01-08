@@ -1,13 +1,12 @@
 ﻿@page "/counter"
 @inject Toolbelt.Blazor.HeadElement.IHeadElementHelper HeadElementHelper
 <Title>Counter(@currentCount)</Title>
-@*
-    <!-- .NET5.0 Preview 8 -->
-    <Title Value="@($"Counter({currentCount})")"></Title>
-*@
 
 <Link Rel="icon" Href="@($"/_content/SampleSite.Components/favicons/{GetFaviconName()}")" Type="image/png" />
 <Link Rel="canonical" Href="http://localhost/counter" Title="link-B" />
+
+<Link Rel="preload" Href="_content/SampleSite.Components/css/green.png" As="image" /> @* Add new link *@
+<Link Rel="preload" Href="_content/SampleSite.Components/css/blue.png" As="image" media="(min-width: 301px)" /> @* Add new link with media *@
 
 <h1>Counter</h1>
 
@@ -34,7 +33,9 @@
             ByProp("meta-P3"),
             ByHttpEquiv("meta-H3"));
         await HeadElementHelper.RemoveLinkElementsAsync(
-            new Toolbelt.Blazor.HeadElement.LinkElement(rel: "stylesheet", href: "_content/SampleSite.Components/css/custom-A.css"));
+            new LinkElement(rel: "stylesheet", href: "_content/SampleSite.Components/css/custom-A.css"),
+            new LinkElement(rel: "preload", href: "_content/SampleSite.Components/css/red.png", media: "(min-width: 601px)"),
+            new LinkElement(rel: "preload", href: "_content/SampleSite.Components/css/custom-X.css"));
     }
 
     private void IncrementCount()
