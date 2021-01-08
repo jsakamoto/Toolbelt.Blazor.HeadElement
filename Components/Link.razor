@@ -20,6 +20,9 @@
     [Parameter]
     public string Media { get; set; } = "";
 
+    [Parameter]
+    public string As { get; set; } = "";
+
     protected override async Task OnParametersSetAsync()
     {
         await HeadElementHelper.SetLinkElementsAsync(new LinkElement
@@ -29,7 +32,8 @@
             Sizes = Sizez,
             Type = Type,
             Title = Title,
-            Media = Media
+            Media = Media,
+            As = As
         });
     }
 }
