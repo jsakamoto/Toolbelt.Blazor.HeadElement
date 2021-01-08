@@ -1,5 +1,4 @@
-﻿using System;
-using System.IO;
+﻿using System.IO;
 using System.Linq;
 using System.Text;
 using System.Text.Json;
@@ -132,12 +131,16 @@ namespace Toolbelt.Blazor.HeadElement.Middlewares
             static string Href(string href) { return Regex.Replace(href ?? "", "^about:///", ""); }
             static bool SameLink(IHtmlLinkElement m, LinkElement a)
             {
-                return m.Relation == a.Rel && (
-                    (new[] { "canonical", "prev", "next" }.Contains(a.Rel)) ||
-                    (a.Rel == "icon" && (m.Sizes?.ToString() ?? "") == a.Sizes) ||
-                    (a.Rel == "alternate" && m.Type == a.Type && m.Media == a.Media) ||
-                    (Href(m.Href) == a.Href)
-                );
+                return m.Relation == a.Rel && (a.Rel switch
+                {
+                    "canonical" => true,
+                    "prev" => true,
+                    "next" => true,
+                    "icon" => (m.Sizes?.ToString() ?? "") == a.Sizes,
+                    "alternate" => m.Type == a.Type && m.Media == a.Media,
+                    "preload" => Href(m.Href) == a.Href && m.Media == a.Media,
+                    _ => Href(m.Href) == a.Href
+                });
             };
 
             if (store.LinkElementCommands.Count == 0) return;
@@ -151,7 +154,8 @@ namespace Toolbelt.Blazor.HeadElement.Middlewares
                 Sizes = m.Sizes?.ToString() ?? "",
                 Type = m.Type ?? "",
                 Title = m.Title ?? "",
-                Media = m.Media ?? ""
+                Media = m.Media ?? "",
+                As = m.GetAttribute("as") ?? ""
             });
             SaveDefault(doc, linkElements, "text/default-link-elements");
 
@@ -170,10 +174,10 @@ namespace Toolbelt.Blazor.HeadElement.Middlewares
                     }
                     link.Relation = e.Rel;
                     link.Href = e.Href;
-                    foreach (var prop in new[] { ("sizez", e.Sizes), ("type", e.Type), ("title", e.Title), ("media", e.Media) })
+                    foreach (var (name, value) in new[] { ("sizez", e.Sizes), ("type", e.Type), ("title", e.Title), ("media", e.Media), ("as", e.As) })
                     {
-                        if (string.IsNullOrEmpty(prop.Item2)) link.RemoveAttribute(prop.Item1);
-                        else link.SetAttribute(prop.Item1, prop.Item2);
+                        if (string.IsNullOrEmpty(value)) link.RemoveAttribute(name);
+                        else link.SetAttribute(name, value);
                     }
                 }
                 else if (cmd.Operation == LinkElementOperations.Remove && link != null)
