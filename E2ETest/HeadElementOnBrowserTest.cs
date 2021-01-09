@@ -100,72 +100,29 @@ namespace HeadElement.E2ETest
             driver.GoToUrlAndWait(_TestContext.GetHostUrl(hostingModel));
 
             // Validate meta elements of "Home"
-            driver.DumpMetaElements().Is(
-                "'','','',''",
-                "'meta-N0','','','value-N0-A'",
-                "'meta-N2','','','value-N2-A'",
-                "'meta-N3','','','value-N3-A'",
-                "'viewport','','','width=device-width'",
-                "'','meta-P0','','value-P0-A'",
-                "'','meta-P2','','value-P2-A'",
-                "'','meta-P3','','value-P3-A'",
-                "'','','meta-H0','value-H0-A'",
-                "'','','meta-H2','value-H2-A'",
-                "'','','meta-H3','value-H3-A'");
+            var actualAtHome = driver.DumpMetaElements();
+            actualAtHome.Is(ExpectMeta.AtHome);
 
             // Navigate to "Counter"
             driver.ClickCounter();
 
             // Validate meta elements of "Counter"
-            driver.DumpMetaElements().Is(
-                "'','','',''",
-                "'meta-N0','','','value-N0-A'",
-                "'meta-N1','','','value-N1-B'",
-                "'meta-N2','','','value-N2-B'",
-                "'viewport','','','width=device-width'",
-                "'','meta-P0','','value-P0-A'",
-                "'','meta-P1','','value-P1-B'",
-                "'','meta-P2','','value-P2-B'",
-                "'','','meta-H0','value-H0-A'",
-                "'','','meta-H1','value-H1-B'",
-                "'','','meta-H2','value-H2-B'");
+            var actualAtCounter = driver.DumpMetaElements();
+            actualAtCounter.Is(ExpectMeta.AtCounter);
 
             // Navigate to "Fetch data"
             driver.ClickFetchData();
 
             // Validate meta elements of "Fetch data"
-            driver.DumpMetaElements().Is(
-                "'','','',''",
-                "'meta-N0','','','value-N0-A'",
-                "'meta-N1','','','value-N1-C'",
-                "'meta-N3','','','value-N3-A'",
-                "'meta-N4','','','value-N4-C'",
-                "'viewport','','','width=device-width'",
-                "'','meta-P0','','value-P0-A'",
-                "'','meta-P1','','value-P1-C'",
-                "'','meta-P3','','value-P3-A'",
-                "'','meta-P4','','value-P4-C'",
-                "'','','meta-H0','value-H0-A'",
-                "'','','meta-H1','value-H1-C'",
-                "'','','meta-H3','value-H3-A'",
-                "'','','meta-H4','value-H4-C'");
+            var actualAtFetchData = driver.DumpMetaElements();
+            actualAtFetchData.Is(ExpectMeta.AtFetchData);
 
             // Go back to "Home"
             driver.ClickHome();
 
             // Validate meta elements of "Home" were restored.
-            driver.DumpMetaElements().Is(
-                "'','','',''",
-                "'meta-N0','','','value-N0-A'",
-                "'meta-N2','','','value-N2-A'",
-                "'meta-N3','','','value-N3-A'",
-                "'viewport','','','width=device-width'",
-                "'','meta-P0','','value-P0-A'",
-                "'','meta-P2','','value-P2-A'",
-                "'','meta-P3','','value-P3-A'",
-                "'','','meta-H0','value-H0-A'",
-                "'','','meta-H2','value-H2-A'",
-                "'','','meta-H3','value-H3-A'");
+            var actualAtReturnHome = driver.DumpMetaElements();
+            actualAtReturnHome.Is(ExpectMeta.AtHome);
         }
 
         [Theory(DisplayName = "Change meta elements on Browser (from Counter)")]
@@ -179,35 +136,15 @@ namespace HeadElement.E2ETest
             driver.GoToUrlAndWait(_TestContext.GetHostUrl(hostingModel), "/counter");
 
             // Validate meta elements of "Counter"
-            driver.DumpMetaElements().Is(
-                "'','','',''",
-                "'meta-N0','','','value-N0-A'",
-                "'meta-N1','','','value-N1-B'",
-                "'meta-N2','','','value-N2-B'",
-                "'viewport','','','width=device-width'",
-                "'','meta-P0','','value-P0-A'",
-                "'','meta-P1','','value-P1-B'",
-                "'','meta-P2','','value-P2-B'",
-                "'','','meta-H0','value-H0-A'",
-                "'','','meta-H1','value-H1-B'",
-                "'','','meta-H2','value-H2-B'");
+            var actualAtCounter = driver.DumpMetaElements();
+            actualAtCounter.Is(ExpectMeta.AtCounter);
 
             // Go back to "Home"
             driver.ClickHome();
 
             // Validate meta elements of "Home" were restored.
-            driver.DumpMetaElements().Is(
-                "'','','',''",
-                "'meta-N0','','','value-N0-A'",
-                "'meta-N2','','','value-N2-A'",
-                "'meta-N3','','','value-N3-A'",
-                "'viewport','','','width=device-width'",
-                "'','meta-P0','','value-P0-A'",
-                "'','meta-P2','','value-P2-A'",
-                "'','meta-P3','','value-P3-A'",
-                "'','','meta-H0','value-H0-A'",
-                "'','','meta-H2','value-H2-A'",
-                "'','','meta-H3','value-H3-A'");
+            var actualAtHome = driver.DumpMetaElements();
+            actualAtHome.Is(ExpectMeta.AtHome);
         }
 
 
@@ -220,40 +157,23 @@ namespace HeadElement.E2ETest
 
             // Navigate to "Home", and validate link elements of "Home"
             driver.GoToUrlAndWait(_TestContext.GetHostUrl(hostingModel));
-            driver.DumpLinkElements().Is(
-                "rel:icon, href:/_content/SampleSite.Components/favicons/favicon.ico, type:, media:, title:, sizes:",
-                "rel:stylesheet, href:/_content/SampleSite.Components/css/bootstrap/bootstrap.min.css, type:, media:, title:, sizes:",
-                "rel:stylesheet, href:/_content/SampleSite.Components/css/custom-A.css, type:, media:, title:custom, sizes:",
-                "rel:stylesheet, href:/_content/SampleSite.Components/css/site.css, type:, media:, title:, sizes:"
-            );
+            var actualAtHome = driver.DumpLinkElements();
+            actualAtHome.Is(ExpectLinks.AtHome);
 
             // Navigate to "Counter", and validate link elements of "Counter"
             driver.ClickCounter();
-            driver.DumpLinkElements().Is(
-                "rel:canonical, href:/counter, type:, media:, title:link-B, sizes:",
-                "rel:icon, href:/_content/SampleSite.Components/favicons/counter-0.png, type:image/png, media:, title:, sizes:",
-                "rel:stylesheet, href:/_content/SampleSite.Components/css/bootstrap/bootstrap.min.css, type:, media:, title:, sizes:",
-                "rel:stylesheet, href:/_content/SampleSite.Components/css/site.css, type:, media:, title:, sizes:"
-            );
+            var actualAtCounter = driver.DumpLinkElements();
+            actualAtCounter.Is(ExpectLinks.AtCounter);
 
             // Navigate to "Fetch data", and validate link elements of "Fetch data"
             driver.ClickFetchData();
-            driver.DumpLinkElements().Is(
-                "rel:canonical, href:/fetchdata, type:, media:, title:link-C, sizes:",
-                "rel:stylesheet, href:/_content/SampleSite.Components/css/bootstrap/bootstrap.min.css, type:, media:, title:, sizes:",
-                "rel:stylesheet, href:/_content/SampleSite.Components/css/custom-A.css, type:, media:, title:custom, sizes:",
-                "rel:stylesheet, href:/_content/SampleSite.Components/css/custom-C.css, type:, media:print, title:, sizes:",
-                "rel:stylesheet, href:/_content/SampleSite.Components/css/site.css, type:, media:, title:, sizes:"
-            );
+            var actualAtFetchData = driver.DumpLinkElements();
+            actualAtFetchData.Is(ExpectLinks.AtFetchData);
 
             // Go back to "Home", and validate link elements of "Home" were restored.
             driver.ClickHome();
-            driver.DumpLinkElements().Is(
-                "rel:icon, href:/_content/SampleSite.Components/favicons/favicon.ico, type:, media:, title:, sizes:",
-                "rel:stylesheet, href:/_content/SampleSite.Components/css/bootstrap/bootstrap.min.css, type:, media:, title:, sizes:",
-                "rel:stylesheet, href:/_content/SampleSite.Components/css/custom-A.css, type:, media:, title:custom, sizes:",
-                "rel:stylesheet, href:/_content/SampleSite.Components/css/site.css, type:, media:, title:, sizes:"
-            );
+            var actualAtReturnHome = driver.DumpLinkElements();
+            actualAtReturnHome.Is(ExpectLinks.AtHome);
         }
 
         [Theory(DisplayName = "Change link elements on Browser (from Counter)")]
@@ -265,21 +185,13 @@ namespace HeadElement.E2ETest
 
             // Navigate to "Counter", and validate link elements of "Counter"
             driver.GoToUrlAndWait(_TestContext.GetHostUrl(hostingModel), "/counter");
-            driver.DumpLinkElements().Is(
-                "rel:canonical, href:/counter, type:, media:, title:link-B, sizes:",
-                "rel:icon, href:/_content/SampleSite.Components/favicons/counter-0.png, type:image/png, media:, title:, sizes:",
-                "rel:stylesheet, href:/_content/SampleSite.Components/css/bootstrap/bootstrap.min.css, type:, media:, title:, sizes:",
-                "rel:stylesheet, href:/_content/SampleSite.Components/css/site.css, type:, media:, title:, sizes:"
-            );
+            var actualAtCounter = driver.DumpLinkElements();
+            actualAtCounter.Is(ExpectLinks.AtCounter);
 
             // Go back to "Home", and validate link elements of "Home" were restored.
             driver.ClickHome();
-            driver.DumpLinkElements().Is(
-                "rel:icon, href:/_content/SampleSite.Components/favicons/favicon.ico, type:, media:, title:, sizes:",
-                "rel:stylesheet, href:/_content/SampleSite.Components/css/bootstrap/bootstrap.min.css, type:, media:, title:, sizes:",
-                "rel:stylesheet, href:/_content/SampleSite.Components/css/custom-A.css, type:, media:, title:custom, sizes:",
-                "rel:stylesheet, href:/_content/SampleSite.Components/css/site.css, type:, media:, title:, sizes:"
-            );
+            var actualAtHomem = driver.DumpLinkElements();
+            actualAtHomem.Is(ExpectLinks.AtHome);
         }
 
         [Theory(DisplayName = "Refresh on Browser (from Home)")]
