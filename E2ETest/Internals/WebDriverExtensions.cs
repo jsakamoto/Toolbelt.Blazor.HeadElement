@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Threading;
 using OpenQA.Selenium;
+using OpenQA.Selenium.Support.Extensions;
 using OpenQA.Selenium.Support.UI;
 
 namespace HeadElement.E2ETest
@@ -53,12 +54,18 @@ namespace HeadElement.E2ETest
 
         public static string[] DumpMetaElements(this IWebDriver driver)
         {
-            var metaElements = driver.FindElements(By.XPath("//meta"))
+            var script = "return JSON.stringify(" +
+                "Array.from(document.querySelectorAll('meta'))" +
+                ".map(m=>[m.name, m.getAttribute('property'), m.httpEquiv, m.content])" +
+            ")";
+            var metaJson = driver.ExecuteJavaScript<string>(script);
+            var metaArray = System.Text.Json.JsonSerializer.Deserialize<string[][]>(metaJson);
+            var metaElements = metaArray
                 .Select(m => (
-                    Name: m.GetAttribute("name") ?? "",
-                    Property: m.GetAttribute("property") ?? "",
-                    HttpEquiv: m.GetAttribute("http-equiv") ?? "",
-                    Content: m.GetAttribute("content") ?? ""))
+                    Name: m[0] ?? "",
+                    Property: m[1] ?? "",
+                    HttpEquiv: m[2] ?? "",
+                    Content: m[3] ?? ""))
                 .OrderBy(m => m.HttpEquiv).ThenBy(m => m.Property).ThenBy(m => m.Name)
                 .Select(m => $"'{m.Name}','{m.Property}','{m.HttpEquiv}','{m.Content}'")
                 .ToArray();
@@ -67,18 +74,25 @@ namespace HeadElement.E2ETest
 
         public static string[] DumpLinkElements(this IWebDriver driver)
         {
-            var metaElements = driver.FindElements(By.XPath("//link"))
-                .Select(m => (
-                    Rel: m.GetAttribute("rel") ?? "",
-                    Href: Uri.TryCreate(m.GetAttribute("href"), UriKind.Absolute, out var u) ? u.PathAndQuery : "",
-                    Type: m.GetAttribute("type") ?? "",
-                    Media: m.GetAttribute("media") ?? "",
-                    Title: m.GetAttribute("title") ?? "",
-                    Sizes: m.GetAttribute("sizes") ?? ""))
-                .OrderBy(m => m.Rel).ThenBy(m => m.Href)
-                .Select(m => $"rel:{m.Rel}, href:{m.Href}, type:{m.Type}, media:{m.Media}, title:{m.Title}, sizes:{m.Sizes}")
+            var script = "return JSON.stringify(" +
+                "Array.from(document.querySelectorAll('link'))" +
+                ".map(l=>[l.rel, l.href, l.type, l.media, l.title, ''+l.sizes, l.as])" +
+            ")";
+            var linksJson = driver.ExecuteJavaScript<string>(script);
+            var linksArray = System.Text.Json.JsonSerializer.Deserialize<string[][]>(linksJson);
+            var linkElements = linksArray
+                .Select(l => (
+                    Rel: l[0] ?? "",
+                    Href: Uri.TryCreate(l[1], UriKind.Absolute, out var u) ? u.PathAndQuery : "",
+                    Type: l[2] ?? "",
+                    Media: l[3] ?? "",
+                    Title: l[4] ?? "",
+                    Sizes: l[5] ?? "",
+                    As: l[6] ?? ""))
+                .OrderBy(l => l.Rel).ThenBy(l => l.Href).ThenBy(l => l.Media)
+                .Select(l => $"rel:{l.Rel}, href:{l.Href}, type:{l.Type}, media:{l.Media}, title:{l.Title}, sizes:{l.Sizes}, as:{l.As}")
                 .ToArray();
-            return metaElements;
+            return linkElements;
         }
     }
 }

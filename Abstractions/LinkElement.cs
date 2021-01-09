@@ -22,11 +22,14 @@ namespace Toolbelt.Blazor.HeadElement
         [JsonPropertyName("m")]
         public string Media { get; set; } = "";
 
+        [JsonPropertyName("a")]
+        public string As { get; set; } = "";
+
         public LinkElement()
         {
         }
 
-        public LinkElement(string rel, string href, string sizes = "", string type = "", string title = "", string media = "")
+        public LinkElement(string rel, string href, string sizes, string type, string title, string media)
         {
             Rel = rel;
             Href = href;
@@ -34,6 +37,17 @@ namespace Toolbelt.Blazor.HeadElement
             Type = type ?? "";
             Title = title ?? "";
             Media = media ?? "";
+        }
+
+        public LinkElement(string rel, string href, string sizes = "", string type = "", string title = "", string media = "", string @as = "")
+        {
+            Rel = rel;
+            Href = href;
+            Sizes = sizes ?? "";
+            Type = type ?? "";
+            Title = title ?? "";
+            Media = media ?? "";
+            As = @as ?? "";
         }
     }
 }

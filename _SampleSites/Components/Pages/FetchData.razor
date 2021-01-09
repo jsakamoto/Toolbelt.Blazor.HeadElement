@@ -54,10 +54,13 @@ else
             ByProp("meta-P2"),
             ByHttpEquiv("meta-H2"));
         await HeadElementHelper.SetLinkElementsAsync(
-            new Toolbelt.Blazor.HeadElement.LinkElement(rel: "stylesheet", href: "_content/SampleSite.Components/css/custom-C.css", media: "print"),
-            new Toolbelt.Blazor.HeadElement.LinkElement(rel: "canonical", href: "http://localhost/fetchdata", title: "link-C"));
+            new LinkElement(rel: "stylesheet", href: "_content/SampleSite.Components/css/custom-C.css", media: "print"),
+            new LinkElement(rel: "canonical", href: "http://localhost/fetchdata", title: "link-C"),
+            new LinkElement(rel: "preload", href: "_content/SampleSite.Components/css/purple.png", @as: "image"),
+            new LinkElement(rel: "preload", href: "_content/SampleSite.Components/css/red.png", @as: "image", media: "(max-width: 599px)"));
         await HeadElementHelper.RemoveLinkElementsAsync(
-            new Toolbelt.Blazor.HeadElement.LinkElement(rel: "icon", href: ""));
+            new LinkElement(rel: "preload", href: "_content/SampleSite.Components/css/red.png", media: "(max-width: 600px)"),
+            new LinkElement(rel: "icon", href: ""));
 
         forecasts = await WeatherForecastService.GetForecastAsync();
     }
