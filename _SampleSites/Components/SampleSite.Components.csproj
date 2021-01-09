@@ -5,12 +5,9 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="5.0.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="5.0.1" />
+    <PackageReference Include="Toolbelt.Blazor.HeadElement" Version="5.1.0" />
     <!--<PackageReference Include="Microsoft.AspNetCore.Components.Web.Extensions" Version="5.0.0-rc.1.*" />-->
-  </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\..\Components\HeadElement.csproj" />
   </ItemGroup>
 
 </Project>

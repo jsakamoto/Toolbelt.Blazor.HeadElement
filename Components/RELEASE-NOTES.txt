@@ -1,4 +1,7 @@
-﻿v.5.0.0
+﻿v.5.1.0
+- Add support "as" attibute of "link" element.
+
+v.5.0.0
 - Add support for .NET 5.0
 
 v.1.2.0

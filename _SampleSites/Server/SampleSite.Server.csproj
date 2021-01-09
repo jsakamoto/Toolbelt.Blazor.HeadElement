@@ -5,8 +5,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <!--<PackageReference Include="Toolbelt.Blazor.HeadElement.ServerPrerendering" Version="1.2.3" />-->
-    <ProjectReference Include="..\..\ServerPrerendering\HeadElement.ServerPrerendering.csproj" />
+    <PackageReference Include="Toolbelt.Blazor.HeadElement.ServerPrerendering" Version="1.3.0" />
     <ProjectReference Include="..\Components\SampleSite.Components.csproj" />
   </ItemGroup>
 
