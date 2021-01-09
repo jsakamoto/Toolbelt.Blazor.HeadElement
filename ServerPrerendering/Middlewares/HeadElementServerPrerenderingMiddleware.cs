@@ -136,10 +136,10 @@ namespace Toolbelt.Blazor.HeadElement.Middlewares
                     "canonical" => true,
                     "prev" => true,
                     "next" => true,
-                    "icon" => (m.Sizes?.ToString() ?? "") == a.Sizes,
-                    "alternate" => m.Type == a.Type && m.Media == a.Media,
-                    "preload" => Href(m.Href) == a.Href && m.Media == a.Media,
-                    _ => Href(m.Href) == a.Href
+                    "icon" => (m.Sizes?.ToString() ?? "") == (a.Sizes ?? ""),
+                    "alternate" => (m.Type ?? "") == (a.Type ?? "") && (m.Media ?? "") == (a.Media ?? ""),
+                    "preload" => Href(m.Href) == (a.Href ?? "") && (m.Media ?? "") == (a.Media ?? ""),
+                    _ => Href(m.Href) == (a.Href ?? "")
                 });
             };
 
