@@ -1,5 +1,8 @@
-﻿v.1.3.0
-- Add support "as" attibute of "link" element.
+﻿v.1.4.0
+- Add support all the other attributes (crossorigin, hreflang, imagesizes, imagesrcset) of "link" element.
+
+v.1.3.0
+- Add support "as" attribute of "link" element.
 
 v.1.2.0
 - Add suuport for manipuration of "meta http-equiv" element.

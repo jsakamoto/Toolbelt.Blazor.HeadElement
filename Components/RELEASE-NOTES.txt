@@ -1,5 +1,8 @@
-﻿v.5.1.0
-- Add support "as" attibute of "link" element.
+﻿v.5.2.0
+- Add support all the other attributes (crossorigin, hreflang, imagesizes, imagesrcset) of "link" element.
+
+v.5.1.0
+- Add support "as" attribute of "link" element.
 
 v.5.0.0
 - Add support for .NET 5.0
