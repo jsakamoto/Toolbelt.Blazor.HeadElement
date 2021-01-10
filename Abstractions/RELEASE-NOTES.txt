@@ -1,4 +1,7 @@
-﻿v.1.4.0
+﻿v.1.5.0
+- Reduce the size of the state string used for server prerendering.
+
+v.1.4.0
 - Add support all the other attributes (crossorigin, hreflang, imagesizes, imagesrcset) of "link" element.
 
 v.1.3.0
