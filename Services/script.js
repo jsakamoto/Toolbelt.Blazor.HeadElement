@@ -27,6 +27,7 @@ var Toolbelt;
             preload: (m, a) => getAttr(m, href) === a.h && m.media === a.m,
         };
         const sameLink = (m, a) => m.rel === a.r && ((linkComparer[a.r] || ((m, a) => getAttr(m, href) === a.h))(m, a));
+        const fixstr = (str) => str || '';
         Head.Title = {
             set: (t) => { d.title = t; },
             query: () => (q(selectorForScript + 'title"]').pop() || { text: d.title }).text
@@ -56,7 +57,21 @@ var Toolbelt;
                 Head.MetaTag.set(args);
             },
             del: (args) => args.forEach(arg => q(selectorForMata).filter(m => sameMeta(m, arg)).forEach(removeMeta)),
-            query: () => JSON.parse((q(selectorForScript + 'meta-elements"]').pop() || { text: 'null' }).text) || q(selectorForMata).map(m => (p => ({ p: p || '', n: m.name || '', h: m.httpEquiv || '', c: m.content || '' }))(getAttr(m, property)))
+            query: () => {
+                const defaultMetas = eval((q(selectorForScript + 'meta-elements"]').pop() || { text: 'null' }).text) ||
+                    q(selectorForMata).map(m => [
+                        getAttr(m, property),
+                        m.name,
+                        m.httpEquiv,
+                        m.content
+                    ]);
+                return defaultMetas.map(a => ({
+                    p: fixstr(a[0]),
+                    n: fixstr(a[1]),
+                    h: fixstr(a[2]),
+                    c: fixstr(a[3]),
+                }));
+            }
         };
         Head.LinkTag = {
             set: (args) => {
@@ -105,20 +120,37 @@ var Toolbelt;
             del: (args) => args.forEach(a => {
                 q(selectorForLinks).filter(m => sameLink(m, a)).forEach(removeChild);
             }),
-            query: () => JSON.parse((q(selectorForScript + 'link-elements"]').pop() || { text: 'null' }).text) || q(selectorForLinks).map(m => ({
-                r: m.rel,
-                h: getAttr(m, href),
-                s: '' + m.sizes,
-                p: m.type,
-                t: m.title,
-                m: m.media,
-                a: m.as,
-                co: m.crossOrigin || '',
-                hl: m.hreflang,
-                isz: m.imageSizes,
-                iss: m.imageSrcset,
-                d: m.disabled
-            }))
+            query: () => {
+                const defaultLinks = eval((q(selectorForScript + 'link-elements"]').pop() || { text: 'null' }).text) ||
+                    q(selectorForLinks).map(m => [
+                        m.rel,
+                        getAttr(m, href),
+                        '' + m.sizes,
+                        m.type,
+                        m.title,
+                        m.media,
+                        m.as,
+                        m.crossOrigin || '',
+                        m.hreflang,
+                        m.imageSizes,
+                        m.imageSrcset,
+                        m.disabled
+                    ]);
+                return defaultLinks.map(a => ({
+                    r: fixstr(a[0]),
+                    h: fixstr(a[1]),
+                    s: fixstr(a[2]),
+                    p: fixstr(a[3]),
+                    t: fixstr(a[4]),
+                    m: fixstr(a[5]),
+                    a: fixstr(a[6]),
+                    co: fixstr(a[7]),
+                    hl: fixstr(a[8]),
+                    isz: fixstr(a[9]),
+                    iss: fixstr(a[10]),
+                    d: a[11] || false,
+                }));
+            }
         };
     })(Head = Toolbelt.Head || (Toolbelt.Head = {}));
 })(Toolbelt || (Toolbelt = {}));
