@@ -1,4 +1,7 @@
-﻿v.5.2.0
+﻿v.5.3.0
+- Using native attributes (ex."http-equiv") are allowed.
+
+v.5.2.0
 - Add support all the other attributes (crossorigin, hreflang, imagesizes, imagesrcset) of "link" element.
 
 v.5.1.0

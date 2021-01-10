@@ -104,6 +104,8 @@ You can also add or override "meta" elements at runtime dynamically using `<Meta
 <Meta Property="ogp:title" Content="Counter" />
 ```
 
+_**Note:**_ You can also use native attribute names (lower and kebab case. ex: "http-equiv") instead of Razor component parameter names (pascal case).
+
 ### C. Change "link" elements
 
 You can add or override "link" elements at runtime dynamically using `<Link>` component like this.
@@ -117,6 +119,7 @@ You can add or override "link" elements at runtime dynamically using `<Link>` co
 
 ![fig3](https://raw.githubusercontent.com/jsakamoto/Toolbelt.Blazor.HeadElement/master/.assets/fig3.gif)
 
+_**Note:**_ You can also use native attribute names (lower and kebab case) instead of Razor component parameter names (pascal case).
 
 ### D. IHeadElementHelper
 
