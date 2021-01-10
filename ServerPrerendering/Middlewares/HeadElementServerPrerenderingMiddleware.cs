@@ -1,9 +1,12 @@
-﻿using System.IO;
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Text.Json;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using AngleSharp.Dom;
 using AngleSharp.Html;
 using AngleSharp.Html.Dom;
 using AngleSharp.Html.Parser;
@@ -34,9 +37,17 @@ namespace Toolbelt.Blazor.HeadElement.Middlewares
                     var parser = new HtmlParser();
                     using var doc = parser.ParseDocument(filter.MemoryStream);
 
-                    SetDocumentTitle(store, doc);
-                    SetMetaElements(store, doc);
-                    SetLinkElements(store, doc);
+                    var indentText = doc.Head.Descendents<IText>()
+                        .Select(t => t.Data.Trim('\r', '\n'))
+                        .Where(t => Regex.IsMatch(t, @"^[\t ]+$"))
+                        .OrderByDescending(t => t.Length)
+                        .FirstOrDefault() ?? "";
+
+                    SetDocumentTitle(store, doc, indentText);
+                    SetMetaElements(store, doc, indentText);
+                    SetLinkElements(store, doc, indentText);
+
+                    doc.Head.AppendChild(doc.CreateTextNode("\n"));
 
                     filter.MemoryStream.SetLength(0);
                     var encoding = Encoding.UTF8;
@@ -53,43 +64,22 @@ namespace Toolbelt.Blazor.HeadElement.Middlewares
             }
         }
 
-        public static void SaveDefault(IHtmlDocument doc, string text, string type)
-        {
-            var script = doc.CreateElement("script");
-            script.TextContent = text;
-            script.SetAttribute("type", type);
-            doc.Head.AppendChild(script);
-        }
-
-        public static void SaveDefault<T>(IHtmlDocument doc, T defaultElements, string type)
-        {
-            SaveDefault(doc, JsonSerializer.Serialize(defaultElements), type);
-        }
-
-        private static void SetDocumentTitle(IHeadElementHelperStore store, AngleSharp.Html.Dom.IHtmlDocument doc)
+        private static void SetDocumentTitle(IHeadElementHelperStore store, IHtmlDocument doc, string indentText)
         {
             if (store.Title == null) return;
 
             store.DefaultTitle = doc.Title ?? "";
             doc.Title = store.Title;
 
-            SaveDefault(doc, store.DefaultTitle, "text/default-title");
+            SaveDefault(doc, indentText, store.DefaultTitle, "text/default-title");
         }
 
-        private void SetMetaElements(IHeadElementHelperStore store, IHtmlDocument doc)
+        private void SetMetaElements(IHeadElementHelperStore store, IHtmlDocument doc, string indentText)
         {
             if (store.MetaElementCommands.Count == 0) return;
 
             var metaTags = doc.Head.QuerySelectorAll("meta[name],meta[property],meta[http-equiv]").Cast<IHtmlMetaElement>().ToList();
-
-            var metaElements = metaTags.Select(m => new MetaElement
-            {
-                Name = m.Name ?? "",
-                Property = m.GetAttribute("property") ?? "",
-                HttpEquiv = m.HttpEquivalent ?? "",
-                Content = m.Content
-            });
-            SaveDefault(doc, metaElements, "text/default-meta-elements");
+            SaveDefault(doc, indentText, metaTags);
 
             foreach (var cmd in store.MetaElementCommands)
             {
@@ -102,15 +92,15 @@ namespace Toolbelt.Blazor.HeadElement.Middlewares
                 {
                     if (meta == null)
                     {
-                        meta = doc.CreateElement("meta") as IHtmlMetaElement;
+                        meta = CreateAndAddToHead<IHtmlMetaElement>(doc, indentText);
+                        metaTags.Add(meta);
+
                         if (cmd.Element.Name != "")
                             meta.Name = cmd.Element.Name;
                         if (cmd.Element.Property != "")
                             meta.SetAttribute("property", cmd.Element.Property);
                         if (cmd.Element.HttpEquiv != "")
                             meta.HttpEquivalent = cmd.Element.HttpEquiv;
-                        doc.Head.AppendChild(meta);
-                        metaTags.Add(meta);
                     }
                     meta.Content = cmd.Element.Content;
                 }
@@ -125,10 +115,7 @@ namespace Toolbelt.Blazor.HeadElement.Middlewares
             }
         }
 
-
-        private static string Href(string href) { return Regex.Replace(href ?? "", "^about:///", ""); }
-
-        private void SetLinkElements(IHeadElementHelperStore store, IHtmlDocument doc)
+        private void SetLinkElements(IHeadElementHelperStore store, IHtmlDocument doc, string indentText)
         {
             static bool SameLink(IHtmlLinkElement m, LinkElement a)
             {
@@ -147,7 +134,7 @@ namespace Toolbelt.Blazor.HeadElement.Middlewares
             if (store.LinkElementCommands.Count == 0) return;
 
             var linkTags = doc.Head.QuerySelectorAll("link").Cast<IHtmlLinkElement>().ToList();
-            SaveDefualt(doc, linkTags);
+            SaveDefault(doc, indentText, linkTags);
 
             foreach (var cmd in store.LinkElementCommands)
             {
@@ -158,8 +145,7 @@ namespace Toolbelt.Blazor.HeadElement.Middlewares
                 {
                     if (link == null)
                     {
-                        link = doc.CreateElement("link") as IHtmlLinkElement;
-                        doc.Head.AppendChild(link);
+                        link = CreateAndAddToHead<IHtmlLinkElement>(doc, indentText);
                         linkTags.Add(link);
                     }
                     link.Relation = e.Rel;
@@ -189,24 +175,71 @@ namespace Toolbelt.Blazor.HeadElement.Middlewares
             }
         }
 
-        private static void SaveDefualt(IHtmlDocument doc, System.Collections.Generic.List<IHtmlLinkElement> linkTags)
+        private static TElement CreateAndAddToHead<TElement>(IHtmlDocument doc, string indentText) where TElement : IElement
         {
-            var linkElements = linkTags.Select(m => new LinkElement
-            {
-                Rel = m.Relation ?? "",
-                Href = Href(m.Href),
-                Sizes = m.Sizes?.ToString() ?? "",
-                Type = m.Type ?? "",
-                Title = m.Title ?? "",
-                Media = m.Media ?? "",
-                As = m.GetAttribute("as") ?? "",
-                CrossOrigin = m.CrossOrigin ?? "",
-                Hreflang = m.GetAttribute("hreflang") ?? "",
-                ImageSizes = m.GetAttribute("imagesizes") ?? "",
-                ImageSrcset = m.GetAttribute("imagesrcset") ?? "",
-                Disabled = m.IsDisabled
+            doc.Head.AppendChild(doc.CreateTextNode("\n" + indentText));
+            var element = doc.CreateElement<TElement>();
+            doc.Head.AppendChild(element);
+            return element;
+        }
+
+        private static string Href(string href) { return Regex.Replace(href ?? "", "^about:///", ""); }
+
+        private static string Stringify(object obj)
+        {
+            if (obj == null) return "";
+            else if (obj is string str)
+                return string.IsNullOrEmpty(str) ? "" : JsonSerializer.Serialize(str ?? "");
+            else if (obj is bool b)
+                return b ? "!0" : "";
+            else return obj.ToString();
+        }
+
+        private static void SaveDefault(IHtmlDocument doc, string indentText, IEnumerable<IHtmlLinkElement> linkTags)
+        {
+            SaveDefault(doc, indentText, linkTags, "text/default-link-elements", m => new[] {
+                Stringify(m.Relation),
+                Stringify(Href(m.Href)),
+                Stringify(m.Sizes?.ToString()),
+                Stringify(m.Type ),
+                Stringify(m.Title),
+                Stringify(m.Media),
+                Stringify(m.GetAttribute("as")),
+                Stringify(m.CrossOrigin),
+                Stringify(m.GetAttribute("hreflang")),
+                Stringify(m.GetAttribute("imagesizes")),
+                Stringify(m.GetAttribute("imagesrcset")),
+                Stringify(m.IsDisabled)
             });
-            SaveDefault(doc, linkElements, "text/default-link-elements");
+        }
+
+        private static void SaveDefault(IHtmlDocument doc, string indentText, IEnumerable<IHtmlMetaElement> metaTags)
+        {
+            SaveDefault(doc, indentText, metaTags, "text/default-meta-elements", m => new[] {
+                Stringify(m.GetAttribute("property")),
+                Stringify(m.Name),
+                Stringify(m.HttpEquivalent),
+                Stringify(m.Content)
+            });
+        }
+
+        private static void SaveDefault<T>(IHtmlDocument doc, string indentText, IEnumerable<T> elements, string saveName, Func<T, string[]> converter)
+        {
+            var serializedElements = elements.Select(m =>
+            {
+                var a = string.Join(",", converter(m));
+                return "[" + a.TrimEnd(',') + "]";
+            });
+            var serializedText = "[" + string.Join(",", serializedElements) + "]";
+            SaveDefault(doc, indentText, serializedText, saveName);
+        }
+
+        public static void SaveDefault(IHtmlDocument doc, string indentText, string text, string type)
+        {
+            var script = CreateAndAddToHead<IHtmlScriptElement>(doc, indentText);
+            script.TextContent = text;
+            script.SetAttribute("type", type);
+            doc.Head.AppendChild(script);
         }
     }
 }
