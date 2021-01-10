@@ -14,13 +14,19 @@
     [Parameter]
     public string Content { get; set; } = "";
 
+    [Parameter(CaptureUnmatchedValues = true)]
+    public Dictionary<string, object> InputAttributes { get; set; }
+
     protected override async Task OnParametersSetAsync()
     {
+        var httpEquiv = !string.IsNullOrEmpty(this.HttpEquiv) ?
+            this.HttpEquiv :
+            this.InputAttributes != null && this.InputAttributes.TryGetValue("http-equiv", out var v) && v is string ? v as string : "";
         await HeadElementHelper.SetMetaElementsAsync(new MetaElement
         {
             Name = this.Name,
             Property = this.Property,
-            HttpEquiv = this.HttpEquiv,
+            HttpEquiv = httpEquiv,
             Content = Content
         });
     }
