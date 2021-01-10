@@ -25,6 +25,21 @@ namespace Toolbelt.Blazor.HeadElement
         [JsonPropertyName("a")]
         public string As { get; set; } = "";
 
+        [JsonPropertyName("co")]
+        public string CrossOrigin { get; set; } = "";//:string null
+
+        [JsonPropertyName("hl")]
+        public string Hreflang { get; set; } = "";//:string ""
+
+        [JsonPropertyName("isz")]
+        public string ImageSizes { get; set; } = "";//:string ""
+
+        [JsonPropertyName("iss")]
+        public string ImageSrcset { get; set; } = "";//:string ""
+
+        [JsonPropertyName("d")]
+        public bool Disabled { get; set; }//:bool
+
         public LinkElement()
         {
         }
@@ -39,7 +54,7 @@ namespace Toolbelt.Blazor.HeadElement
             Media = media ?? "";
         }
 
-        public LinkElement(string rel, string href, string sizes = "", string type = "", string title = "", string media = "", string @as = "")
+        public LinkElement(string rel, string href, string sizes, string type, string title, string media, string @as)
         {
             Rel = rel;
             Href = href;
@@ -48,6 +63,22 @@ namespace Toolbelt.Blazor.HeadElement
             Title = title ?? "";
             Media = media ?? "";
             As = @as ?? "";
+        }
+
+        public LinkElement(string rel, string href, string sizes = "", string type = "", string title = "", string media = "", string @as = "", string crossOrigin = "", string hreflang = "", string imageSizes = "", string imageSrcset = "", bool disabled = false)
+        {
+            Rel = rel;
+            Href = href;
+            Sizes = sizes ?? "";
+            Type = type ?? "";
+            Title = title ?? "";
+            Media = media ?? "";
+            As = @as ?? "";
+            CrossOrigin = crossOrigin ?? "";
+            Hreflang = hreflang ?? "";
+            ImageSizes = imageSizes ?? "";
+            ImageSrcset = imageSrcset ?? "";
+            Disabled = disabled;
         }
     }
 }

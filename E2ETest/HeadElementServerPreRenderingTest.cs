@@ -114,7 +114,7 @@ namespace HeadElement.E2ETest
             var contentOfCanonical = await httpClient.GetStringAsync(urlOfCanonical);
 
             DumpLinkElements(contentOfCanonical).Any(
-                elemnt => elemnt == $"rel:canonical, href:/canonical, type:, media:, title:, sizes:, as:"
+                elemnt => elemnt == $"rel:canonical, href:/canonical, type:, media:, title:, sizes:, as:, crossorigin:, hreflang:, imagesizes:, imagesrcset:, disabled:false"
             ).IsTrue();
         }
 
@@ -123,19 +123,24 @@ namespace HeadElement.E2ETest
             static string makeHref(string href) => Uri.TryCreate(href, UriKind.Absolute, out var u) ? u.PathAndQuery : "/" + href.TrimStart('/');
 
             return Regex.Matches(content, @"<link[ \t]+[^>]*>")
-                .Where(m => m.Value != "<link rel=preload as=... />") // exclude inside comments.
-                .Select(m => (
-                    Rel: Regex.Match(m.Value, "rel=\"(?<t>[^\"]+)\"").Groups["t"].Value,
-                    Href: makeHref(Regex.Match(m.Value, "href=\"(?<t>[^\"]+)\"").Groups["t"].Value),
-                    Type: Regex.Match(m.Value, "type=\"(?<t>[^\"]+)\"").Groups["t"].Value,
-                    Media: Regex.Match(m.Value, "media=\"(?<t>[^\"]+)\"").Groups["t"].Value,
-                    Title: Regex.Match(m.Value, "title=\"(?<t>[^\"]+)\"").Groups["t"].Value,
-                    Sizes: Regex.Match(m.Value, "sizes=\"(?<t>[^\"]+)\"").Groups["t"].Value,
-                    As: Regex.Match(m.Value, "as=\"(?<t>[^\"]+)\"").Groups["t"].Value
+                .Where(l => l.Value != "<link rel=preload as=... />") // exclude inside comments.
+                .Select(l => (
+                    Rel: Regex.Match(l.Value, "rel=\"(?<t>[^\"]+)\"").Groups["t"].Value,
+                    Href: makeHref(Regex.Match(l.Value, "href=\"(?<t>[^\"]+)\"").Groups["t"].Value),
+                    Type: Regex.Match(l.Value, "[ ]+type=\"(?<t>[^\"]+)\"").Groups["t"].Value,
+                    Media: Regex.Match(l.Value, "[ ]+media=\"(?<t>[^\"]+)\"").Groups["t"].Value,
+                    Title: Regex.Match(l.Value, "[ ]+title=\"(?<t>[^\"]+)\"").Groups["t"].Value,
+                    Sizes: Regex.Match(l.Value, "[ ]+sizes=\"(?<t>[^\"]+)\"").Groups["t"].Value,
+                    As: Regex.Match(l.Value, "[ ]+as=\"(?<t>[^\"]+)\"").Groups["t"].Value,
+                    CrossOrigin: Regex.Match(l.Value, "[ ]+crossorigin=\"(?<t>[^\"]+)\"").Groups["t"].Value,
+                    Hreflang: Regex.Match(l.Value, "[ ]+hreflang=\"(?<t>[^\"]+)\"").Groups["t"].Value,
+                    ImageSizes: Regex.Match(l.Value, "[ ]+imagesizes=\"(?<t>[^\"]+)\"").Groups["t"].Value,
+                    ImageSrcset: Regex.Match(l.Value, "[ ]+imagesrcset=\"(?<t>[^\"]+)\"").Groups["t"].Value,
+                    Disabled: Regex.Match(l.Value, @"[ ]+disabled[ /]+").Success ? "true" : "false"
                 ))
-                .Where(m => !m.Href.Contains("text/css,.loading%7B")) // exclude style for "Loading..." element.
-                .OrderBy(m => m.Rel).ThenBy(m => m.Href).ThenBy(m => m.Media)
-                .Select(m => $"rel:{m.Rel}, href:{m.Href}, type:{m.Type}, media:{m.Media}, title:{m.Title}, sizes:{m.Sizes}, as:{m.As}")
+                .Where(l => !l.Href.Contains("text/css,.loading%7B")) // exclude style for "Loading..." element.
+                .OrderBy(l => l.Rel).ThenBy(l => l.Href).ThenBy(l => l.Media)
+                .Select(l => $"rel:{l.Rel}, href:{l.Href}, type:{l.Type}, media:{l.Media}, title:{l.Title}, sizes:{l.Sizes}, as:{l.As}, crossorigin:{l.CrossOrigin}, hreflang:{l.Hreflang}, imagesizes:{l.ImageSizes}, imagesrcset:{l.ImageSrcset}, disabled:{l.Disabled}")
                 .ToArray();
         }
     }

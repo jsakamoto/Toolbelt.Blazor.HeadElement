@@ -76,7 +76,7 @@ namespace HeadElement.E2ETest
         {
             var script = "return JSON.stringify(" +
                 "Array.from(document.querySelectorAll('link'))" +
-                ".map(l=>[l.rel, l.href, l.type, l.media, l.title, ''+l.sizes, l.as])" +
+                ".map(l=>[l.rel, l.href, l.type, l.media, l.title, ''+l.sizes, l.as, l.crossOrigin||'', l.hreflang, l.imageSizes, l.imageSrcset, ''+l.disabled])" +
             ")";
             var linksJson = driver.ExecuteJavaScript<string>(script);
             var linksArray = System.Text.Json.JsonSerializer.Deserialize<string[][]>(linksJson);
@@ -88,9 +88,14 @@ namespace HeadElement.E2ETest
                     Media: l[3] ?? "",
                     Title: l[4] ?? "",
                     Sizes: l[5] ?? "",
-                    As: l[6] ?? ""))
+                    As: l[6] ?? "",
+                    CrossOrigin: l[7] ?? "",
+                    Hreflang: l[8] ?? "",
+                    ImageSizes: l[9] ?? "",
+                    ImageSrcset: l[10] ?? "",
+                    Disabled: l[11] ?? ""))
                 .OrderBy(l => l.Rel).ThenBy(l => l.Href).ThenBy(l => l.Media)
-                .Select(l => $"rel:{l.Rel}, href:{l.Href}, type:{l.Type}, media:{l.Media}, title:{l.Title}, sizes:{l.Sizes}, as:{l.As}")
+                .Select(l => $"rel:{l.Rel}, href:{l.Href}, type:{l.Type}, media:{l.Media}, title:{l.Title}, sizes:{l.Sizes}, as:{l.As}, crossorigin:{l.CrossOrigin}, hreflang:{l.Hreflang}, imagesizes:{l.ImageSizes}, imagesrcset:{l.ImageSrcset}, disabled:{l.Disabled}")
                 .ToArray();
             return linkElements;
         }

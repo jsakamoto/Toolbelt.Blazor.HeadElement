@@ -126,9 +126,10 @@ namespace Toolbelt.Blazor.HeadElement.Middlewares
         }
 
 
+        private static string Href(string href) { return Regex.Replace(href ?? "", "^about:///", ""); }
+
         private void SetLinkElements(IHeadElementHelperStore store, IHtmlDocument doc)
         {
-            static string Href(string href) { return Regex.Replace(href ?? "", "^about:///", ""); }
             static bool SameLink(IHtmlLinkElement m, LinkElement a)
             {
                 return m.Relation == a.Rel && (a.Rel switch
@@ -146,18 +147,7 @@ namespace Toolbelt.Blazor.HeadElement.Middlewares
             if (store.LinkElementCommands.Count == 0) return;
 
             var linkTags = doc.Head.QuerySelectorAll("link").Cast<IHtmlLinkElement>().ToList();
-
-            var linkElements = linkTags.Select(m => new LinkElement
-            {
-                Rel = m.Relation ?? "",
-                Href = Href(m.Href),
-                Sizes = m.Sizes?.ToString() ?? "",
-                Type = m.Type ?? "",
-                Title = m.Title ?? "",
-                Media = m.Media ?? "",
-                As = m.GetAttribute("as") ?? ""
-            });
-            SaveDefault(doc, linkElements, "text/default-link-elements");
+            SaveDefualt(doc, linkTags);
 
             foreach (var cmd in store.LinkElementCommands)
             {
@@ -174,11 +164,22 @@ namespace Toolbelt.Blazor.HeadElement.Middlewares
                     }
                     link.Relation = e.Rel;
                     link.Href = e.Href;
-                    foreach (var (name, value) in new[] { ("sizez", e.Sizes), ("type", e.Type), ("title", e.Title), ("media", e.Media), ("as", e.As) })
+                    foreach (var (name, value) in new[] {
+                        ("sizez", e.Sizes),
+                        ("type", e.Type),
+                        ("title", e.Title),
+                        ("media", e.Media),
+                        ("as", e.As),
+                        ("crossorigin", e.CrossOrigin),
+                        ("hreflang", e.Hreflang),
+                        ("imagesizes", e.ImageSizes),
+                        ("imagesrcset", e.ImageSrcset),
+                    })
                     {
                         if (string.IsNullOrEmpty(value)) link.RemoveAttribute(name);
                         else link.SetAttribute(name, value);
                     }
+                    link.IsDisabled = e.Disabled;
                 }
                 else if (cmd.Operation == LinkElementOperations.Remove && link != null)
                 {
@@ -186,6 +187,26 @@ namespace Toolbelt.Blazor.HeadElement.Middlewares
                     linkTags.Remove(link);
                 }
             }
+        }
+
+        private static void SaveDefualt(IHtmlDocument doc, System.Collections.Generic.List<IHtmlLinkElement> linkTags)
+        {
+            var linkElements = linkTags.Select(m => new LinkElement
+            {
+                Rel = m.Relation ?? "",
+                Href = Href(m.Href),
+                Sizes = m.Sizes?.ToString() ?? "",
+                Type = m.Type ?? "",
+                Title = m.Title ?? "",
+                Media = m.Media ?? "",
+                As = m.GetAttribute("as") ?? "",
+                CrossOrigin = m.CrossOrigin ?? "",
+                Hreflang = m.GetAttribute("hreflang") ?? "",
+                ImageSizes = m.GetAttribute("imagesizes") ?? "",
+                ImageSrcset = m.GetAttribute("imagesrcset") ?? "",
+                Disabled = m.IsDisabled
+            });
+            SaveDefault(doc, linkElements, "text/default-link-elements");
         }
     }
 }
