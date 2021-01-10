@@ -54,10 +54,10 @@ else
             ByProp("meta-P2"),
             ByHttpEquiv("meta-H2"));
         await HeadElementHelper.SetLinkElementsAsync(
-            new LinkElement(rel: "stylesheet", href: "_content/SampleSite.Components/css/custom-C.css", media: "print"),
+            new LinkElement(rel: "stylesheet", href: "_content/SampleSite.Components/css/custom-C.css", media: "print", crossOrigin: "anonymous"),
             new LinkElement(rel: "canonical", href: "http://localhost/fetchdata", title: "link-C"),
-            new LinkElement(rel: "preload", href: "_content/SampleSite.Components/css/purple.png", @as: "image"),
-            new LinkElement(rel: "preload", href: "_content/SampleSite.Components/css/red.png", @as: "image", media: "(max-width: 599px)"));
+            new LinkElement(rel: "preload", href: "_content/SampleSite.Components/css/purple.png", @as: "image", hreflang: "en"),
+            new LinkElement(rel: "preload", href: "_content/SampleSite.Components/css/red.png", @as: "image", media: "(max-width: 599px)", imageSizes: "48px", imageSrcset: "red.png, 48px"));
         await HeadElementHelper.RemoveLinkElementsAsync(
             new LinkElement(rel: "preload", href: "_content/SampleSite.Components/css/red.png", media: "(max-width: 600px)"),
             new LinkElement(rel: "icon", href: ""));

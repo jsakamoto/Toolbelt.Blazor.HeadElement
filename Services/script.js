@@ -68,12 +68,31 @@ var Toolbelt;
                         newLink = link;
                     }
                     [
-                        ['rel', arg.r], [href, arg.h], ['sizes', arg.s], ['type', arg.p], ['title', arg.t], ['media', arg.m], ['as', arg.a]
+                        ['rel', arg.r],
+                        [href, arg.h],
+                        ['sizes', arg.s],
+                        ['type', arg.p],
+                        ['title', arg.t],
+                        ['media', arg.m],
+                        ['as', arg.a],
+                        ['crossOrigin', arg.co],
+                        ['hreflang', arg.hl],
+                        ['imageSizes', arg.isz],
+                        ['imageSrcset', arg.iss],
+                        ['disabled', arg.d],
                     ].forEach(prop => {
-                        if (prop[1] === '')
-                            link.removeAttribute(prop[0]);
-                        else if (getAttr(link, prop[0]) !== prop[1])
-                            setAttr(link, prop[0], prop[1]);
+                        let attrName = prop[0];
+                        let attrVal = prop[1];
+                        if (attrVal === true) {
+                            setAttr(link, attrName, '');
+                        }
+                        else if (attrVal === false || attrVal === '') {
+                            link.removeAttribute(attrName);
+                        }
+                        else {
+                            if (getAttr(link, attrName) !== attrVal)
+                                setAttr(link, attrName, attrVal);
+                        }
                     });
                     if (newLink !== null)
                         head.appendChild(newLink);
@@ -87,7 +106,18 @@ var Toolbelt;
                 q(selectorForLinks).filter(m => sameLink(m, a)).forEach(removeChild);
             }),
             query: () => JSON.parse((q(selectorForScript + 'link-elements"]').pop() || { text: 'null' }).text) || q(selectorForLinks).map(m => ({
-                r: m.rel, h: getAttr(m, href), s: '' + m.sizes, p: m.type, t: m.title, m: m.media, a: m.as
+                r: m.rel,
+                h: getAttr(m, href),
+                s: '' + m.sizes,
+                p: m.type,
+                t: m.title,
+                m: m.media,
+                a: m.as,
+                co: m.crossOrigin || '',
+                hl: m.hreflang,
+                isz: m.imageSizes,
+                iss: m.imageSrcset,
+                d: m.disabled
             }))
         };
     })(Head = Toolbelt.Head || (Toolbelt.Head = {}));
