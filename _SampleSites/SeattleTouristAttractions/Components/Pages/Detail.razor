@@ -6,7 +6,12 @@
 
 @if (Place != null)
 {
-    <Title>@Place.Title - Seattle Tourist Attractions</Title>
+    <Title>@WithSuffix(Place.Title)</Title>
+    @*
+        <!-- If you do not want to add the suffix, specify "nosuffix: true". -->
+        <Title>@WithSuffix(Place.Title, nosuffix: true)</Title>
+    *@
+
     @*<Title Value="@($"{Place.Title} - Seattle Tourist Attractions")"></Title>*@
 
     <Meta Name="twitter:card" Content="summary_large_image" />
