@@ -1,4 +1,7 @@
-﻿v.1.5.0
+﻿v.1.5.1
+- Fix: head elements revert to default unexpectedly in some cases.
+
+v.1.5.0
 - Reduce the size of the state string used for server prerendering.
 
 v.1.4.0
