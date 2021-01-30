@@ -81,7 +81,7 @@ namespace Toolbelt.Blazor.HeadElement
         {
             _Store.MetaElementCommands.Clear();
 
-            if (_Store.UrlLastSet != e.Location)
+            if (_Store.UrlLastSet != NormalizeUrl(e.Location))
             {
                 if (_Store.DefaultTitle != null)
                 {
@@ -108,9 +108,15 @@ namespace Toolbelt.Blazor.HeadElement
             }
 
             _Store.Title = title;
-            _Store.UrlLastSet = _NavigationManager.Uri;
+            _Store.UrlLastSet = NormalizeUrl(_NavigationManager.Uri);
 
             await InvokeJSAsync<object>(NST + "set", title);
+        }
+
+        private string NormalizeUrl(string uri)
+        {
+            var absoluteUri = _NavigationManager.ToAbsoluteUri(uri);
+            return absoluteUri.AbsolutePath.TrimEnd('/') + absoluteUri.Query;
         }
 
         public ValueTask SetDefaultTitleAsync(string defaultTitle)
@@ -148,7 +154,7 @@ namespace Toolbelt.Blazor.HeadElement
             {
                 _Store.MetaElementCommands.Add(command);
             }
-            _Store.UrlLastSet = _NavigationManager.Uri;
+            _Store.UrlLastSet = NormalizeUrl(_NavigationManager.Uri);
         }
 
         public async ValueTask RemoveMetaElementsAsync(params MetaElement[] elements)
@@ -162,7 +168,7 @@ namespace Toolbelt.Blazor.HeadElement
             {
                 _Store.MetaElementCommands.Add(command);
             }
-            _Store.UrlLastSet = _NavigationManager.Uri;
+            _Store.UrlLastSet = NormalizeUrl(_NavigationManager.Uri);
         }
 
         private async ValueTask ResetMetaElementsAsync()
@@ -190,7 +196,7 @@ namespace Toolbelt.Blazor.HeadElement
             {
                 _Store.LinkElementCommands.Add(command);
             }
-            _Store.UrlLastSet = _NavigationManager.Uri;
+            _Store.UrlLastSet = NormalizeUrl(_NavigationManager.Uri);
         }
 
 
@@ -205,7 +211,7 @@ namespace Toolbelt.Blazor.HeadElement
             {
                 _Store.LinkElementCommands.Add(command);
             }
-            _Store.UrlLastSet = _NavigationManager.Uri;
+            _Store.UrlLastSet = NormalizeUrl(_NavigationManager.Uri);
         }
 
         private async ValueTask ResetLinkElementsAsync()

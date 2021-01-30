@@ -5,8 +5,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Toolbelt.Blazor.HeadElement" Version="5.4.0" />
-    <!--<ProjectReference Include="..\..\Components\HeadElement.csproj" />-->
+    <!--<PackageReference Include="Toolbelt.Blazor.HeadElement" Version="5.4.0" />-->
+    <ProjectReference Include="..\..\Components\HeadElement.csproj" />
   </ItemGroup>
 
   <ItemGroup>
