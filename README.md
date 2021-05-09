@@ -145,7 +145,7 @@ You can get the `IHeadElementHelper` service instnace by "Dependency Injection" 
     ...
 ```
 
-### E. Server-side pre-rendering support
+## Server-side pre-rendering support
 
 If you want to get srever-side pre-rendering support, do this.
 
