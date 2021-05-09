@@ -1,4 +1,7 @@
-﻿v.5.4.1
+﻿v.5.4.2
+- Add support for "BlazorWasmPrerendering.Build"
+
+v.5.4.1
 - Fix: head elements revert to default unexpectedly in some cases.
 
 v.5.4.0
