@@ -1,4 +1,7 @@
-﻿v.1.5.1
+﻿v.1.5.2
+- Fix: The server-side rendering result lost a slash of a self-closing tag.
+
+v.1.5.1
 - Fix: head elements revert to default unexpectedly in some cases.
 
 v.1.5.0
