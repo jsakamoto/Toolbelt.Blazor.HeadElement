@@ -1,0 +1,24 @@
+﻿@page "/change-on-after-render"
+
+<Title>@_Title</Title>
+<Meta Property="og:title" Content="@_Title" />
+<Meta Name="keywords" Content="@_Keywords" />
+
+<h1>Change in "OnAfterRender"</h1>
+
+@code {
+    private string _Title = "1st title";
+
+    private string _Keywords = "1st keywords";
+
+    protected override void OnAfterRender(bool firstRender)
+    {
+        base.OnAfterRender(firstRender);
+        if (firstRender)
+        {
+            this._Title = "2nd title";
+            this._Keywords = "2nd keywords";
+            this.StateHasChanged();
+        }
+    }
+}
