@@ -5,9 +5,9 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Routing;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.JSInterop;
 using Toolbelt.Blazor.HeadElement.Internals;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace Toolbelt.Blazor.HeadElement
 {
@@ -29,7 +29,11 @@ namespace Toolbelt.Blazor.HeadElement
 
         private bool _ScriptEnabled = false;
 
-        private SemaphoreSlim SemaphoreSlim = new SemaphoreSlim(1, 1);
+        private readonly SemaphoreSlim _EnsureScriptSyncer = new(1, 1);
+
+        private readonly SemaphoreSlim _ResetSyncer = new(1, 1);
+
+        private readonly SemaphoreSlim _Syncer = new(1, 1);
 
         internal HeadElementHelperService(IServiceProvider services)
         {
@@ -48,7 +52,7 @@ namespace Toolbelt.Blazor.HeadElement
         {
             if (_ScriptEnabled || _JS == null) return _ScriptEnabled;
 
-            await SemaphoreSlim.WaitAsync();
+            await _EnsureScriptSyncer.WaitAsync();
             try
             {
                 if (_ScriptEnabled) return _ScriptEnabled;
@@ -60,7 +64,7 @@ namespace Toolbelt.Blazor.HeadElement
                 _ScriptEnabled = true;
             }
             catch { }
-            finally { SemaphoreSlim.Release(); }
+            finally { _EnsureScriptSyncer.Release(); }
             return _ScriptEnabled;
         }
 
@@ -70,47 +74,72 @@ namespace Toolbelt.Blazor.HeadElement
             {
                 return await _JS.InvokeAsync<T>(identifier, args);
             }
-            return default(T);
+            return default;
         }
-
-        public ValueTask SetTitleAsync(string title) => SetTitleCoreAsync(title, delay: true);
-
-        public ValueTask<string> GetTitleAsync() => new ValueTask<string>(_Store.Title);
 
         private void _NavigationManager_LocationChanged(object sender, LocationChangedEventArgs e)
         {
-            _Store.MetaElementCommands.Clear();
+            ResetIfNeededAsync().ConfigureAwait(false);
+        }
 
-            if (_Store.UrlLastSet != NormalizeUrl(e.Location))
+        private async ValueTask ResetIfNeededAsync()
+        {
+            await _ResetSyncer.WaitAsync();
+            try
             {
+                await GetDefaultsAsync();
+
+                if (_Store.UrlLastSet == NormalizeUrl(_NavigationManager.Uri)) return;
+
+                var urlLastSet = _Store.UrlLastSet;
+                var normalizeUrl = NormalizeUrl(_NavigationManager.Uri);
+
+                _Store.MetaElementCommands.Clear();
+                _Store.LinkElementCommands.Clear();
+
                 if (_Store.DefaultTitle != null)
                 {
-                    var _ = SetTitleCoreAsync(_Store.DefaultTitle, delay: false);
+                    await ResetTitleAsync();
                 }
                 if (_Store.DefaultMetaElements != null)
                 {
-                    var _ = ResetMetaElementsAsync();
+                    await ResetMetaElementsAsync();
                 }
                 if (_Store.DefaultLinkElements != null)
                 {
-                    var _ = ResetLinkElementsAsync();
+                    await ResetLinkElementsAsync();
                 }
+
+                _Store.UrlLastSet = NormalizeUrl(_NavigationManager.Uri);
             }
+            finally { _ResetSyncer.Release(); }
         }
 
-        private async ValueTask SetTitleCoreAsync(string title, bool delay)
+        private async ValueTask GetDefaultsAsync()
         {
             await GetDefaultTitleAsync();
+            await GetDefaultMetaElementsAsync();
+            await GetDefaultLinkElementsAsync();
+        }
 
-            if (delay)
+        public ValueTask<string> GetTitleAsync() => new(_Store.Title);
+
+        public async ValueTask SetTitleAsync(string title)
+        {
+            await _Syncer.WaitAsync();
+            try
             {
-                await Task.Delay(1);
+                await ResetIfNeededAsync();
+                _Store.Title = title;
+                await InvokeJSAsync<object>(NST + "set", title);
             }
+            finally { _Syncer.Release(); }
+        }
 
-            _Store.Title = title;
-            _Store.UrlLastSet = NormalizeUrl(_NavigationManager.Uri);
-
-            await InvokeJSAsync<object>(NST + "set", title);
+        private async ValueTask ResetTitleAsync()
+        {
+            _Store.Title = _Store.DefaultTitle;
+            await InvokeJSAsync<object>(NST + "set", _Store.DefaultTitle);
         }
 
         private string NormalizeUrl(string uri)
@@ -145,30 +174,36 @@ namespace Toolbelt.Blazor.HeadElement
 
         public async ValueTask SetMetaElementsAsync(params MetaElement[] elements)
         {
-            await GetDefaultMetaElementsAsync();
-            await Task.Delay(1);
-            await InvokeJSAsync<object>(NSM + "set", new object[] { elements });
-
-            var commands = elements.Select(elem => new MetaElementCommand { Operation = MetaElementOperations.Set, Element = elem });
-            foreach (var command in commands)
+            await _Syncer.WaitAsync();
+            try
             {
-                _Store.MetaElementCommands.Add(command);
+                await ResetIfNeededAsync();
+                await InvokeJSAsync<object>(NSM + "set", new object[] { elements });
+
+                var commands = elements.Select(elem => new MetaElementCommand { Operation = MetaElementOperations.Set, Element = elem });
+                foreach (var command in commands)
+                {
+                    _Store.MetaElementCommands.Add(command);
+                }
             }
-            _Store.UrlLastSet = NormalizeUrl(_NavigationManager.Uri);
+            finally { _Syncer.Release(); }
         }
 
         public async ValueTask RemoveMetaElementsAsync(params MetaElement[] elements)
         {
-            await GetDefaultMetaElementsAsync();
-            await Task.Delay(1);
-            await InvokeJSAsync<object>(NSM + "del", new object[] { elements });
-
-            var commands = elements.Select(elem => new MetaElementCommand { Operation = MetaElementOperations.Remove, Element = elem });
-            foreach (var command in commands)
+            await _Syncer.WaitAsync();
+            try
             {
-                _Store.MetaElementCommands.Add(command);
+                await ResetIfNeededAsync();
+                await InvokeJSAsync<object>(NSM + "del", new object[] { elements });
+
+                var commands = elements.Select(elem => new MetaElementCommand { Operation = MetaElementOperations.Remove, Element = elem });
+                foreach (var command in commands)
+                {
+                    _Store.MetaElementCommands.Add(command);
+                }
             }
-            _Store.UrlLastSet = NormalizeUrl(_NavigationManager.Uri);
+            finally { _Syncer.Release(); }
         }
 
         private async ValueTask ResetMetaElementsAsync()
@@ -187,31 +222,36 @@ namespace Toolbelt.Blazor.HeadElement
 
         public async ValueTask SetLinkElementsAsync(params LinkElement[] elements)
         {
-            await GetDefaultLinkElementsAsync();
-            await Task.Delay(1);
-            await InvokeJSAsync<object>(NSL + "set", new object[] { elements });
-
-            var commands = elements.Select(elem => new LinkElementCommand { Operation = LinkElementOperations.Set, Element = elem });
-            foreach (var command in commands)
+            await _Syncer.WaitAsync();
+            try
             {
-                _Store.LinkElementCommands.Add(command);
-            }
-            _Store.UrlLastSet = NormalizeUrl(_NavigationManager.Uri);
-        }
+                await ResetIfNeededAsync();
+                await InvokeJSAsync<object>(NSL + "set", new object[] { elements });
 
+                var commands = elements.Select(elem => new LinkElementCommand { Operation = LinkElementOperations.Set, Element = elem });
+                foreach (var command in commands)
+                {
+                    _Store.LinkElementCommands.Add(command);
+                }
+            }
+            finally { _Syncer.Release(); }
+        }
 
         public async ValueTask RemoveLinkElementsAsync(params LinkElement[] elements)
         {
-            await GetDefaultLinkElementsAsync();
-            await Task.Delay(1);
-            await InvokeJSAsync<object>(NSL + "del", new object[] { elements });
-
-            var commands = elements.Select(elem => new LinkElementCommand { Operation = LinkElementOperations.Remove, Element = elem });
-            foreach (var command in commands)
+            await _Syncer.WaitAsync();
+            try
             {
-                _Store.LinkElementCommands.Add(command);
+                await ResetIfNeededAsync();
+                await InvokeJSAsync<object>(NSL + "del", new object[] { elements });
+
+                var commands = elements.Select(elem => new LinkElementCommand { Operation = LinkElementOperations.Remove, Element = elem });
+                foreach (var command in commands)
+                {
+                    _Store.LinkElementCommands.Add(command);
+                }
             }
-            _Store.UrlLastSet = NormalizeUrl(_NavigationManager.Uri);
+            finally { _Syncer.Release(); }
         }
 
         private async ValueTask ResetLinkElementsAsync()
