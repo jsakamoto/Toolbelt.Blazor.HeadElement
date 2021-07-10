@@ -1,13 +1,16 @@
+"use strict";
 var Toolbelt;
 (function (Toolbelt) {
     var Head;
     (function (Head) {
+        const metaElementName = 'meta';
+        const linkElementName = 'link';
         const selectorForMata = 'meta[name],meta[property],meta[http-equiv]';
-        const selectorForLinks = 'link';
+        const selectorForLinks = linkElementName;
         const selectorForScript = 'script[type="text/default-';
         const property = 'property';
         const href = 'href';
-        const undef = 'undefined';
+        const nullText = 'null';
         const d = document;
         const head = d.head;
         function q(selector) { return Array.from(head.querySelectorAll(selector)); }
@@ -35,10 +38,10 @@ var Toolbelt;
         Head.MetaTag = {
             set: (args) => {
                 args.forEach(arg => {
-                    let meta = q('meta').find(m => sameMeta(m, arg));
+                    let meta = q(metaElementName).find(m => sameMeta(m, arg)) || null;
                     let n = null;
-                    if (typeof meta === undef) {
-                        meta = crealeElem('meta');
+                    if (meta === null) {
+                        meta = crealeElem(metaElementName);
                         n = meta;
                     }
                     if (arg.h !== '')
@@ -58,7 +61,7 @@ var Toolbelt;
             },
             del: (args) => args.forEach(arg => q(selectorForMata).filter(m => sameMeta(m, arg)).forEach(removeMeta)),
             query: () => {
-                const defaultMetas = eval((q(selectorForScript + 'meta-elements"]').pop() || { text: 'null' }).text) ||
+                const defaultMetas = eval((q(selectorForScript + 'meta-elements"]').pop() || { text: nullText }).text) ||
                     q(selectorForMata).map(m => [
                         getAttr(m, property),
                         m.name,
@@ -76,10 +79,10 @@ var Toolbelt;
         Head.LinkTag = {
             set: (args) => {
                 args.forEach(arg => {
-                    let link = q('link').find(m => sameLink(m, arg));
+                    let link = q(linkElementName).find(m => sameLink(m, arg)) || null;
                     let newLink = null;
-                    if (typeof link === undef) {
-                        link = crealeElem('link');
+                    if (link === null) {
+                        link = crealeElem(linkElementName);
                         newLink = link;
                     }
                     [
@@ -104,9 +107,8 @@ var Toolbelt;
                         else if (attrVal === false || attrVal === '') {
                             link.removeAttribute(attrName);
                         }
-                        else {
-                            if (getAttr(link, attrName) !== attrVal)
-                                setAttr(link, attrName, attrVal);
+                        else if (getAttr(link, attrName) !== attrVal) {
+                            setAttr(link, attrName, attrVal);
                         }
                     });
                     if (newLink !== null)
@@ -121,7 +123,7 @@ var Toolbelt;
                 q(selectorForLinks).filter(m => sameLink(m, a)).forEach(removeChild);
             }),
             query: () => {
-                const defaultLinks = eval((q(selectorForScript + 'link-elements"]').pop() || { text: 'null' }).text) ||
+                const defaultLinks = eval((q(selectorForScript + 'link-elements"]').pop() || { text: nullText }).text) ||
                     q(selectorForLinks).map(m => [
                         m.rel,
                         getAttr(m, href),
@@ -154,4 +156,3 @@ var Toolbelt;
         };
     })(Head = Toolbelt.Head || (Toolbelt.Head = {}));
 })(Toolbelt || (Toolbelt = {}));
-//# sourceMappingURL=script.js.map

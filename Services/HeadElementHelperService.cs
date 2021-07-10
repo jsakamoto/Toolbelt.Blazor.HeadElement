@@ -57,8 +57,9 @@ namespace Toolbelt.Blazor.HeadElement
             {
                 if (_ScriptEnabled) return _ScriptEnabled;
 
+                var version = this.GetType().Assembly.GetName().Version;
                 var script = Options.DisableClientScriptAutoInjection ? "0" :
-                    $"new Promise(r=>((d,t,s)=>(h=>h.querySelector(t+`[src=\"${{s}}\"]`)?r():(e=>(e.src=s,e.onload=r,h.appendChild(e)))(d.createElement(t)))(d.head))(document,'script','_content/Toolbelt.Blazor.HeadElement.Services/script.min.js'))";
+                    $"new Promise(r=>((d,t,s)=>(h=>h.querySelector(t+`[src=\"${{s}}\"]`)?r():(e=>(e.src=s,e.onload=r,h.appendChild(e)))(d.createElement(t)))(d.head))(document,'script','_content/Toolbelt.Blazor.HeadElement.Services/script.min.js?v={version}'))";
                 await _JS.InvokeVoidAsync("eval", script);
 
                 _ScriptEnabled = true;

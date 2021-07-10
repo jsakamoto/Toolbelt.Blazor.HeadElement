@@ -34,12 +34,14 @@
         d: boolean;
     }
 
+    const metaElementName = 'meta';
+    const linkElementName = 'link';
     const selectorForMata = 'meta[name],meta[property],meta[http-equiv]';
-    const selectorForLinks = 'link';
+    const selectorForLinks = linkElementName;
     const selectorForScript = 'script[type="text/default-';
     const property = 'property';
     const href = 'href';
-    const undef = 'undefined';
+    const nullText = 'null';
 
     const d = document;
     const head = d.head;
@@ -76,16 +78,16 @@
 
         set: (args: MetaElement[]) => {
             args.forEach(arg => {
-                let meta = q<HTMLMetaElement>('meta').find(m => sameMeta(m, arg));
+                let meta = q<HTMLMetaElement>(metaElementName).find(m => sameMeta(m, arg)) || null;
                 let n: HTMLMetaElement | null = null;
-                if (typeof meta === undef) {
-                    meta = crealeElem('meta');
+                if (meta === null) {
+                    meta = crealeElem(metaElementName);
                     n = meta;
                 }
-                if (arg.h !== '') meta.httpEquiv = arg.h;
-                if (arg.p !== '') setAttr(meta, property, arg.p);
-                if (arg.n !== '') meta.name = arg.n;
-                meta.content = arg.c;
+                if (arg.h !== '') meta!.httpEquiv = arg.h;
+                if (arg.p !== '') setAttr(meta!, property, arg.p);
+                if (arg.n !== '') meta!.name = arg.n;
+                meta!.content = arg.c;
                 if (n !== null) head.appendChild(n);
             });
         },
@@ -99,8 +101,8 @@
 
         query: () => {
             const defaultMetas =
-                eval((q<HTMLScriptElement>(selectorForScript + 'meta-elements"]').pop() || { text: 'null' }).text) as string[][] | null ||
-                q<HTMLMetaElement>(selectorForMata).map<string[]>(m => [
+                eval((q<HTMLScriptElement>(selectorForScript + 'meta-elements"]').pop() || { text: nullText }).text) as string[][] | null ||
+                q<HTMLMetaElement>(selectorForMata).map<(string | null)[]>(m => [
                     getAttr(m, property),
                     m.name,
                     m.httpEquiv,
@@ -119,12 +121,14 @@
 
         set: (args: LinkElement[]) => {
             args.forEach(arg => {
-                let link = q<HTMLLinkElement>('link').find(m => sameLink(m, arg));
+                let link = q<HTMLLinkElement>(linkElementName).find(m => sameLink(m, arg)) || null;
                 let newLink: HTMLLinkElement | null = null;
-                if (typeof link === undef) {
-                    link = crealeElem('link');
+
+                if (link === null) {
+                    link = crealeElem(linkElementName);
                     newLink = link;
                 }
+
                 [
                     ['rel', arg.r],
                     [href, arg.h],
@@ -141,10 +145,14 @@
                 ].forEach(prop => {
                     let attrName = prop[0] as string;
                     let attrVal = prop[1];
-                    if (attrVal === true) { setAttr(link, attrName, ''); }
-                    else if (attrVal === false || attrVal === '') { link.removeAttribute(attrName); }
-                    else {
-                        if (getAttr(link, attrName) !== attrVal) setAttr(link, attrName, attrVal);
+                    if (attrVal === true) {
+                        setAttr(link!, attrName, '');
+                    }
+                    else if (attrVal === false || attrVal === '') {
+                        link!.removeAttribute(attrName);
+                    }
+                    else if (getAttr(link!, attrName) !== attrVal) {
+                        setAttr(link!, attrName, attrVal);
                     }
                 });
                 if (newLink !== null) head.appendChild(newLink);
@@ -162,7 +170,7 @@
 
         query: () => {
             const defaultLinks =
-                eval((q<HTMLScriptElement>(selectorForScript + 'link-elements"]').pop() || { text: 'null' }).text) as any[] | null ||
+                eval((q<HTMLScriptElement>(selectorForScript + 'link-elements"]').pop() || { text: nullText }).text) as any[] | null ||
                 q<HTMLLinkElement>(selectorForLinks).map<any[]>(m => [
                     m.rel,
                     getAttr(m, href),

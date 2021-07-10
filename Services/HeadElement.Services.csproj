@@ -10,7 +10,7 @@
     <RootNamespace>Toolbelt.Blazor.HeadElement</RootNamespace>
     <DocumentationFile>bin\$(Configuration)\$(TargetFramework)\$(AssemblyName).xml</DocumentationFile>
     <PackageOutputPath>..\_dist\</PackageOutputPath>
-    <TypeScriptCompileBlocked>true</TypeScriptCompileBlocked>
+    <TypeScriptCompileBlocked>false</TypeScriptCompileBlocked>
   </PropertyGroup>
 
   <PropertyGroup>
