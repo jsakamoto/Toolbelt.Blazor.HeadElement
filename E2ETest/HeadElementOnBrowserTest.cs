@@ -285,5 +285,68 @@ namespace HeadElement.E2ETest
             driver.Wait(1000).Until(_ => driver.FindElement(By.XPath("//h1[text()='Weather forecast']")));
             driver.Url.TrimEnd('/').Is(_TestContext.GetHostUrl(hostingModel).TrimEnd('/') + "/fetchdata");
         }
+
+        [Theory(DisplayName = "Change at OnAfterRender on Browser (from Home)")]
+        [MemberData(nameof(HostingModels))]
+        public void Change_at_OnAfterRender_on_Browser_Start_from_Home_Test(HostingModel hostingModel)
+        {
+            _TestContext.StartHost(hostingModel);
+            var driver = _TestContext.WebDriver;
+
+            // Navigate to Home, and validate the document title of "Home"
+            driver.GoToUrlAndWait(_TestContext.GetHostUrl(hostingModel));
+            driver.Wait(1000).Until(_ => driver.Title == "Sample Site");
+
+            // Navigate to "Change at "OnAfterRender"", and validate the document title of it
+            driver.ClickOnAfterRender();
+            driver.Wait(1000).Until(_ => driver.Title == "2nd title");
+
+            // Validate meta elements of "Change at "OnAfterRender""
+            var actualMetaAtOnAfterRender = driver.DumpMetaElements();
+            actualMetaAtOnAfterRender.Is(ExpectMeta.AtOnAfterRender);
+
+            // Validate link elements of "Change at "OnAfterRender""
+            var actualLinkAtOnAfterRender = driver.DumpLinkElements();
+            actualLinkAtOnAfterRender.Is(ExpectLinks.AtOnAfterRender);
+
+            // Go back to Home, and validate the document title, meta elements, link elements of "Home"
+            driver.ClickHome();
+            driver.Wait(1000).Until(_ => driver.Title == "Sample Site");
+            var actualMetaAtHome = driver.DumpMetaElements();
+            actualMetaAtHome.Is(ExpectMeta.AtHome);
+            var actualLinkAtHome = driver.DumpLinkElements();
+            actualLinkAtHome.Is(ExpectLinks.AtHome);
+        }
+
+        [Theory(DisplayName = "Change at OnAfterRender on Browser (from OnAfterRender)")]
+        [MemberData(nameof(HostingModels))]
+        public void Change_at_OnAfterRender_on_Browser_Start_from_OnAfterRender_Test(HostingModel hostingModel)
+        {
+            _TestContext.StartHost(hostingModel);
+            var driver = _TestContext.WebDriver;
+
+            // Navigate to "Change at "OnAfterRender"", and validate the document title of it
+            driver.GoToUrlAndWait(_TestContext.GetHostUrl(hostingModel), "/change-at-onafterrender");
+            driver.Wait(5000).Until(_ => driver.FindElement(By.XPath("//h1[text()='Change at \"OnAfterRender\"']")));
+            Thread.Sleep(200);
+
+            driver.Wait(1000).Until(_ => driver.Title == "2nd title");
+
+            // Validate meta elements of "Change at "OnAfterRender""
+            var actualMetaAtOnAfterRender = driver.DumpMetaElements();
+            actualMetaAtOnAfterRender.Is(ExpectMeta.AtOnAfterRender);
+
+            // Validate link elements of "Change at "OnAfterRender""
+            var actualLinkAtOnAfterRender = driver.DumpLinkElements();
+            actualLinkAtOnAfterRender.Is(ExpectLinks.AtOnAfterRender);
+
+            // Go back to Home, and validate the document title, meta elements, link elements of "Home"
+            driver.ClickHome();
+            driver.Wait(1000).Until(_ => driver.Title == "Sample Site");
+            var actualMetaAtHome = driver.DumpMetaElements();
+            actualMetaAtHome.Is(ExpectMeta.AtHome);
+            var actualLinkAtHome = driver.DumpLinkElements();
+            actualLinkAtHome.Is(ExpectLinks.AtHome);
+        }
     }
 }

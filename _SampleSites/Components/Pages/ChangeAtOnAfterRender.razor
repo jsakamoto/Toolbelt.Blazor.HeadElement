@@ -1,0 +1,38 @@
+﻿@page "/change-at-onafterrender"
+@inject Toolbelt.Blazor.HeadElement.IHeadElementHelper HeadElementHelper
+
+<Title>@_Title</Title>
+<Meta Property="og:title" Content="@_Title" />
+<Meta Name="keywords" Content="@_Keywords" />
+<Meta http-equiv="meta-H2" Content="@_MetaH2" />
+<Link rel="stylesheet" href="_content/SampleSite.Components/css/custom-A.css" title="@_Title" />
+
+<h1>Change at "OnAfterRender"</h1>
+
+@code {
+    private string _Title = "1st title";
+    private string _Keywords = "1st keywords";
+    private string _MetaH2 = "value-H2-1st";
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        base.OnAfterRender(firstRender);
+        if (firstRender)
+        {
+            this._Title = "2nd title";
+            this._Keywords = "2nd keywords";
+            this._MetaH2 = "value-H2-2nd";
+
+            await HeadElementHelper.RemoveMetaElementsAsync(
+                ByName("meta-N3"),
+                ByProp("meta-P2"),
+                ByHttpEquiv("meta-H0"));
+            await HeadElementHelper.RemoveLinkElementsAsync(
+                new LinkElement(rel: "stylesheet", href: "_content/SampleSite.Components/css/custom-X.css"),
+                new LinkElement(rel: "preload", href: "_content/SampleSite.Components/css/red.png", media: "(min-width: 601px)"),
+                new LinkElement(rel: "preload", href: "_content/SampleSite.Components/css/custom-X.css"));
+
+            this.StateHasChanged();
+        }
+    }
+}

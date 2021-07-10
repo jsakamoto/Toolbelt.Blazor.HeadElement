@@ -43,5 +43,34 @@
                 "'','','meta-H3','value-H3-A'",
                 "'','','meta-H4','value-H4-C'"
             };
+        public static readonly string[] AtOnAfterRender = new[]{
+                // "'name','property','http-equiv','content'"
+                "'','','',''",
+                "'keywords','','','2nd keywords'",
+                "'meta-N0','','','value-N0-A'",
+                "'meta-N2','','','value-N2-A'",
+                "'viewport','','','width=device-width'",
+                "'','meta-P0','','value-P0-A'",
+                "'','meta-P3','','value-P3-A'",
+                "'','og:title','','2nd title'",
+                "'','','meta-H2','value-H2-2nd'",
+                "'','','meta-H3','value-H3-A'"
+            };
+        public static readonly string[] AtOnAfterRenderPrerendered = new[]{
+                // "'name','property','http-equiv','content'"
+                "'','','',''",
+                "'keywords','','','1st keywords'",
+                "'meta-N0','','','value-N0-A'",
+                "'meta-N2','','','value-N2-A'",
+                "'meta-N3','','','value-N3-A'",
+                "'viewport','','','width=device-width'",
+                "'','meta-P0','','value-P0-A'",
+                "'','meta-P2','','value-P2-A'",
+                "'','meta-P3','','value-P3-A'",
+                "'','og:title','','1st title'",
+                "'','','meta-H0','value-H0-A'",
+                "'','','meta-H2','value-H2-1st'",
+                "'','','meta-H3','value-H3-A'"
+            };
     }
 }

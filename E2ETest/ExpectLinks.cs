@@ -37,5 +37,24 @@
                 "rel:stylesheet, href:/_content/SampleSite.Components/css/custom-X.css, type:, media:, title:, sizes:, as:, crossorigin:, hreflang:, imagesizes:, imagesrcset:, disabled:false",
                 "rel:stylesheet, href:/_content/SampleSite.Components/css/site.css, type:, media:, title:, sizes:, as:, crossorigin:, hreflang:, imagesizes:, imagesrcset:, disabled:false"
             };
+        public static readonly string[] AtOnAfterRender = new[]{
+                "rel:icon, href:/_content/SampleSite.Components/favicons/favicon.ico, type:, media:, title:, sizes:, as:, crossorigin:, hreflang:, imagesizes:, imagesrcset:, disabled:false",
+                "rel:preload, href:/_content/SampleSite.Components/css/orange.png, type:, media:, title:, sizes:, as:image, crossorigin:, hreflang:, imagesizes:, imagesrcset:, disabled:false",
+                "rel:preload, href:/_content/SampleSite.Components/css/red.png, type:, media:(max-width: 600px), title:, sizes:, as:image, crossorigin:, hreflang:, imagesizes:32px, imagesrcset:red.png, 32px, disabled:false",
+                "rel:stylesheet, href:/_content/SampleSite.Components/css/bootstrap/bootstrap.min.css, type:, media:, title:, sizes:, as:, crossorigin:, hreflang:, imagesizes:, imagesrcset:, disabled:false",
+                "rel:stylesheet, href:/_content/SampleSite.Components/css/custom-A.css, type:, media:, title:2nd title, sizes:, as:, crossorigin:, hreflang:, imagesizes:, imagesrcset:, disabled:false",
+                "rel:stylesheet, href:/_content/SampleSite.Components/css/site.css, type:, media:, title:, sizes:, as:, crossorigin:, hreflang:, imagesizes:, imagesrcset:, disabled:false"
+            };
+        public static readonly string[] AtOnAfterRenderPrerendered = new[]{
+                "rel:icon, href:/_content/SampleSite.Components/favicons/favicon.ico, type:, media:, title:, sizes:, as:, crossorigin:, hreflang:, imagesizes:, imagesrcset:, disabled:false",
+                "rel:preload, href:/_content/SampleSite.Components/css/custom-X.css, type:, media:, title:, sizes:, as:style, crossorigin:anonymous, hreflang:, imagesizes:, imagesrcset:, disabled:false",
+                "rel:preload, href:/_content/SampleSite.Components/css/orange.png, type:, media:, title:, sizes:, as:image, crossorigin:, hreflang:, imagesizes:, imagesrcset:, disabled:false",
+                "rel:preload, href:/_content/SampleSite.Components/css/red.png, type:, media:(max-width: 600px), title:, sizes:, as:image, crossorigin:, hreflang:, imagesizes:32px, imagesrcset:red.png, 32px, disabled:false",
+                "rel:preload, href:/_content/SampleSite.Components/css/red.png, type:, media:(min-width: 601px), title:, sizes:, as:image, crossorigin:, hreflang:en-US, imagesizes:, imagesrcset:, disabled:false",
+                "rel:stylesheet, href:/_content/SampleSite.Components/css/bootstrap/bootstrap.min.css, type:, media:, title:, sizes:, as:, crossorigin:, hreflang:, imagesizes:, imagesrcset:, disabled:false",
+                "rel:stylesheet, href:/_content/SampleSite.Components/css/custom-A.css, type:, media:, title:1st title, sizes:, as:, crossorigin:, hreflang:, imagesizes:, imagesrcset:, disabled:false",
+                "rel:stylesheet, href:/_content/SampleSite.Components/css/custom-X.css, type:, media:, title:, sizes:, as:, crossorigin:, hreflang:, imagesizes:, imagesrcset:, disabled:false",
+                "rel:stylesheet, href:/_content/SampleSite.Components/css/site.css, type:, media:, title:, sizes:, as:, crossorigin:, hreflang:, imagesizes:, imagesrcset:, disabled:false"
+            };
     }
 }

@@ -143,5 +143,27 @@ namespace HeadElement.E2ETest
                 .Select(l => $"rel:{l.Rel}, href:{l.Href}, type:{l.Type}, media:{l.Media}, title:{l.Title}, sizes:{l.Sizes}, as:{l.As}, crossorigin:{l.CrossOrigin}, hreflang:{l.Hreflang}, imagesizes:{l.ImageSizes}, imagesrcset:{l.ImageSrcset}, disabled:{l.Disabled}")
                 .ToArray();
         }
+
+        [Theory(DisplayName = "Change at OnAfterRender on Server")]
+        [MemberData(nameof(HostingModels))]
+        public async Task Change_at_OnAfterRender_on_Server_Test(HostingModel hostingModel)
+        {
+            _TestContext.StartHost(hostingModel);
+            var hostUrl = _TestContext.GetHostUrl(hostingModel).TrimEnd('/');
+
+            var httpClient = new HttpClient();
+            var contentAtOnAfterRender = await httpClient.GetStringAsync(hostUrl + "/change-at-onafterrender");
+
+            Regex.Match(contentAtOnAfterRender, "<title>(?<title>.+)</title>")
+                .Groups["title"].Value.Is("1st title");
+
+            // Validate meta elements of "Change at "OnAfterRender""
+            var actualMetaAtOnAfterRender = DumpMetaElements(contentAtOnAfterRender);
+            actualMetaAtOnAfterRender.Is(ExpectMeta.AtOnAfterRenderPrerendered);
+
+            // Validate link elements of "Change at "OnAfterRender""
+            var actualLinkAtOnAfterRender = DumpLinkElements(contentAtOnAfterRender);
+            actualLinkAtOnAfterRender.Is(ExpectLinks.AtOnAfterRenderPrerendered);
+        }
     }
 }

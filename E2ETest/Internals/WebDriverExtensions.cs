@@ -38,6 +38,13 @@ namespace HeadElement.E2ETest
             Thread.Sleep(200);
         }
 
+        public static void ClickOnAfterRender(this IWebDriver driver)
+        {
+            driver.FindElement(By.CssSelector("a[href=change-at-onafterrender]")).Click();
+            driver.Wait(1000).Until(_ => driver.FindElement(By.XPath("//h1[text()='Change at \"OnAfterRender\"']")));
+            Thread.Sleep(200);
+        }
+
         public static void ClickHome(this IWebDriver driver)
         {
             driver.FindElement(By.CssSelector("a.navbar-brand")).Click();
