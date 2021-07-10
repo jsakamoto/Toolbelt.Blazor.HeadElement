@@ -1,4 +1,7 @@
-﻿v.1.5.1
+﻿v.1.5.3
+- Fix: Updating title/meta/link elements at OnAfterRender doesn't any effects.
+
+v.1.5.1
 - Fix: head elements revert to default unexpectedly in some cases.
 
 v.1.5.0

@@ -1,4 +1,7 @@
-﻿v.1.5.2
+﻿v.1.5.3
+- Fix: Updating title/meta/link elements at OnAfterRender doesn't any effects.
+
+v.1.5.2
 - Fix: The server-side rendering result lost a slash of a self-closing tag.
 
 v.1.5.1

@@ -1,4 +1,7 @@
-﻿v.5.4.2
+﻿v.5.4.3
+- Fix: Updating title/meta/link elements at OnAfterRender doesn't any effects.
+
+v.5.4.2
 - Add support for "BlazorWasmPrerendering.Build"
 
 v.5.4.1
