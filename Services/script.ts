@@ -1,4 +1,4 @@
-﻿namespace Toolbelt.Head {
+﻿export namespace Toolbelt.Head {
 
     interface MetaElement {
         n: string;

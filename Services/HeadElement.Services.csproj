@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Razor">
 
   <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
+    <TargetFrameworks>netstandard2.0;net5.0</TargetFrameworks>
     <LangVersion>Latest</LangVersion>
     <RazorLangVersion>3.0</RazorLangVersion>
     <NoWarn>$(NoWarn);1591</NoWarn>
@@ -11,6 +11,9 @@
     <DocumentationFile>bin\$(Configuration)\$(TargetFramework)\$(AssemblyName).xml</DocumentationFile>
     <PackageOutputPath>..\_dist\</PackageOutputPath>
     <TypeScriptCompileBlocked>false</TypeScriptCompileBlocked>
+  </PropertyGroup>
+  <PropertyGroup>
+    <DefineConstants Condition=" '$(TargetFramework)' != 'netstandard2.0' ">$(DefineConstants);ENABLE_JSMODULE</DefineConstants>
   </PropertyGroup>
 
   <PropertyGroup>
@@ -28,13 +31,24 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Abstractions\HeadElement.Abstractions.csproj" />
+  </ItemGroup>
+  <ItemGroup>
     <PackageReference Include="BuildBundlerMinifier" Version="3.2.449" PrivateAssets="all" />
     <DotNetCliToolReference Include="BundlerMinifier.Core" Version="2.6.362" />
-    <PackageReference Include="Microsoft.AspNetCore.Components" Version="3.0.0" />
     <PackageReference Include="Microsoft.TypeScript.MSBuild" Version="3.6.3">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
+  </ItemGroup>
+
+  <ItemGroup Condition=" '$(TargetFramework)' == 'netstandard2.0' ">
+    <PackageReference Include="Microsoft.AspNetCore.Components" Version="3.0.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="3.0.0" />
+  </ItemGroup>
+  <ItemGroup Condition=" '$(TargetFramework)' != 'netstandard2.0' ">
+    <PackageReference Include="Microsoft.AspNetCore.Components" Version="5.0.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="5.0.0" />
   </ItemGroup>
 
   <ItemGroup>
@@ -63,9 +77,14 @@
     <None Include="..\README.md" Visible="false" Pack="true" PackagePath="\" />
   </ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\Abstractions\HeadElement.Abstractions.csproj" />
-  </ItemGroup>
+  <Target Name="_HeadElement_GenerateScriptLoaderJS" BeforeTargets="BeforeBuild">
+    <PropertyGroup>
+      <_HeadElement_ScriptLoader>$(_HeadElement_ScriptLoader);// THIS FILE IS AUTO GENERATED IN THE MSBUILD SCRIPT </_HeadElement_ScriptLoader>
+      <_HeadElement_ScriptLoader>$(_HeadElement_ScriptLoader);import { Toolbelt } from './script.min.js?v=$(Version)'%3b</_HeadElement_ScriptLoader>
+      <_HeadElement_ScriptLoader>$(_HeadElement_ScriptLoader);window['Toolbelt'] = Toolbelt%3b</_HeadElement_ScriptLoader>
+    </PropertyGroup>
+    <WriteLinesToFile File="wwwroot/boot.js" Lines="$(_HeadElement_ScriptLoader)" Overwrite="true" WriteOnlyWhenDifferent="true" />
+  </Target>
 
   <Target Name="PreparePackageReleaseNotesFromFile" BeforeTargets="GenerateNuspec">
     <ReadLinesFromFile File="RELEASE-NOTES.txt">

@@ -9,6 +9,12 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.JSInterop;
 using Toolbelt.Blazor.HeadElement.Internals;
 
+#if ENABLE_JSMODULE
+using IJSInterface = Microsoft.JSInterop.IJSObjectReference;
+#else
+using IJSInterface = Microsoft.JSInterop.IJSRuntime;
+#endif
+
 namespace Toolbelt.Blazor.HeadElement
 {
     public class HeadElementHelperService : IHeadElementHelper, IDisposable
@@ -16,6 +22,8 @@ namespace Toolbelt.Blazor.HeadElement
         internal readonly HeadElementHelperServiceOptions Options = new HeadElementHelperServiceOptions();
 
         private readonly IJSRuntime _JS;
+
+        private IJSInterface _JSModule = null;
 
         private readonly NavigationManager _NavigationManager;
 
@@ -48,34 +56,39 @@ namespace Toolbelt.Blazor.HeadElement
             this._NavigationManager.LocationChanged -= this._NavigationManager_LocationChanged;
         }
 
-        private async ValueTask<bool> EnsureScriptEnabledAsync()
+        private async ValueTask<IJSInterface> EnsureScriptEnabledAsync()
         {
-            if (this._ScriptEnabled || this._JS == null) return this._ScriptEnabled;
+            if (this._ScriptEnabled || this._JS == null) return this._JSModule;
 
             await this._EnsureScriptSyncer.WaitAsync();
             try
             {
-                if (this._ScriptEnabled) return this._ScriptEnabled;
+                if (this._ScriptEnabled) return this._JSModule;
 
                 var version = this.GetType().Assembly.GetName().Version;
-                var script = this.Options.DisableClientScriptAutoInjection ? "0" :
-                    $"new Promise(r=>((d,t,s)=>(h=>h.querySelector(t+`[src=\"${{s}}\"]`)?r():(e=>(e.src=s,e.onload=r,h.appendChild(e)))(d.createElement(t)))(d.head))(document,'script','_content/Toolbelt.Blazor.HeadElement.Services/script.min.js?v={version}'))";
-                await this._JS.InvokeVoidAsync("eval", script);
-
+#if ENABLE_JSMODULE
+                var scriptPath = $"./_content/Toolbelt.Blazor.HeadElement.Services/script.min.js?v={version}";
+                this._JSModule = await this._JS.InvokeAsync<IJSObjectReference>("import", scriptPath);
+#else
+                this._JSModule = this._JS;
+                if (!this.Options.DisableClientScriptAutoInjection)
+                {
+                    var scriptPath = $"./_content/Toolbelt.Blazor.HeadElement.Services/boot.js?v={version}";
+                    await this._JS.InvokeVoidAsync("eval", "new Promise(r=>((d,t,s)=>(h=>h.querySelector(t+`[src=\"${{s}}\"]`)?r():(e=>(e.src=s,e.type='module',e.onload=r,h.appendChild(e)))(d.createElement(t)))(d.head))(document,'script','" + scriptPath + "'))");
+                }
+#endif
                 this._ScriptEnabled = true;
             }
             catch { }
             finally { this._EnsureScriptSyncer.Release(); }
-            return this._ScriptEnabled;
+            return this._JSModule;
         }
 
         private async ValueTask<T> InvokeJSAsync<T>(string identifier, params object[] args)
         {
-            if (await this.EnsureScriptEnabledAsync())
-            {
-                return await this._JS.InvokeAsync<T>(identifier, args);
-            }
-            return default;
+            var jsmodule = await this.EnsureScriptEnabledAsync();
+            if (jsmodule == null) return default;
+            return await jsmodule.InvokeAsync<T>(identifier, args);
         }
 
         private void _NavigationManager_LocationChanged(object sender, LocationChangedEventArgs e)
@@ -91,9 +104,6 @@ namespace Toolbelt.Blazor.HeadElement
                 await this.GetDefaultsAsync();
 
                 if (this._Store.UrlLastSet == this.NormalizeUrl(this._NavigationManager.Uri)) return;
-
-                var urlLastSet = this._Store.UrlLastSet;
-                var normalizeUrl = this.NormalizeUrl(this._NavigationManager.Uri);
 
                 this._Store.MetaElementCommands.Clear();
                 this._Store.LinkElementCommands.Clear();
