@@ -29,7 +29,7 @@ namespace HeadElement.E2ETest
         private static readonly BlazorVersion[] _BlazorVersions = new[] {
             NETCore31,
             NET50,
-            // NET60 
+            NET60 
         };
 
         public static IEnumerable<object[]> TestCases => _HostingModels.SelectMany(m => _BlazorVersions.Select(v => new object[] { m, v }));
