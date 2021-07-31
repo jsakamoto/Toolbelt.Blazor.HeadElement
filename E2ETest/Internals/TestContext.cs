@@ -1,18 +1,28 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Threading.Tasks;
+using HeadElement.E2ETest.Internals;
 using OpenQA.Selenium.Chrome;
 using Xunit;
+using static HeadElement.E2ETest.Internals.BlazorVersion;
+using static HeadElement.E2ETest.Internals.HostingModel;
 
 namespace HeadElement.E2ETest
 {
     public class TestContext : IDisposable
     {
-        private readonly IReadOnlyDictionary<HostingModel, SampleSite> SampleSites = new Dictionary<HostingModel, SampleSite> {
-            { HostingModel.Wasm, new SampleSite(5011, "Client") },
-            { HostingModel.WasmHosted, new SampleSite(5012, "Host") },
-            { HostingModel.Server, new SampleSite(5013, "Server") }
+        private readonly IReadOnlyDictionary<(HostingModel, BlazorVersion), SampleSite> SampleSites = new Dictionary<(HostingModel, BlazorVersion), SampleSite> {
+            {(Wasm,       NETCore31), new SampleSite(5011, "Client31", "netstandard2.1") },
+            {(WasmHosted, NETCore31), new SampleSite(5012, "Host",   "netcoreapp3.1")},
+            {(Server,     NETCore31), new SampleSite(5013, "Server", "netcoreapp3.1")},
+
+            {(Wasm,       NET50),     new SampleSite(5014, "Client", "net5.0")},
+            {(WasmHosted, NET50),     new SampleSite(5015, "Host",   "net5.0")},
+            {(Server,     NET50),     new SampleSite(5016, "Server", "net5.0")},
+
+            {(Wasm,       NET60),     new SampleSite(5017, "Client", "net6.0")},
+            {(WasmHosted, NET60),     new SampleSite(5018, "Host",   "net6.0")},
+            {(Server,     NET60),     new SampleSite(5019, "Server", "net6.0") },
         };
 
         private ChromeDriver _WebDriver;
@@ -21,12 +31,12 @@ namespace HeadElement.E2ETest
         {
             get
             {
-                if (_WebDriver == null)
+                if (this._WebDriver == null)
                 {
-                    _WebDriver = new ChromeDriver();
-                    _WebDriver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(3);
+                    this._WebDriver = new ChromeDriver();
+                    this._WebDriver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(3);
                 }
-                return _WebDriver;
+                return this._WebDriver;
             }
         }
 
@@ -34,20 +44,20 @@ namespace HeadElement.E2ETest
         {
         }
 
-        public void StartHost(HostingModel hostingModel)
+        public void StartHost(HostingModel hostingModel, BlazorVersion blazorVersion)
         {
-            this.SampleSites[hostingModel].Start();
+            this.SampleSites[(hostingModel, blazorVersion)].Start();
         }
 
-        public string GetHostUrl(HostingModel hostingModel)
+        public string GetHostUrl(HostingModel hostingModel, BlazorVersion blazorVersion)
         {
-            return this.SampleSites[hostingModel].GetUrl();
+            return this.SampleSites[(hostingModel, blazorVersion)].GetUrl();
         }
 
         public void Dispose()
         {
-            Parallel.ForEach(SampleSites.Values, sampleSite => sampleSite.Stop());
-            _WebDriver?.Quit();
+            Parallel.ForEach(this.SampleSites.Values, sampleSite => sampleSite.Stop());
+            this._WebDriver?.Quit();
         }
     }
 

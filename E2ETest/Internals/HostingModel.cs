@@ -1,4 +1,4 @@
-﻿namespace HeadElement.E2ETest
+﻿namespace HeadElement.E2ETest.Internals
 {
     public enum HostingModel
     {

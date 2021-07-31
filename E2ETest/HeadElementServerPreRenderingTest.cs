@@ -4,7 +4,10 @@ using System.Linq;
 using System.Net.Http;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using HeadElement.E2ETest.Internals;
 using Xunit;
+using static HeadElement.E2ETest.Internals.BlazorVersion;
+using static HeadElement.E2ETest.Internals.HostingModel;
 
 namespace HeadElement.E2ETest
 {
@@ -18,52 +21,59 @@ namespace HeadElement.E2ETest
             this._TestContext = testContext;
         }
 
-        public static IEnumerable<object[]> HostingModels { get; } = new List<object[]>
-        {
-            new object[] { HostingModel.WasmHosted },
-            new object[] { HostingModel.Server },
+        private static readonly HostingModel[] _HostingModels = new[] {
+            WasmHosted,
+            Server 
         };
 
+        private static readonly BlazorVersion[] _BlazorVersions = new[] {
+            NETCore31,
+            NET50,
+            // NET60 
+        };
+
+        public static IEnumerable<object[]> TestCases => _HostingModels.SelectMany(m => _BlazorVersions.Select(v => new object[] { m, v }));
+
         [Theory(DisplayName = "Change Title on Server")]
-        [MemberData(nameof(HostingModels))]
-        public async Task ChangeTitle_on_Server_Test(HostingModel hostingModel)
+        [MemberData(nameof(TestCases))]
+        public async Task ChangeTitle_on_Server_Test(HostingModel hostingModel, BlazorVersion blazorVersion)
         {
-            _TestContext.StartHost(hostingModel);
+            this._TestContext.StartHost(hostingModel, blazorVersion);
 
             var httpClient = new HttpClient();
 
-            var contentOfHome = await httpClient.GetStringAsync(_TestContext.GetHostUrl(hostingModel));
+            var contentOfHome = await httpClient.GetStringAsync(this._TestContext.GetHostUrl(hostingModel, blazorVersion));
             Regex.Match(contentOfHome, "<title>(?<title>.+)</title>")
                 .Groups["title"].Value.Is("Sample Site");
 
-            var contentOfCounter = await httpClient.GetStringAsync(_TestContext.GetHostUrl(hostingModel).TrimEnd('/') + "/counter");
+            var contentOfCounter = await httpClient.GetStringAsync(this._TestContext.GetHostUrl(hostingModel, blazorVersion).TrimEnd('/') + "/counter");
             Regex.Match(contentOfCounter, "<title>(?<title>.+)</title>")
                 .Groups["title"].Value.Is("Counter(0)");
 
-            var contentOfFetchdata = await httpClient.GetStringAsync(_TestContext.GetHostUrl(hostingModel).TrimEnd('/') + "/fetchdata");
+            var contentOfFetchdata = await httpClient.GetStringAsync(this._TestContext.GetHostUrl(hostingModel, blazorVersion).TrimEnd('/') + "/fetchdata");
             Regex.Match(contentOfFetchdata, "<title>(?<title>.+)</title>")
                 .Groups["title"].Value.Is("Fetch data");
         }
 
         [Theory(DisplayName = "Change meta elements on Server")]
-        [MemberData(nameof(HostingModels))]
-        public async Task ChangeMetaElements_on_Server_Test(HostingModel hostingModel)
+        [MemberData(nameof(TestCases))]
+        public async Task ChangeMetaElements_on_Server_Test(HostingModel hostingModel, BlazorVersion blazorVersion)
         {
-            _TestContext.StartHost(hostingModel);
-            var hostUrl = _TestContext.GetHostUrl(hostingModel).TrimEnd('/');
+            this._TestContext.StartHost(hostingModel, blazorVersion);
+            var hostUrl = this._TestContext.GetHostUrl(hostingModel, blazorVersion).TrimEnd('/');
 
             var httpClient = new HttpClient();
 
             var contentAtHome = await httpClient.GetStringAsync(hostUrl + "/");
-            var actualAtHome = DumpMetaElements(contentAtHome);
+            var actualAtHome = this.DumpMetaElements(contentAtHome);
             actualAtHome.Is(ExpectMeta.AtHome);
 
             var contentAtCounter = await httpClient.GetStringAsync(hostUrl + "/counter");
-            var actualAtCounter = DumpMetaElements(contentAtCounter);
+            var actualAtCounter = this.DumpMetaElements(contentAtCounter);
             actualAtCounter.Is(ExpectMeta.AtCounter);
 
             var contentAtFetchdata = await httpClient.GetStringAsync(hostUrl + "/fetchdata");
-            var actualAtFetchData = DumpMetaElements(contentAtFetchdata);
+            var actualAtFetchData = this.DumpMetaElements(contentAtFetchdata);
             actualAtFetchData.Is(ExpectMeta.AtFetchData);
         }
 
@@ -82,38 +92,38 @@ namespace HeadElement.E2ETest
         }
 
         [Theory(DisplayName = "Change link elements on Server")]
-        [MemberData(nameof(HostingModels))]
-        public async Task ChangeLinkElements_on_Server_Test(HostingModel hostingModel)
+        [MemberData(nameof(TestCases))]
+        public async Task ChangeLinkElements_on_Server_Test(HostingModel hostingModel, BlazorVersion blazorVersion)
         {
-            _TestContext.StartHost(hostingModel);
-            var hostUrl = _TestContext.GetHostUrl(hostingModel).TrimEnd('/');
+            this._TestContext.StartHost(hostingModel, blazorVersion);
+            var hostUrl = this._TestContext.GetHostUrl(hostingModel, blazorVersion).TrimEnd('/');
 
             var httpClient = new HttpClient();
 
             var contentAtHome = await httpClient.GetStringAsync(hostUrl + "/");
-            var actualAtHome = DumpLinkElements(contentAtHome);
+            var actualAtHome = this.DumpLinkElements(contentAtHome);
             actualAtHome.Is(ExpectLinks.AtHome);
 
             var contentAtCounter = await httpClient.GetStringAsync(hostUrl + "/counter");
-            var actualAtCounter = DumpLinkElements(contentAtCounter);
+            var actualAtCounter = this.DumpLinkElements(contentAtCounter);
             actualAtCounter.Is(ExpectLinks.AtCounter);
 
             var contentAtFetchdata = await httpClient.GetStringAsync(hostUrl + "/fetchdata");
-            var actualAtFetchData = DumpLinkElements(contentAtFetchdata);
+            var actualAtFetchData = this.DumpLinkElements(contentAtFetchdata);
             actualAtFetchData.Is(ExpectLinks.AtFetchData);
         }
 
         [Theory(DisplayName = "Add link elements only on Server")]
-        [MemberData(nameof(HostingModels))]
-        public async Task AddLinkElementsOnly_on_Server_Test(HostingModel hostingModel)
+        [MemberData(nameof(TestCases))]
+        public async Task AddLinkElementsOnly_on_Server_Test(HostingModel hostingModel, BlazorVersion blazorVersion)
         {
-            _TestContext.StartHost(hostingModel);
+            this._TestContext.StartHost(hostingModel, blazorVersion);
             var httpClient = new HttpClient();
-            var urlOfCanonical = _TestContext.GetHostUrl(hostingModel).TrimEnd('/') + "/canonical";
+            var urlOfCanonical = this._TestContext.GetHostUrl(hostingModel, blazorVersion).TrimEnd('/') + "/canonical";
 
             var contentOfCanonical = await httpClient.GetStringAsync(urlOfCanonical);
 
-            DumpLinkElements(contentOfCanonical).Any(
+            this.DumpLinkElements(contentOfCanonical).Any(
                 elemnt => elemnt == $"rel:canonical, href:/canonical, type:, media:, title:, sizes:, as:, crossorigin:, hreflang:, imagesizes:, imagesrcset:, disabled:false"
             ).IsTrue();
         }
@@ -145,11 +155,11 @@ namespace HeadElement.E2ETest
         }
 
         [Theory(DisplayName = "Change at OnAfterRender on Server")]
-        [MemberData(nameof(HostingModels))]
-        public async Task Change_at_OnAfterRender_on_Server_Test(HostingModel hostingModel)
+        [MemberData(nameof(TestCases))]
+        public async Task Change_at_OnAfterRender_on_Server_Test(HostingModel hostingModel, BlazorVersion blazorVersion)
         {
-            _TestContext.StartHost(hostingModel);
-            var hostUrl = _TestContext.GetHostUrl(hostingModel).TrimEnd('/');
+            this._TestContext.StartHost(hostingModel, blazorVersion);
+            var hostUrl = this._TestContext.GetHostUrl(hostingModel, blazorVersion).TrimEnd('/');
 
             var httpClient = new HttpClient();
             var contentAtOnAfterRender = await httpClient.GetStringAsync(hostUrl + "/change-at-onafterrender");
@@ -158,11 +168,11 @@ namespace HeadElement.E2ETest
                 .Groups["title"].Value.Is("1st title");
 
             // Validate meta elements of "Change at "OnAfterRender""
-            var actualMetaAtOnAfterRender = DumpMetaElements(contentAtOnAfterRender);
+            var actualMetaAtOnAfterRender = this.DumpMetaElements(contentAtOnAfterRender);
             actualMetaAtOnAfterRender.Is(ExpectMeta.AtOnAfterRenderPrerendered);
 
             // Validate link elements of "Change at "OnAfterRender""
-            var actualLinkAtOnAfterRender = DumpLinkElements(contentAtOnAfterRender);
+            var actualLinkAtOnAfterRender = this.DumpLinkElements(contentAtOnAfterRender);
             actualLinkAtOnAfterRender.Is(ExpectLinks.AtOnAfterRenderPrerendered);
         }
     }

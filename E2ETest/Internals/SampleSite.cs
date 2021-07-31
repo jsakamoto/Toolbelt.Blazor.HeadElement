@@ -12,33 +12,36 @@ namespace HeadElement.E2ETest
 
         private readonly string ProjectSubFolder;
 
+        private readonly string TargetFramework;
+
         private Process dotnetCLI;
 
         private readonly ManualResetEventSlim ListeningWaiter = new ManualResetEventSlim(initialState: false);
 
-        public SampleSite(int listenPort, string projectSubFolder)
+        public SampleSite(int listenPort, string projectSubFolder, string targetFramework)
         {
             this.ListenPort = listenPort;
             this.ProjectSubFolder = projectSubFolder;
+            this.TargetFramework = targetFramework;
         }
 
-        public string GetUrl() => $"http://localhost:{ListenPort}";
+        public string GetUrl() => $"http://localhost:{this.ListenPort}";
 
         public void Start()
         {
-            if (dotnetCLI != null) return;
+            if (this.dotnetCLI != null) return;
 
             var workDir = AppDomain.CurrentDomain.BaseDirectory;
             while (!Directory.GetDirectories(workDir, "_SampleSites").Any()) workDir = Path.GetDirectoryName(workDir);
-            workDir = Path.Combine(workDir, "_SampleSites", ProjectSubFolder);
+            workDir = Path.Combine(workDir, "_SampleSites", this.ProjectSubFolder);
 
-            dotnetCLI = new Process
+            this.dotnetCLI = new Process
             {
                 EnableRaisingEvents = true,
                 StartInfo = new ProcessStartInfo
                 {
                     FileName = "dotnet",
-                    Arguments = $"run --urls {GetUrl()}",
+                    Arguments = $"run --urls {this.GetUrl()} -f {this.TargetFramework}",
                     UseShellExecute = false,
                     CreateNoWindow = true,
                     ErrorDialog = false,
@@ -47,31 +50,31 @@ namespace HeadElement.E2ETest
                     WorkingDirectory = workDir
                 },
             };
-            dotnetCLI.OutputDataReceived += Process_OutputDataReceived;
+            this.dotnetCLI.OutputDataReceived += this.Process_OutputDataReceived;
 
-            dotnetCLI.Start();
-            dotnetCLI.BeginOutputReadLine();
-            dotnetCLI.BeginErrorReadLine();
+            this.dotnetCLI.Start();
+            this.dotnetCLI.BeginOutputReadLine();
+            this.dotnetCLI.BeginErrorReadLine();
 
-            var timedOut = !ListeningWaiter.Wait(millisecondsTimeout: 10000);
+            var timedOut = !this.ListeningWaiter.Wait(millisecondsTimeout: 10000);
             if (timedOut) throw new TimeoutException("\"dotnet run\" did not respond \"Now listening on: http://\".");
             Thread.Sleep(200);
         }
 
         private void Process_OutputDataReceived(object sender, DataReceivedEventArgs e)
         {
-            if (e.Data?.Contains("Now listening on: http://") == true) ListeningWaiter.Set();
+            if (e.Data?.Contains("Now listening on: http://") == true) this.ListeningWaiter.Set();
         }
 
         public void Stop()
         {
-            if (dotnetCLI != null)
+            if (this.dotnetCLI != null)
             {
                 //dotnetCLI.OutputDataReceived -= Process_OutputDataReceived;
-                if (!dotnetCLI.HasExited) dotnetCLI.Kill();
-                dotnetCLI.Dispose();
+                if (!this.dotnetCLI.HasExited) this.dotnetCLI.Kill();
+                this.dotnetCLI.Dispose();
             }
-            ListeningWaiter.Dispose();
+            this.ListeningWaiter.Dispose();
         }
     }
 }
