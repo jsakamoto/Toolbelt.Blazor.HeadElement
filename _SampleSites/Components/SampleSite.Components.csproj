@@ -1,17 +1,38 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Razor">
 
   <PropertyGroup>
-    <TargetFramework>net5.0</TargetFramework>
+    <!--<TargetFrameworks>netstandard2.0;net5.0;net6.0</TargetFrameworks>-->
+    <TargetFrameworks>netstandard2.0;net5.0</TargetFrameworks>
+    <RazorLangVersion>3.0</RazorLangVersion>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Toolbelt.Blazor.HeadElement" Version="5.4.3" />
+    <PackageReference Include="Toolbelt.Blazor.HeadElement" Version="6.0.0-preview.1" />
     <!--<ProjectReference Include="..\..\Components\HeadElement.csproj" />-->
   </ItemGroup>
 
-  <ItemGroup>
-    <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="5.0.1" />
-    <!--<PackageReference Include="Microsoft.AspNetCore.Components.Web.Extensions" Version="5.0.0-rc.1.*" />-->
+  <ItemGroup Condition=" '$(TargetFramework)' == 'netstandard2.0' ">
+    <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="3.1.0" />
   </ItemGroup>
+  <ItemGroup Condition=" '$(TargetFramework)' == 'net5.0' ">
+    <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="5.0.1" />
+  </ItemGroup>
+  <ItemGroup Condition=" '$(TargetFramework)' == 'net6.0' ">
+    <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="6.0.0-preview.6.21355.2" />
+  </ItemGroup>
+
+  <!--
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Components.Web.Extensions" Version="5.0.0-rc.1.*" />
+  </ItemGroup>
+  -->
+
+  <!-- https://github.com/dotnet/sdk/issues/18148#issuecomment-860957180 -->
+  <!-- Workaround for this bug (replace the analyzer name with the one you need to exclude (filename only, no extension) -->
+  <Target Name="RemoveLoggingAnalyzer" AfterTargets="ResolveLockFileAnalyzers">
+    <ItemGroup>
+      <Analyzer Remove="@(Analyzer)" Condition="%(FileName) == 'Microsoft.Extensions.Logging.Generators'" />
+    </ItemGroup>
+  </Target>
 
 </Project>

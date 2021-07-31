@@ -1,0 +1,29 @@
+﻿/*.page {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+}
+
+@media (min-width: 768px) {
+    .page {
+        flex-direction: row;
+    }
+}
+
+.about-link {
+    background-image: url(favicon.png);
+    background-size: 32px 32px;
+    background-repeat: no-repeat;
+    display: inline-block;
+    padding-left: 40px;
+    line-height: 32px;
+}
+*/
+.navbar-brand {
+    padding: 0;
+}
+
+.framework-description {
+    font-size: 11px;
+}
