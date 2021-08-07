@@ -20,7 +20,9 @@ namespace Toolbelt.Blazor.HeadElement
 {
     public class HeadElementHelperService : IHeadElementHelper, IDisposable
     {
+#pragma warning disable CS0618
         internal readonly HeadElementHelperServiceOptions Options = new HeadElementHelperServiceOptions();
+#pragma warning restore CS0618
 
         private readonly IJSRuntime _JS;
 
