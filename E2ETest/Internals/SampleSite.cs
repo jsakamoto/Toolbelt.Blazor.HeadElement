@@ -27,9 +27,11 @@ namespace HeadElement.E2ETest
 
         public string GetUrl() => $"http://localhost:{this.ListenPort}";
 
-        public void Start()
+        internal string GetUrl(string subPath) => this.GetUrl() + "/" + subPath.TrimStart('/');
+
+        public SampleSite Start()
         {
-            if (this.dotnetCLI != null) return;
+            if (this.dotnetCLI != null) return this;
 
             var workDir = AppDomain.CurrentDomain.BaseDirectory;
             while (!Directory.GetDirectories(workDir, "_SampleSites").Any()) workDir = Path.GetDirectoryName(workDir);
@@ -56,9 +58,10 @@ namespace HeadElement.E2ETest
             this.dotnetCLI.BeginOutputReadLine();
             this.dotnetCLI.BeginErrorReadLine();
 
-            var timedOut = !this.ListeningWaiter.Wait(millisecondsTimeout: 10000);
+            var timedOut = !this.ListeningWaiter.Wait(millisecondsTimeout: 15000);
             if (timedOut) throw new TimeoutException("\"dotnet run\" did not respond \"Now listening on: http://\".");
             Thread.Sleep(200);
+            return this;
         }
 
         private void Process_OutputDataReceived(object sender, DataReceivedEventArgs e)

@@ -45,14 +45,9 @@ namespace HeadElement.E2ETest
         {
         }
 
-        public void StartHost(HostingModel hostingModel, BlazorVersion blazorVersion)
+        public SampleSite StartHost(HostingModel hostingModel, BlazorVersion blazorVersion)
         {
-            this.SampleSites[(hostingModel, blazorVersion)].Start();
-        }
-
-        public string GetHostUrl(HostingModel hostingModel, BlazorVersion blazorVersion)
-        {
-            return this.SampleSites[(hostingModel, blazorVersion)].GetUrl();
+            return this.SampleSites[(hostingModel, blazorVersion)].Start();
         }
 
         public void Dispose()

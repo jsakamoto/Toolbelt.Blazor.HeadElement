@@ -39,11 +39,11 @@ namespace HeadElement.E2ETest
         [MemberData(nameof(TestCases))]
         public void ChangeTitle_on_Browser_Start_from_Home_Test(HostingModel hostingModel, BlazorVersion blazorVersion)
         {
-            this._TestContext.StartHost(hostingModel, blazorVersion);
+            var host = this._TestContext.StartHost(hostingModel, blazorVersion);
             var driver = this._TestContext.WebDriver;
 
             // Navigate to Home
-            driver.GoToUrlAndWait(this._TestContext.GetHostUrl(hostingModel, blazorVersion));
+            driver.GoToUrlAndWait(host.GetUrl("/"));
 
             // Validate document title of "Home"
             driver.Wait(1000).Until(_ => driver.Title == "Sample Site");
@@ -77,11 +77,11 @@ namespace HeadElement.E2ETest
         [MemberData(nameof(TestCases))]
         public void ChangeTitle_on_Browser_Start_from_Counter_Test(HostingModel hostingModel, BlazorVersion blazorVersion)
         {
-            this._TestContext.StartHost(hostingModel, blazorVersion);
+            var host = this._TestContext.StartHost(hostingModel, blazorVersion);
             var driver = this._TestContext.WebDriver;
 
             // Navigate to "Counter"
-            driver.GoToUrlAndWait(this._TestContext.GetHostUrl(hostingModel, blazorVersion), "/counter");
+            driver.GoToUrlAndWait(host.GetUrl("/counter"));
 
             // Validate document title of "Counter"
             driver.Wait(1000).Until(_ => driver.Title == "Counter(0)");
@@ -104,11 +104,11 @@ namespace HeadElement.E2ETest
         [MemberData(nameof(TestCases))]
         public void ChangeMetaElements_on_Browser_Start_from_Home_Test(HostingModel hostingModel, BlazorVersion blazorVersion)
         {
-            this._TestContext.StartHost(hostingModel, blazorVersion);
+            var host = this._TestContext.StartHost(hostingModel, blazorVersion);
             var driver = this._TestContext.WebDriver;
 
             // Navigate to Home
-            driver.GoToUrlAndWait(this._TestContext.GetHostUrl(hostingModel, blazorVersion));
+            driver.GoToUrlAndWait(host.GetUrl("/"));
 
             // Validate meta elements of "Home"
             var actualAtHome = driver.DumpMetaElements();
@@ -140,11 +140,11 @@ namespace HeadElement.E2ETest
         [MemberData(nameof(TestCases))]
         public void ChangeMetaElements_on_Browser_Start_from_Counter_Test(HostingModel hostingModel, BlazorVersion blazorVersion)
         {
-            this._TestContext.StartHost(hostingModel, blazorVersion);
+            var host = this._TestContext.StartHost(hostingModel, blazorVersion);
             var driver = this._TestContext.WebDriver;
 
             // Navigate to "Counter"
-            driver.GoToUrlAndWait(this._TestContext.GetHostUrl(hostingModel, blazorVersion), "/counter");
+            driver.GoToUrlAndWait(host.GetUrl("/counter"));
 
             // Validate meta elements of "Counter"
             var actualAtCounter = driver.DumpMetaElements();
@@ -163,11 +163,11 @@ namespace HeadElement.E2ETest
         [MemberData(nameof(TestCases))]
         public void ChangeLinkElements_on_Browser_Start_from_Home_Test(HostingModel hostingModel, BlazorVersion blazorVersion)
         {
-            this._TestContext.StartHost(hostingModel, blazorVersion);
+            var host = this._TestContext.StartHost(hostingModel, blazorVersion);
             var driver = this._TestContext.WebDriver;
 
             // Navigate to "Home", and validate link elements of "Home"
-            driver.GoToUrlAndWait(this._TestContext.GetHostUrl(hostingModel, blazorVersion));
+            driver.GoToUrlAndWait(host.GetUrl("/"));
             var actualAtHome = driver.DumpLinkElements();
             actualAtHome.Is(ExpectLinks.AtHome);
 
@@ -191,11 +191,11 @@ namespace HeadElement.E2ETest
         [MemberData(nameof(TestCases))]
         public void ChangeLinkElements_on_Browser_Start_from_Counter_Test(HostingModel hostingModel, BlazorVersion blazorVersion)
         {
-            this._TestContext.StartHost(hostingModel, blazorVersion);
+            var host = this._TestContext.StartHost(hostingModel, blazorVersion);
             var driver = this._TestContext.WebDriver;
 
             // Navigate to "Counter", and validate link elements of "Counter"
-            driver.GoToUrlAndWait(this._TestContext.GetHostUrl(hostingModel, blazorVersion), "/counter");
+            driver.GoToUrlAndWait(host.GetUrl("/counter"));
             var actualAtCounter = driver.DumpLinkElements();
             actualAtCounter.Is(ExpectLinks.AtCounter);
 
@@ -209,10 +209,10 @@ namespace HeadElement.E2ETest
         [MemberData(nameof(TestCases))]
         public void Refresh_on_Browser_Start_from_Home_Test(HostingModel hostingModel, BlazorVersion blazorVersion)
         {
-            this._TestContext.StartHost(hostingModel, blazorVersion);
+            var host = this._TestContext.StartHost(hostingModel, blazorVersion);
             var driver = this._TestContext.WebDriver;
 
-            driver.GoToUrlAndWait(this._TestContext.GetHostUrl(hostingModel, blazorVersion));
+            driver.GoToUrlAndWait(host.GetUrl("/"));
             driver.ClickRedirect();
             driver.DumpMetaElements()
                 .Contains("'','','refresh','3;url=/'") // <- added 'refresh'
@@ -223,17 +223,17 @@ namespace HeadElement.E2ETest
 
             // Validate current page is "Home".
             driver.Wait(1000).Until(_ => driver.FindElement(By.XPath("//h1[text()='Hello, world!']")));
-            driver.Url.TrimEnd('/').Is(this._TestContext.GetHostUrl(hostingModel, blazorVersion).TrimEnd('/'));
+            driver.Url.TrimEnd('/').Is(host.GetUrl("/").TrimEnd('/'));
         }
 
         [Theory(DisplayName = "Refresh and Cancel on Browser (from Home)")]
         [MemberData(nameof(TestCases))]
         public void Refresh_and_Cancel_on_Browser_Start_from_Home_Test(HostingModel hostingModel, BlazorVersion blazorVersion)
         {
-            this._TestContext.StartHost(hostingModel, blazorVersion);
+            var host = this._TestContext.StartHost(hostingModel, blazorVersion);
             var driver = this._TestContext.WebDriver;
 
-            driver.GoToUrlAndWait(this._TestContext.GetHostUrl(hostingModel, blazorVersion));
+            driver.GoToUrlAndWait(host.GetUrl("/"));
             driver.ClickRedirect();
             driver.DumpMetaElements()
                 .Contains("'','','refresh','3;url=/'") // <- added 'refresh'
@@ -247,17 +247,17 @@ namespace HeadElement.E2ETest
 
             // Validate current page is not redirected, stay on "Counter".
             driver.Wait(1000).Until(_ => driver.FindElement(By.XPath("//h1[text()='Counter']")));
-            driver.Url.TrimEnd('/').Is(this._TestContext.GetHostUrl(hostingModel, blazorVersion).TrimEnd('/') + "/counter");
+            driver.Url.TrimEnd('/').Is(host.GetUrl("/").TrimEnd('/') + "/counter");
         }
 
         [Theory(DisplayName = "Refresh on Browser (from Redirect)")]
         [MemberData(nameof(TestCases))]
         public void Refresh_on_Browser_Start_from_Redirect_Test(HostingModel hostingModel, BlazorVersion blazorVersion)
         {
-            this._TestContext.StartHost(hostingModel, blazorVersion);
+            var host = this._TestContext.StartHost(hostingModel, blazorVersion);
             var driver = this._TestContext.WebDriver;
 
-            driver.Navigate().GoToUrl(this._TestContext.GetHostUrl(hostingModel, blazorVersion).TrimEnd('/') + "/redirect");
+            driver.Navigate().GoToUrl(host.GetUrl("/").TrimEnd('/') + "/redirect");
             driver.Wait(5000).Until(_ => driver.FindElement(By.XPath("//h1[text()='Redirect to Home']")));
             Thread.Sleep(200);
             driver.DumpMetaElements()
@@ -269,17 +269,17 @@ namespace HeadElement.E2ETest
 
             // Validate current page is "Home".
             driver.Wait(1000).Until(_ => driver.FindElement(By.XPath("//h1[text()='Hello, world!']")));
-            driver.Url.TrimEnd('/').Is(this._TestContext.GetHostUrl(hostingModel, blazorVersion).TrimEnd('/'));
+            driver.Url.TrimEnd('/').Is(host.GetUrl("/").TrimEnd('/'));
         }
 
         [Theory(DisplayName = "Refresh and Cancel on Browser (from Redirect)")]
         [MemberData(nameof(TestCases))]
         public void Refresh_and_Cancel_on_Browser_Start_from_Redirect_Test(HostingModel hostingModel, BlazorVersion blazorVersion)
         {
-            this._TestContext.StartHost(hostingModel, blazorVersion);
+            var host = this._TestContext.StartHost(hostingModel, blazorVersion);
             var driver = this._TestContext.WebDriver;
 
-            driver.Navigate().GoToUrl(this._TestContext.GetHostUrl(hostingModel, blazorVersion).TrimEnd('/') + "/redirect");
+            driver.Navigate().GoToUrl(host.GetUrl("/").TrimEnd('/') + "/redirect");
             driver.Wait(5000).Until(_ => driver.FindElement(By.XPath("//h1[text()='Redirect to Home']")));
             Thread.Sleep(200);
             driver.DumpMetaElements()
@@ -294,18 +294,18 @@ namespace HeadElement.E2ETest
 
             // Validate current page is not redirected, stay on "Counter".
             driver.Wait(1000).Until(_ => driver.FindElement(By.XPath("//h1[text()='Weather forecast']")));
-            driver.Url.TrimEnd('/').Is(this._TestContext.GetHostUrl(hostingModel, blazorVersion).TrimEnd('/') + "/fetchdata");
+            driver.Url.TrimEnd('/').Is(host.GetUrl("/").TrimEnd('/') + "/fetchdata");
         }
 
         [Theory(DisplayName = "Change at OnAfterRender on Browser (from Home)")]
         [MemberData(nameof(TestCases))]
         public void Change_at_OnAfterRender_on_Browser_Start_from_Home_Test(HostingModel hostingModel, BlazorVersion blazorVersion)
         {
-            this._TestContext.StartHost(hostingModel, blazorVersion);
+            var host = this._TestContext.StartHost(hostingModel, blazorVersion);
             var driver = this._TestContext.WebDriver;
 
             // Navigate to Home, and validate the document title of "Home"
-            driver.GoToUrlAndWait(this._TestContext.GetHostUrl(hostingModel, blazorVersion));
+            driver.GoToUrlAndWait(host.GetUrl("/"));
             driver.Wait(1000).Until(_ => driver.Title == "Sample Site");
 
             // Navigate to "Change at "OnAfterRender"", and validate the document title of it
@@ -333,11 +333,11 @@ namespace HeadElement.E2ETest
         [MemberData(nameof(TestCases))]
         public void Change_at_OnAfterRender_on_Browser_Start_from_OnAfterRender_Test(HostingModel hostingModel, BlazorVersion blazorVersion)
         {
-            this._TestContext.StartHost(hostingModel, blazorVersion);
+            var host = this._TestContext.StartHost(hostingModel, blazorVersion);
             var driver = this._TestContext.WebDriver;
 
             // Navigate to "Change at "OnAfterRender"", and validate the document title of it
-            driver.GoToUrlAndWait(this._TestContext.GetHostUrl(hostingModel, blazorVersion), "/change-at-onafterrender");
+            driver.GoToUrlAndWait(host.GetUrl("/change-at-onafterrender"));
             driver.Wait(5000).Until(_ => driver.FindElement(By.XPath("//h1[text()='Change at \"OnAfterRender\"']")));
             Thread.Sleep(200);
 
@@ -364,10 +364,9 @@ namespace HeadElement.E2ETest
         [MemberData(nameof(TestCases))]
         public void HelperJavaScript_Namespace_Not_Conflict_Test(HostingModel hostingModel, BlazorVersion blazorVersion)
         {
-            this._TestContext.StartHost(hostingModel, blazorVersion);
+            var host = this._TestContext.StartHost(hostingModel, blazorVersion);
             var driver = this._TestContext.WebDriver;
-            
-            driver.GoToUrlAndWait(this._TestContext.GetHostUrl(hostingModel, blazorVersion), "/counter");
+            driver.GoToUrlAndWait(host.GetUrl("/counter"));
 
             var random = new Random();
             var a = random.Next(1, 10);
