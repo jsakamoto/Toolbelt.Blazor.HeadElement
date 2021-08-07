@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Components;
@@ -19,7 +20,9 @@ namespace Toolbelt.Blazor.HeadElement
 {
     public class HeadElementHelperService : IHeadElementHelper, IDisposable
     {
+#pragma warning disable CS0618
         internal readonly HeadElementHelperServiceOptions Options = new HeadElementHelperServiceOptions();
+#pragma warning restore CS0618
 
         private readonly IJSRuntime _JS;
 
@@ -65,15 +68,19 @@ namespace Toolbelt.Blazor.HeadElement
             {
                 if (this._ScriptEnabled) return this._JSModule;
 
-                var version = this.GetType().Assembly.GetName().Version;
+                var assembly = this.GetType().Assembly;
+                var version = assembly
+                    .GetCustomAttribute<AssemblyInformationalVersionAttribute>()?
+                    .InformationalVersion ?? assembly.GetName().Version.ToString();
 #if ENABLE_JSMODULE
-                var scriptPath = $"./_content/Toolbelt.Blazor.HeadElement.Services/script.min.js?v={version}";
+                var scriptPath = $"./_content/Toolbelt.Blazor.HeadElement.Services/script.module.min.js?v={version}";
                 this._JSModule = await this._JS.InvokeAsync<IJSObjectReference>("import", scriptPath);
 #else
                 if (!this.Options.DisableClientScriptAutoInjection)
                 {
-                    var scriptPath = $"./_content/Toolbelt.Blazor.HeadElement.Services/boot.js?v={version}";
-                    await this._JS.InvokeVoidAsync("eval", "new Promise(r=>((d,t,s)=>(h=>h.querySelector(t+`[src=\"${{s}}\"]`)?r():(e=>(e.src=s,e.type='module',e.onload=r,h.appendChild(e)))(d.createElement(t)))(d.head))(document,'script','" + scriptPath + "'))");
+                    var scriptPath = "./_content/Toolbelt.Blazor.HeadElement.Services/script.min.js";
+                    await this._JS.InvokeVoidAsync("eval", "new Promise(r=>((d,t,s,v)=>(h=>h.querySelector(t+`[src^=\"${s}\"]`)?r():(e=>(e.src=(s+v),e.onload=r,h.appendChild(e)))(d.createElement(t)))(d.head))(document,'script','" + scriptPath + "','?v=" + version + "'))");
+                    await this._JS.InvokeVoidAsync("eval", "Toolbelt.Head.ready");
                 }
                 this._JSModule = this._JS;
 #endif

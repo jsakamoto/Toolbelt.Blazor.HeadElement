@@ -10,6 +10,7 @@
     <RootNamespace>Toolbelt.Blazor.HeadElement</RootNamespace>
     <DocumentationFile>bin\$(Configuration)\$(TargetFramework)\$(AssemblyName).xml</DocumentationFile>
     <PackageOutputPath>..\_dist\</PackageOutputPath>
+    <TypeScriptToolsVersion>3.0</TypeScriptToolsVersion>
     <TypeScriptCompileBlocked>false</TypeScriptCompileBlocked>
   </PropertyGroup>
   <PropertyGroup>
@@ -17,7 +18,7 @@
   </PropertyGroup>
 
   <PropertyGroup>
-    <Version>6.0.0-preview.1</Version>
+    <Version>6.0.0-preview.2</Version>
     <Authors>J.Sakamoto</Authors>
     <Copyright>Copyright © 2019-2021 J.Sakamoto, Mozilla Public License 2.0</Copyright>
     <Description>Head element support (change the document title, "meta" elements such as OGP, and "link" elements such as canonical url, favicon) for Blazor apps.</Description>
@@ -36,7 +37,7 @@
   <ItemGroup>
     <PackageReference Include="BuildBundlerMinifier" Version="3.2.449" PrivateAssets="all" />
     <DotNetCliToolReference Include="BundlerMinifier.Core" Version="2.6.362" />
-    <PackageReference Include="Microsoft.TypeScript.MSBuild" Version="3.6.3">
+    <PackageReference Include="Microsoft.TypeScript.MSBuild" Version="3.7.4">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
@@ -76,15 +77,6 @@
     <None Include="..\.assets\nupkg-icon.png" Visible="false" Pack="true" PackagePath="\" />
     <None Include="..\README.md" Visible="false" Pack="true" PackagePath="\" />
   </ItemGroup>
-
-  <Target Name="_HeadElement_GenerateScriptLoaderJS" BeforeTargets="BeforeBuild">
-    <PropertyGroup>
-      <_HeadElement_ScriptLoader>$(_HeadElement_ScriptLoader);// THIS FILE IS AUTO GENERATED IN THE MSBUILD SCRIPT </_HeadElement_ScriptLoader>
-      <_HeadElement_ScriptLoader>$(_HeadElement_ScriptLoader);import { Toolbelt } from './script.min.js?v=$(Version)'%3b</_HeadElement_ScriptLoader>
-      <_HeadElement_ScriptLoader>$(_HeadElement_ScriptLoader);window['Toolbelt'] = Toolbelt%3b</_HeadElement_ScriptLoader>
-    </PropertyGroup>
-    <WriteLinesToFile File="wwwroot/boot.js" Lines="$(_HeadElement_ScriptLoader)" Overwrite="true" WriteOnlyWhenDifferent="true" />
-  </Target>
 
   <Target Name="PreparePackageReleaseNotesFromFile" BeforeTargets="GenerateNuspec">
     <ReadLinesFromFile File="RELEASE-NOTES.txt">

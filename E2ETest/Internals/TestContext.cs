@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using HeadElement.E2ETest.Internals;
+using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
 using Xunit;
 using static HeadElement.E2ETest.Internals.BlazorVersion;
@@ -27,7 +28,7 @@ namespace HeadElement.E2ETest
 
         private ChromeDriver _WebDriver;
 
-        public ChromeDriver WebDriver
+        public IWebDriver WebDriver
         {
             get
             {
@@ -44,14 +45,9 @@ namespace HeadElement.E2ETest
         {
         }
 
-        public void StartHost(HostingModel hostingModel, BlazorVersion blazorVersion)
+        public SampleSite StartHost(HostingModel hostingModel, BlazorVersion blazorVersion)
         {
-            this.SampleSites[(hostingModel, blazorVersion)].Start();
-        }
-
-        public string GetHostUrl(HostingModel hostingModel, BlazorVersion blazorVersion)
-        {
-            return this.SampleSites[(hostingModel, blazorVersion)].GetUrl();
+            return this.SampleSites[(hostingModel, blazorVersion)].Start();
         }
 
         public void Dispose()
