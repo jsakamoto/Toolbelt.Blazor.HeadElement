@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using HeadElement.E2ETest.Internals;
+using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
 using Xunit;
 using static HeadElement.E2ETest.Internals.BlazorVersion;
@@ -27,7 +28,7 @@ namespace HeadElement.E2ETest
 
         private ChromeDriver _WebDriver;
 
-        public ChromeDriver WebDriver
+        public IWebDriver WebDriver
         {
             get
             {

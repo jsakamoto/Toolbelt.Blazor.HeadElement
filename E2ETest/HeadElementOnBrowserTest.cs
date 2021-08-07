@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading;
 using HeadElement.E2ETest.Internals;
 using OpenQA.Selenium;
+using OpenQA.Selenium.Support.Extensions;
 using Xunit;
 using static HeadElement.E2ETest.Internals.BlazorVersion;
 using static HeadElement.E2ETest.Internals.HostingModel;
@@ -357,6 +358,23 @@ namespace HeadElement.E2ETest
             actualMetaAtHome.Is(ExpectMeta.AtHome);
             var actualLinkAtHome = driver.DumpLinkElements();
             actualLinkAtHome.Is(ExpectLinks.AtHome);
+        }
+
+        [Theory(DisplayName = "Check another helper script in the same namespace should not be overridden")]
+        [MemberData(nameof(TestCases))]
+        public void HelperJavaScript_Namespace_Not_Conflict_Test(HostingModel hostingModel, BlazorVersion blazorVersion)
+        {
+            this._TestContext.StartHost(hostingModel, blazorVersion);
+            var driver = this._TestContext.WebDriver;
+            
+            driver.GoToUrlAndWait(this._TestContext.GetHostUrl(hostingModel, blazorVersion), "/counter");
+
+            var random = new Random();
+            var a = random.Next(1, 10);
+            var b = random.Next(1, 10);
+            var result = driver.ExecuteJavaScript<long>($"return Toolbelt.Blazor.add({a},{b})");
+
+            result.Is(a + b);
         }
     }
 }
