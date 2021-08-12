@@ -10,23 +10,18 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.JSInterop;
 using Toolbelt.Blazor.HeadElement.Internals;
 
-#if ENABLE_JSMODULE
-using IJSInterface = Microsoft.JSInterop.IJSObjectReference;
-#else
-using IJSInterface = Microsoft.JSInterop.IJSRuntime;
-#endif
-
 namespace Toolbelt.Blazor.HeadElement
 {
     public class HeadElementHelperService : IHeadElementHelper, IDisposable
+#if ENABLE_JSMODULE
+        , IAsyncDisposable
+#endif
     {
-#pragma warning disable CS0618
+        private delegate ValueTask<T> ScriptInvoker<T>(string identifier, params object[] args);
+
         internal readonly HeadElementHelperServiceOptions Options = new HeadElementHelperServiceOptions();
-#pragma warning restore CS0618
 
         private readonly IJSRuntime _JS;
-
-        private IJSInterface _JSModule = null;
 
         private readonly NavigationManager _NavigationManager;
 
@@ -39,6 +34,8 @@ namespace Toolbelt.Blazor.HeadElement
         private const string NST = "Toolbelt.Head.Title.";
 
         private bool _ScriptEnabled = false;
+
+        private bool _DetachedLocationChangedHandler = false;
 
         private readonly SemaphoreSlim _EnsureScriptSyncer = new(1, 1);
 
@@ -54,48 +51,86 @@ namespace Toolbelt.Blazor.HeadElement
             this._NavigationManager.LocationChanged += this._NavigationManager_LocationChanged;
         }
 
-        public void Dispose()
+        private string GetVersionText()
         {
-            this._NavigationManager.LocationChanged -= this._NavigationManager_LocationChanged;
+            var assembly = this.GetType().Assembly;
+            var version = assembly
+                .GetCustomAttribute<AssemblyInformationalVersionAttribute>()?
+                .InformationalVersion ?? assembly.GetName().Version.ToString();
+            return version;
         }
 
-        private async ValueTask<IJSInterface> EnsureScriptEnabledAsync()
-        {
-            if (this._ScriptEnabled || this._JS == null) return this._JSModule;
-
-            await this._EnsureScriptSyncer.WaitAsync();
-            try
-            {
-                if (this._ScriptEnabled) return this._JSModule;
-
-                var assembly = this.GetType().Assembly;
-                var version = assembly
-                    .GetCustomAttribute<AssemblyInformationalVersionAttribute>()?
-                    .InformationalVersion ?? assembly.GetName().Version.ToString();
 #if ENABLE_JSMODULE
-                var scriptPath = $"./_content/Toolbelt.Blazor.HeadElement.Services/script.module.min.js?v={version}";
-                this._JSModule = await this._JS.InvokeAsync<IJSObjectReference>("import", scriptPath);
-#else
-                if (!this.Options.DisableClientScriptAutoInjection)
+        private IJSObjectReference _JSModule = null;
+
+        private async ValueTask<ScriptInvoker<T>> EnsureScriptEnabledAsync<T>()
+        {
+            if (this._JS == null) return null;
+            if (!this._ScriptEnabled)
+            {
+                await this._EnsureScriptSyncer.WaitAsync();
+                try
                 {
-                    var scriptPath = "./_content/Toolbelt.Blazor.HeadElement.Services/script.min.js";
-                    await this._JS.InvokeVoidAsync("eval", "new Promise(r=>((d,t,s,v)=>(h=>h.querySelector(t+`[src^=\"${s}\"]`)?r():(e=>(e.src=(s+v),e.onload=r,h.appendChild(e)))(d.createElement(t)))(d.head))(document,'script','" + scriptPath + "','?v=" + version + "'))");
-                    await this._JS.InvokeVoidAsync("eval", "Toolbelt.Head.ready");
+                    var version = this.GetVersionText();
+                    if (!this._ScriptEnabled)
+                    {
+                        if (!this.Options.DisableClientScriptAutoInjection)
+                        {
+                            var scriptPath = $"./_content/Toolbelt.Blazor.HeadElement.Services/script.module.min.js?v={version}";
+                            this._JSModule = await this._JS.InvokeAsync<IJSObjectReference>("import", scriptPath);
+                        }
+                        else
+                        {
+                            try { await this._JS.InvokeVoidAsync("eval", "Toolbelt.Head.ready"); } catch { }
+                        }
+                        this._ScriptEnabled = true;
+                    }
                 }
-                this._JSModule = this._JS;
-#endif
-                this._ScriptEnabled = true;
+                catch { }
+                finally { this._EnsureScriptSyncer.Release(); }
             }
-            catch { }
-            finally { this._EnsureScriptSyncer.Release(); }
-            return this._JSModule;
+
+            return 
+                this._ScriptEnabled == false ? null:
+                this._JSModule != null ? this._JSModule.InvokeAsync<T> :
+                this._JS != null ? this._JS.InvokeAsync<T> : null;
         }
+#else
+        private async ValueTask<ScriptInvoker<T>> EnsureScriptEnabledAsync<T>()
+        {
+            if (this._JS == null) return null;
+            if (!this._ScriptEnabled)
+            {
+                await this._EnsureScriptSyncer.WaitAsync();
+                try
+                {
+                    if (!this._ScriptEnabled)
+                    {
+                        var version = this.GetVersionText();
+                        if (!this.Options.DisableClientScriptAutoInjection)
+                        {
+                            var scriptPath = "./_content/Toolbelt.Blazor.HeadElement.Services/script.min.js";
+                            await this._JS.InvokeVoidAsync("eval", "new Promise(r=>((d,t,s,v)=>(h=>h.querySelector(t+`[src^=\"${s}\"]`)?r():(e=>(e.src=(s+v),e.onload=r,h.appendChild(e)))(d.createElement(t)))(d.head))(document,'script','" + scriptPath + "','?v=" + version + "'))");
+                            await this._JS.InvokeVoidAsync("eval", "Toolbelt.Head.ready");
+                        }
+                        this._ScriptEnabled = true;
+                    }
+                }
+                catch { }
+                finally { this._EnsureScriptSyncer.Release(); }
+            }
+            return
+                this._ScriptEnabled == false ? null :
+                this._JS != null ? this._JS.InvokeAsync<T> :
+                null;
+        }
+#endif
 
         private async ValueTask<T> InvokeJSAsync<T>(string identifier, params object[] args)
         {
-            var jsmodule = await this.EnsureScriptEnabledAsync();
-            if (jsmodule == null) return default;
-            return await jsmodule.InvokeAsync<T>(identifier, args);
+            var invoker = await this.EnsureScriptEnabledAsync<T>();
+            if (invoker == null) return default;
+            return await invoker.Invoke(identifier, args);
         }
 
         private void _NavigationManager_LocationChanged(object sender, LocationChangedEventArgs e)
@@ -276,5 +311,26 @@ namespace Toolbelt.Blazor.HeadElement
         {
             await this.InvokeJSAsync<object>(NSL + "reset", this._Store.DefaultLinkElements);
         }
+
+        private void DetachLocationChangedHandler()
+        {
+            if (this._DetachedLocationChangedHandler) return;
+
+            this._NavigationManager.LocationChanged -= this._NavigationManager_LocationChanged;
+            this._DetachedLocationChangedHandler = true;
+        }
+
+        public void Dispose()
+        {
+            this.DetachLocationChangedHandler();
+        }
+
+#if ENABLE_JSMODULE
+        public async ValueTask DisposeAsync()
+        {
+            DetachLocationChangedHandler();
+            if (this._JSModule != null) { await this._JSModule.DisposeAsync(); }
+        }
+#endif
     }
 }
