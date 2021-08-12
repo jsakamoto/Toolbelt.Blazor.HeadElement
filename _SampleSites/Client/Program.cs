@@ -19,7 +19,10 @@ namespace SampleSite.Client
             builder.Services
                 .AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) })
                 .AddScoped<IWeatherForecastService, WeatherForecastService>()
-                .AddHeadElementHelper();
+                .AddHeadElementHelper(options =>
+                {
+                    // options.DisableClientScriptAutoInjection = true;
+                });
 
             await builder.Build().RunAsync();
         }
