@@ -17,7 +17,7 @@
     <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="5.0.1" />
   </ItemGroup>
   <ItemGroup Condition=" '$(TargetFramework)' == 'net6.0' ">
-    <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="6.0.0-preview.6.21355.2" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="6.0.0-preview.7.21378.6" />
   </ItemGroup>
 
   <!--
@@ -25,13 +25,5 @@
     <PackageReference Include="Microsoft.AspNetCore.Components.Web.Extensions" Version="5.0.0-rc.1.*" />
   </ItemGroup>
   -->
-
-  <!-- https://github.com/dotnet/sdk/issues/18148#issuecomment-860957180 -->
-  <!-- Workaround for this bug (replace the analyzer name with the one you need to exclude (filename only, no extension) -->
-  <Target Name="RemoveLoggingAnalyzer" AfterTargets="ResolveLockFileAnalyzers">
-    <ItemGroup>
-      <Analyzer Remove="@(Analyzer)" Condition="%(FileName) == 'Microsoft.Extensions.Logging.Generators'" />
-    </ItemGroup>
-  </Target>
 
 </Project>
