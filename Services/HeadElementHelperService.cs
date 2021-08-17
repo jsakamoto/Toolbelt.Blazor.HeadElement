@@ -111,8 +111,8 @@ namespace Toolbelt.Blazor.HeadElement
                         {
                             var scriptPath = "./_content/Toolbelt.Blazor.HeadElement.Services/script.min.js";
                             await this._JS.InvokeVoidAsync("eval", "new Promise(r=>((d,t,s,v)=>(h=>h.querySelector(t+`[src^=\"${s}\"]`)?r():(e=>(e.src=(s+v),e.onload=r,h.appendChild(e)))(d.createElement(t)))(d.head))(document,'script','" + scriptPath + "','?v=" + version + "'))");
-                            await this._JS.InvokeVoidAsync("eval", "Toolbelt.Head.ready");
                         }
+                        try { await this._JS.InvokeVoidAsync("eval", "Toolbelt.Head.ready"); } catch { }
                         this._ScriptEnabled = true;
                     }
                 }
