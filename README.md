@@ -1,4 +1,4 @@
-# Blazor Head Element Helper [![NuGet Package](https://img.shields.io/nuget/v/Toolbelt.Blazor.HeadElement.svg)](https://www.nuget.org/packages/Toolbelt.Blazor.HeadElement/)
+﻿# Blazor Head Element Helper [![NuGet Package](https://img.shields.io/nuget/v/Toolbelt.Blazor.HeadElement.svg)](https://www.nuget.org/packages/Toolbelt.Blazor.HeadElement/)
 
 ## Summary
 
@@ -15,21 +15,22 @@ See also following the live demonstration sites.
 
 ### Notice
 
-Blazor since .NET 5.0 Preview 8 also started to provide `Title`, `Link`, and `Meta` components by `Microsoft.AspNetCore.Components.Web.Extensions` NuGet package.
+Blazor since .NET 6.0 Preview 7 also started to provide `<PageTitle>` and `<HeadContent>` components.
 
-However, I'll continue to provide this package and keep to maintain, because this library still has some advantages.
+_["ASP.NET Core updates in .NET 6 Preview 7 - Modify HTML `<head>` content from Blazor components" | ASP.NET Blog](https://j.mp/3zJ9mWD)_
 
-To know what differences are there between this library and Microsoft.AspNetCore.Components.Web.Extensions 5.0 preview 8, please see the following table.
+However, I'm going to continue to provide this package and keep maintaining, because this library still has a few advantages in some edge cases.
 
-Feature                               | This library            | .NET5 Preview 8  
+Please see the following table to know the differences between this library and `<PageTitle>/<HeadContent>` components in .NET 6 Preview 7 or later.
+
+Feature                               | This library            | .NET6 Preview 7
 --------------------------------------|-------------------------|--------------------------------------------  
-Server Pre-Rendering                  | Supported.              | Not Supported, yet.  
-Respecting pre-rendered title         | Yes.                    | No. It is never recovered if any components override it.  
-Overriding pre-rendered meta or link  | Can handle it properly. | Just append it. it may cause duplication.  
-Canceling "meta http-equiv=refresh"   | Works well.             | There is no support.  
-Using it as a service, not components | Supported.              | Not Supported.  
-To Including helper JavaScript        | Automatic.              | Required manually.
-
+Overriding pre-rendered meta or link  | 👍 Can handle it properly. | 😢 Just append it. it may cause duplication.
+Canceling `<meta "http-equiv"="refresh" />`   | 👍 Works well.             | 😢 There is no support.
+Using it as a service, not components | 👍 Supported.              | 😢 Maybe not Supported.
+Modify `<head>` content from many places | 👍 Can do. | 😢 Only one instance of the `<HeadContent>` component can effect.
+Controlling the order of elements inside a `<head>` | 😢 hard | 👍 Can control perfectly
+Support | 😢 Just personal hobby | 👍 Official support from the ASP.NET Team
 
 ## How to use
 
