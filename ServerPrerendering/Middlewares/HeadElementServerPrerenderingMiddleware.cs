@@ -20,7 +20,7 @@ namespace Toolbelt.Blazor.HeadElement.Middlewares
 
         public HeadElementServerPrerenderingMiddleware(RequestDelegate next)
         {
-            _next = next;
+            this._next = next;
         }
 
         public async Task InvokeAsync(HttpContext context, IHeadElementHelperStore store)
@@ -28,7 +28,7 @@ namespace Toolbelt.Blazor.HeadElement.Middlewares
             var filter = new FilterStream(context, store);
             try
             {
-                await _next(context);
+                await this._next(context);
 
                 if (filter.IsCaptured())
                 {
@@ -43,8 +43,8 @@ namespace Toolbelt.Blazor.HeadElement.Middlewares
                         .FirstOrDefault() ?? "";
 
                     SetDocumentTitle(store, doc, indentText);
-                    SetMetaElements(store, doc, indentText);
-                    SetLinkElements(store, doc, indentText);
+                    this.SetMetaElements(store, doc, indentText);
+                    this.SetLinkElements(store, doc, indentText);
 
                     doc.Head.AppendChild(doc.CreateTextNode("\n"));
 
@@ -117,20 +117,6 @@ namespace Toolbelt.Blazor.HeadElement.Middlewares
 
         private void SetLinkElements(IHeadElementHelperStore store, IHtmlDocument doc, string indentText)
         {
-            static bool SameLink(IHtmlLinkElement m, LinkElement a)
-            {
-                return m.Relation == a.Rel && (a.Rel switch
-                {
-                    "canonical" => true,
-                    "prev" => true,
-                    "next" => true,
-                    "icon" => (m.Sizes?.ToString() ?? "") == (a.Sizes ?? ""),
-                    "alternate" => (m.Type ?? "") == (a.Type ?? "") && (m.Media ?? "") == (a.Media ?? ""),
-                    "preload" => Href(m.Href) == (a.Href ?? "") && (m.Media ?? "") == (a.Media ?? ""),
-                    _ => Href(m.Href) == (a.Href ?? "")
-                });
-            };
-
             if (store.LinkElementCommands.Count == 0) return;
 
             var linkTags = doc.Head.QuerySelectorAll("link").Cast<IHtmlLinkElement>().ToList();
@@ -173,6 +159,20 @@ namespace Toolbelt.Blazor.HeadElement.Middlewares
                     linkTags.Remove(link);
                 }
             }
+        }
+
+        internal static bool SameLink(IHtmlLinkElement m, LinkElement a)
+        {
+            return m.Relation == a.Rel && (a.Rel switch
+            {
+                "canonical" => true,
+                "prev" => true,
+                "next" => true,
+                "icon" => (m.Sizes?.ToString() ?? "") == (a.Sizes ?? ""),
+                "alternate" => (m.Type ?? "") == (a.Type ?? "") && (m.Media ?? "") == (a.Media ?? ""),
+                "preload" => Href(m.Href) == (a.Href ?? "") && (m.Media ?? "") == (a.Media ?? ""),
+                _ => Href(m.Href) == (a.Href ?? "")
+            });
         }
 
         private static TElement CreateAndAddToHead<TElement>(IHtmlDocument doc, string indentText) where TElement : IElement
