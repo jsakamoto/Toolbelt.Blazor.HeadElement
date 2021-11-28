@@ -35,7 +35,7 @@ namespace HeadElement.E2ETest
                 if (this._WebDriver == null)
                 {
                     this._WebDriver = new ChromeDriver();
-                    this._WebDriver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(3);
+                    // this._WebDriver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(3);
                 }
                 return this._WebDriver;
             }
