@@ -15,20 +15,21 @@ See also following the live demonstration sites.
 
 ### Notice
 
-Blazor since .NET 6.0 Preview 7 also started to provide `<PageTitle>` and `<HeadContent>` components.
+Blazor on .NET 6 (since preview 7) or later has started to provide `<PageTitle>` and `<HeadContent>` components.
 
 _["ASP.NET Core updates in .NET 6 Preview 7 - Modify HTML `<head>` content from Blazor components" | ASP.NET Blog](https://j.mp/3zJ9mWD)_
 
 However, I'm going to continue to provide this package and keep maintaining, because this library still has a few advantages in some edge cases.
 
-Please see the following table to know the differences between this library and `<PageTitle>/<HeadContent>` components in .NET 6 Preview 7 or later.
+Please see the following table to know the differences between this library and `<PageTitle>`/`<HeadContent>` components in .NET 6 or later.
 
-Feature                               | This library            | .NET6 Preview 7
+Feature                               | This library            | .NET6 or later
 --------------------------------------|-------------------------|--------------------------------------------  
 Overriding pre-rendered meta or link  | 👍 Can handle it properly. | 😢 Just append it. it may cause duplication.
 Canceling `<meta "http-equiv"="refresh" />`   | 👍 Works well.             | 😢 There is no support.
 Using it as a service, not components | 👍 Supported.              | 😢 Maybe not Supported.
 Modify `<head>` content from many places | 👍 Can do. | 😢 Only one instance of the `<HeadContent>` component can effect.
+Server-side pre-rendering | 👍 Just add one line inside the server code. | 😢 You have to split the fallback page into two .cshtml files for resolving complicated rendering order problems.
 Controlling the order of elements inside a `<head>` | 😢 hard | 👍 Can control perfectly
 Support | 😢 Just personal hobby | 👍 Official support from the ASP.NET Team
 
