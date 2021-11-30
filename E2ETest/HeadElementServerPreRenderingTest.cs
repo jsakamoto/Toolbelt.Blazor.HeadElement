@@ -23,13 +23,13 @@ namespace HeadElement.E2ETest
 
         private static readonly HostingModel[] _HostingModels = new[] {
             WasmHosted,
-            Server 
+            Server
         };
 
         private static readonly BlazorVersion[] _BlazorVersions = new[] {
             NETCore31,
             NET50,
-            NET60 
+            NET60
         };
 
         public static IEnumerable<object[]> TestCases => _HostingModels.SelectMany(m => _BlazorVersions.Select(v => new object[] { m, v }));
@@ -77,6 +77,8 @@ namespace HeadElement.E2ETest
 
         private IEnumerable<string> DumpMetaElements(string content)
         {
+            // remove comments.
+            content = Regex.Replace(content, "<!--.+?-->", "");
             return Regex.Matches(content, @"<meta[ \t]+[^>]*>")
                 .Select(m => (
                     Name: Regex.Match(m.Value, "name=\"(?<t>[^\"]+)\"").Groups["t"].Value,
@@ -126,8 +128,10 @@ namespace HeadElement.E2ETest
         {
             static string makeHref(string href) => Uri.TryCreate(href, UriKind.Absolute, out var u) ? u.PathAndQuery : "/" + href.TrimStart('/');
 
+            // remove comments.
+            content = Regex.Replace(content, "<!--.+?-->", "");
+
             return Regex.Matches(content, @"<link[ \t]+[^>]*>")
-                .Where(l => l.Value != "<link rel=preload as=... />") // exclude inside comments.
                 .Select(l => (
                     Rel: Regex.Match(l.Value, "rel=\"(?<t>[^\"]+)\"").Groups["t"].Value,
                     Href: makeHref(Regex.Match(l.Value, "href=\"(?<t>[^\"]+)\"").Groups["t"].Value),

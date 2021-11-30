@@ -101,7 +101,7 @@ namespace HeadElement.E2ETest
                     ImageSizes: l[9] ?? "",
                     ImageSrcset: l[10] ?? "",
                     Disabled: l[11] ?? ""))
-                .OrderBy(l => l.Rel).ThenBy(l => l.Href).ThenBy(l => l.Media)
+                .OrderBy(l => l.Rel).ThenBy(l => l.Href).ThenBy(l => l.Media).ThenBy(l => l.Hreflang)
                 .Select(l => $"rel:{l.Rel}, href:{l.Href}, type:{l.Type}, media:{l.Media}, title:{l.Title}, sizes:{l.Sizes}, as:{l.As}, crossorigin:{l.CrossOrigin}, hreflang:{l.Hreflang}, imagesizes:{l.ImageSizes}, imagesrcset:{l.ImageSrcset}, disabled:{l.Disabled}")
                 .ToArray();
             return linkElements;

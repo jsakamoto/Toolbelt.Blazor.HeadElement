@@ -4,6 +4,8 @@
 
 <Link Rel="icon" Href="@($"/_content/SampleSite.Components/favicons/{GetFaviconName()}")" Type="image/png" />
 <Link Rel="canonical" Href="http://localhost/counter" title="link-B" />
+<Link Rel="alternate" href="/en/counter" Hreflang="en" />
+<Link rel="alternate" Href="/ja/counter" hreflang="ja" />
 
 <Link Rel="preload" href="_content/SampleSite.Components/css/green.png" As="image" CrossOrigin="anonymous" /> @* Add new link *@
 <Link rel="preload" Href="_content/SampleSite.Components/css/blue.png" as="image" media="(min-width: 301px)" ImageSizes="32px" imagesrcset="blue.png, 32px" /> @* Add new link with media *@
@@ -32,6 +34,9 @@
             ByName("meta-N3"),
             ByProp("meta-P3"),
             ByHttpEquiv("meta-H3"));
+        await HeadElementHelper.SetLinkElementsAsync(
+            new LinkElement(rel: "alternate", href: "/en/counter", hreflang: "x-default")
+        );
         await HeadElementHelper.RemoveLinkElementsAsync(
             new LinkElement(rel: "stylesheet", href: "_content/SampleSite.Components/css/custom-A.css"),
             new LinkElement(rel: "preload", href: "_content/SampleSite.Components/css/red.png", media: "(min-width: 601px)"),
