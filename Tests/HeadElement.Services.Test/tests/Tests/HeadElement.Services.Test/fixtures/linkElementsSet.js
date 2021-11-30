@@ -11,6 +11,7 @@ class LinkElementsSet {
             "iconWithSizes": this.createLink({ rel: "icon", href: "https://example.com/favicon16blue.png", sizes: "16" }),
             "alternateWithType": this.createLink({ rel: "alternate", href: "https://example.com/index.pdf", type: "application/pdf" }),
             "alternateWithMedia": this.createLink({ rel: "alternate", href: "https://example.com/mobile.html", media: "(min-width: 600px)" }),
+            "alternateWithHreflang": this.createLink({ rel: "alternate", href: "https://example.com/ja/", hreflang: "ja" }),
             "preload": this.createLink({ rel: "preload", href: "https://example.com/foo.css" }),
             "preloadWithMedia": this.createLink({ rel: "preload", href: "https://example.com/bar.js", media: "(min-width: 600px)" }),
             "preloadWithType": this.createLink({ rel: "preload", href: "https://example.com/fizz.woff2", as: "font", type: "font/woff2" }),
@@ -24,6 +25,7 @@ class LinkElementsSet {
     get iconWithSizes() { return this.linkElements["iconWithSizes"]; }
     get alternateWithType() { return this.linkElements["alternateWithType"]; }
     get alternateWithMedia() { return this.linkElements["alternateWithMedia"]; }
+    get alternateWithHreflang() { return this.linkElements["alternateWithHreflang"]; }
     get preload() { return this.linkElements["preload"]; }
     get preloadWithMedia() { return this.linkElements["preloadWithMedia"]; }
     get preloadWithType() { return this.linkElements["preloadWithType"]; }
@@ -34,13 +36,17 @@ class LinkElementsSet {
         }
     }
     createLink(props) {
-        const baseLinkElement = { sizes: '', media: '', type: '' };
-        const newLinkElement = Object.assign(new HTMLLinkElementMock(), baseLinkElement);
-        return Object.assign(newLinkElement, props);
+        return Object.assign(new HTMLLinkElementMock(), props);
     }
 }
 exports.LinkElementsSet = LinkElementsSet;
 class HTMLLinkElementMock {
+    constructor() {
+        this.sizes = '';
+        this.media = '';
+        this.type = '';
+        this.hreflang = '';
+    }
     getAttribute(name) {
         return this[name] || null;
     }

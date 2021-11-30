@@ -56,6 +56,11 @@ const linkElementsSet_1 = require("./fixtures/linkElementsSet");
             assert.equal(sameLink(link, createLink({ r: "alternate", h: "https://example.com/mobile.pdf", p: "application/pdf" })), shouldBeSame);
             assert.equal(sameLink(link, createLink({ r: "alternate", h: "https://example.com/index.pdf", p: "plain/text" })), false);
         });
+        linkElementsSet.forEach(link => {
+            const shouldBeSame = link === linkElementsSet.alternateWithHreflang;
+            assert.equal(sameLink(link, createLink({ r: "alternate", h: "https://example.com/localized/", hl: "ja" })), shouldBeSame, `fail at ${JSON.stringify(link)}`);
+            assert.equal(sameLink(link, createLink({ r: "alternate", h: "https://example.com/ja/", hl: "ja-jp" })), false, `fail at ${JSON.stringify(link)}`);
+        });
     });
     it('sameLink for preload', function () {
         linkElementsSet.forEach(link => {

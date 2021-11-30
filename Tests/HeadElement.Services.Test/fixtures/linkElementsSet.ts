@@ -9,6 +9,7 @@
     public get iconWithSizes() { return this.linkElements["iconWithSizes"]; }
     public get alternateWithType() { return this.linkElements["alternateWithType"]; }
     public get alternateWithMedia() { return this.linkElements["alternateWithMedia"]; }
+    public get alternateWithHreflang() { return this.linkElements["alternateWithHreflang"]; }
     public get preload() { return this.linkElements["preload"]; }
     public get preloadWithMedia() { return this.linkElements["preloadWithMedia"]; }
     public get preloadWithType() { return this.linkElements["preloadWithType"]; }
@@ -25,6 +26,7 @@
 
             "alternateWithType": this.createLink({ rel: "alternate", href: "https://example.com/index.pdf", type: "application/pdf" }),
             "alternateWithMedia": this.createLink({ rel: "alternate", href: "https://example.com/mobile.html", media: "(min-width: 600px)" }),
+            "alternateWithHreflang": this.createLink({ rel: "alternate", href: "https://example.com/ja/", hreflang: "ja" }),
 
             "preload": this.createLink({ rel: "preload", href: "https://example.com/foo.css" }),
             "preloadWithMedia": this.createLink({ rel: "preload", href: "https://example.com/bar.js", media: "(min-width: 600px)" }),
@@ -41,13 +43,15 @@
     }
 
     private createLink(props: any): HTMLLinkElement {
-        const baseLinkElement = { sizes: '', media: '', type: '' };
-        const newLinkElement = Object.assign(new HTMLLinkElementMock(), baseLinkElement);
-        return Object.assign(newLinkElement, props);
+        return Object.assign(new HTMLLinkElementMock(), props);
     }
 }
 
 class HTMLLinkElementMock {
+    public sizes = '';
+    public media = '';
+    public type = '';
+    public hreflang = '';
     public getAttribute(name: string): string | null {
         return (this as any)[name] || null;
     }

@@ -25,7 +25,7 @@ export var Toolbelt;
             prev: () => true,
             next: () => true,
             icon: (m, a) => ('' + m.sizes) === a.s,
-            alternate: (m, a) => m.type === a.p && m.media === a.m,
+            alternate: (m, a) => m.type === a.p && m.media === a.m && m.hreflang === a.hl,
             preload: (m, a) => getAttr(m, href) === a.h && m.media === a.m,
         };
         const fixstr = (str) => str || '';

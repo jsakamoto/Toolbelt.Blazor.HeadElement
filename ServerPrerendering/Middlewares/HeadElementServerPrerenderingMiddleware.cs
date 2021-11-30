@@ -169,7 +169,7 @@ namespace Toolbelt.Blazor.HeadElement.Middlewares
                 "prev" => true,
                 "next" => true,
                 "icon" => (m.Sizes?.ToString() ?? "") == (a.Sizes ?? ""),
-                "alternate" => (m.Type ?? "") == (a.Type ?? "") && (m.Media ?? "") == (a.Media ?? ""),
+                "alternate" => (m.Type ?? "") == (a.Type ?? "") && (m.Media ?? "") == (a.Media ?? "") && ((m.GetAttribute("hreflang") ?? "") == (a.Hreflang ?? "")),
                 "preload" => Href(m.Href) == (a.Href ?? "") && (m.Media ?? "") == (a.Media ?? ""),
                 _ => Href(m.Href) == (a.Href ?? "")
             });

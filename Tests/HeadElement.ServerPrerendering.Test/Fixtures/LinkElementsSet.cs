@@ -21,6 +21,8 @@ public class LinkElementsSet
 
     public IHtmlLinkElement AlternateWithMedia => this.LinkElements[nameof(this.AlternateWithMedia)];
 
+    public IHtmlLinkElement AlternateWithHreflang => this.LinkElements[nameof(this.AlternateWithHreflang)];
+
     public IHtmlLinkElement Preload => this.LinkElements[nameof(this.Preload)];
 
     public IHtmlLinkElement PreloadWithMedia => this.LinkElements[nameof(this.PreloadWithMedia)];
@@ -42,6 +44,7 @@ public class LinkElementsSet
 
             [nameof(this.AlternateWithType)] = CreateLinkElement(@"<link rel=""alternate"" href=""https://example.com/index.pdf"" type=""application/pdf"" />"),
             [nameof(this.AlternateWithMedia)] = CreateLinkElement(@"<link rel=""alternate"" href=""https://example.com/mobile.html"" media=""(min-width: 600px)"" />"),
+            [nameof(this.AlternateWithHreflang)] = CreateLinkElement(@"<link rel=""alternate"" href=""https://example.com/ja/"" hreflang=""ja"" />"),
 
             [nameof(this.Preload)] = CreateLinkElement(@"<link rel=""preload"" href=""https://example.com/foo.css"" />"),
             [nameof(this.PreloadWithMedia)] = CreateLinkElement(@"<link rel=""preload"" href=""https://example.com/bar.js"" media=""(min-width: 600px)"" />"),

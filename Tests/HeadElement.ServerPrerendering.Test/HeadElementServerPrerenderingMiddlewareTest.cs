@@ -73,6 +73,12 @@ public class HeadElementServerPrerenderingMiddlewareTest
             SameLink(link, new(rel: "alternate", href: "https://example.com/mobile.pdf", type: "application/pdf")).Is(shouldBeSame);
             SameLink(link, new(rel: "alternate", href: "https://example.com/index.pdf", type: "plain/text")).IsFalse();
         });
+        LinkElementsSet.ForEach(link =>
+        {
+            var shouldBeSame = link == LinkElementsSet.AlternateWithHreflang;
+            SameLink(link, new(rel: "alternate", href: "https://example.com/localized/", hreflang: "ja")).Is(shouldBeSame, $"failed at {link.ToHtml()}");
+            SameLink(link, new(rel: "alternate", href: "https://example.com/ja", hreflang: "ja-jp")).IsFalse($"failed at {link.ToHtml()}");
+        });
     }
 
     [Test]
