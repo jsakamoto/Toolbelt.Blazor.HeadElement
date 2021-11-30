@@ -1,13 +1,13 @@
 ﻿export namespace Toolbelt.Head {
 
-    interface MetaElement {
+    export interface MetaElement {
         n: string;
         p: string;
         h: string;
         c: string;
     }
 
-    interface LinkElement {
+    export interface LinkElement {
         /** rel */
         r: string;
         /** href */
@@ -43,7 +43,7 @@
     const href = 'href';
     const nullText = 'null';
 
-    const d = document;
+    const d = typeof document !== 'undefined' ? document : {} as HTMLDocument;
     const head = d.head;
 
     function q<T>(selector: string) { return Array.from(head.querySelectorAll(selector)) as any[] as T[]; }
@@ -62,9 +62,6 @@
         alternate: (m, a) => m.type === a.p && m.media === a.m,
         preload: (m, a) => getAttr(m, href) === a.h && m.media === a.m,
     };
-    const sameLink = (m: HTMLLinkElement, a: LinkElement) => m.rel === a.r && (
-        (linkComparer[a.r] || ((m, a) => getAttr(m, href) === a.h))(m, a)
-    );
     const fixstr = (str: string | undefined | null) => str || '';
 
     export const Title = {
@@ -121,7 +118,7 @@
 
         set: (args: LinkElement[]) => {
             args.forEach(arg => {
-                let link = q<HTMLLinkElement>(linkElementName).find(m => sameLink(m, arg)) || null;
+                let link = q<HTMLLinkElement>(linkElementName).find(m => LinkTag.sameLink(m, arg)) || null;
                 let newLink: HTMLLinkElement | null = null;
 
                 if (link === null) {
@@ -161,11 +158,11 @@
 
         reset: (args: LinkElement[]) => {
             LinkTag.set(args);
-            q<HTMLLinkElement>(selectorForLinks).filter(m => !args.some(arg => sameLink(m, arg))).forEach(removeChild);
+            q<HTMLLinkElement>(selectorForLinks).filter(m => !args.some(arg => LinkTag.sameLink(m, arg))).forEach(removeChild);
         },
 
         del: (args: LinkElement[]) => args.forEach(a => {
-            q<HTMLLinkElement>(selectorForLinks).filter(m => sameLink(m, a)).forEach(removeChild)
+            q<HTMLLinkElement>(selectorForLinks).filter(m => LinkTag.sameLink(m, a)).forEach(removeChild)
         }),
 
         query: () => {
@@ -200,6 +197,9 @@
                 iss: fixstr(a[10]),
                 d: a[11] || false,
             }));
-        }
+        },
+        sameLink: (m: HTMLLinkElement, a: LinkElement) => m.rel === a.r && (
+            (linkComparer[a.r] || ((m, a) => getAttr(m, href) === a.h))(m, a)
+        )
     }
 }

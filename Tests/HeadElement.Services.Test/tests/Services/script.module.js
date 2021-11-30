@@ -1,4 +1,7 @@
-export var Toolbelt;
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.Toolbelt = void 0;
+var Toolbelt;
 (function (Toolbelt) {
     var Head;
     (function (Head) {
@@ -154,4 +157,4 @@ export var Toolbelt;
             sameLink: (m, a) => m.rel === a.r && ((linkComparer[a.r] || ((m, a) => getAttr(m, href) === a.h))(m, a))
         };
     })(Head = Toolbelt.Head || (Toolbelt.Head = {}));
-})(Toolbelt || (Toolbelt = {}));
+})(Toolbelt = exports.Toolbelt || (exports.Toolbelt = {}));
