@@ -18,7 +18,7 @@
   </PropertyGroup>
 
   <PropertyGroup>
-    <Version>6.0.0</Version>
+    <Version>6.0.1</Version>
     <Authors>J.Sakamoto</Authors>
     <Copyright>Copyright © 2019-2021 J.Sakamoto, Mozilla Public License 2.0</Copyright>
     <Description>Head element support (change the document title, "meta" elements such as OGP, and "link" elements such as canonical url, favicon) for Blazor apps.</Description>
