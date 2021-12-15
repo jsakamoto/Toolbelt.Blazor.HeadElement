@@ -1,4 +1,7 @@
-﻿v.6.0.1
+﻿v.6.0.2
+- Improve PWA support.
+
+v.6.0.1
 - Improve: a link element equality respects a "hreflang" attribute value.
 
 v.6.0.0

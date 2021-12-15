@@ -1,5 +1,5 @@
 ﻿<Project>
   <ItemGroup>
-    <BlazorWasmPrerenderMiddleware Include="Toolbelt.Blazor.HeadElement.ServerPrerendering" Assembly="" Version="1.5.2" />
+    <BlazorWasmPrerenderMiddleware Include="Toolbelt.Blazor.HeadElement.ServerPrerendering" Assembly="" Version="6.0.2" />
   </ItemGroup>
 </Project>
