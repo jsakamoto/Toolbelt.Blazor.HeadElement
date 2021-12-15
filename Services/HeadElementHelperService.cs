@@ -71,17 +71,32 @@ namespace Toolbelt.Blazor.HeadElement
                 await this._EnsureScriptSyncer.WaitAsync();
                 try
                 {
-                    var version = this.GetVersionText();
                     if (!this._ScriptEnabled)
                     {
                         if (!this.Options.DisableClientScriptAutoInjection)
                         {
-                            var scriptPath = $"./_content/Toolbelt.Blazor.HeadElement.Services/script.module.min.js?v={version}";
+                            var scriptPath = "./_content/Toolbelt.Blazor.HeadElement.Services/script.module.min.js";
+
+                            // Add version string for refresh token only when navigator is online.
+                            // (If the app runs on the offline mode, the module url with query parameters might cause the "resource not found" error.)
+                            const string moduleScript = "export function isOnLine(){ return navigator.onLine; }";
+                            await using var inlineJsModule = await this._JS.InvokeAsync<IJSObjectReference>("import", "data:text/javascript;charset=utf-8," + Uri.EscapeDataString(moduleScript));
+                            var isOnLine = await inlineJsModule.InvokeAsync<bool>("isOnLine");
+
+                            if (isOnLine) scriptPath += $"?v={this.GetVersionText()}";
+
                             this._JSModule = await this._JS.InvokeAsync<IJSObjectReference>("import", scriptPath);
                         }
                         else
                         {
-                            try { await this._JS.InvokeVoidAsync("eval", "Toolbelt.Head.ready"); } catch { }
+                            try
+                            {
+                                const string moduleScript = "export function ready(){ return Toolbelt.Blazor.HotKeys.ready; }";
+                                await using var inlineJsModule = await this._JS.InvokeAsync<IJSObjectReference>("import", "data:text/javascript;charset=utf-8," + Uri.EscapeDataString(moduleScript));
+
+                                await inlineJsModule.InvokeVoidAsync("ready");
+                            }
+                            catch { }
                         }
                         this._ScriptEnabled = true;
                     }
@@ -90,8 +105,8 @@ namespace Toolbelt.Blazor.HeadElement
                 finally { this._EnsureScriptSyncer.Release(); }
             }
 
-            return 
-                this._ScriptEnabled == false ? null:
+            return
+                this._ScriptEnabled == false ? null :
                 this._JSModule != null ? this._JSModule.InvokeAsync<T> :
                 this._JS != null ? this._JS.InvokeAsync<T> : null;
         }
@@ -106,11 +121,16 @@ namespace Toolbelt.Blazor.HeadElement
                 {
                     if (!this._ScriptEnabled)
                     {
-                        var version = this.GetVersionText();
                         if (!this.Options.DisableClientScriptAutoInjection)
                         {
+                            // Add version string for refresh token only when navigator is online.
+                            // (If the app runs on the offline mode, the module url with query parameters might cause the "resource not found" error.)
+                            var jsInProcRuntime = this._JS as IJSInProcessRuntime;
+                            var isOnLine = jsInProcRuntime?.Invoke<bool>("eval", "navigator.onLine") ?? false;
+                            var versionQuery = isOnLine ? $"?v={this.GetVersionText()}" : "";
+
                             var scriptPath = "./_content/Toolbelt.Blazor.HeadElement.Services/script.min.js";
-                            await this._JS.InvokeVoidAsync("eval", "new Promise(r=>((d,t,s,v)=>(h=>h.querySelector(t+`[src^=\"${s}\"]`)?r():(e=>(e.src=(s+v),e.onload=r,h.appendChild(e)))(d.createElement(t)))(d.head))(document,'script','" + scriptPath + "','?v=" + version + "'))");
+                            await this._JS.InvokeVoidAsync("eval", "new Promise(r=>((d,t,s,v)=>(h=>h.querySelector(t+`[src^=\"${s}\"]`)?r():(e=>(e.src=(s+v),e.onload=r,h.appendChild(e)))(d.createElement(t)))(d.head))(document,'script','" + scriptPath + "','" + versionQuery + "'))");
                         }
                         try { await this._JS.InvokeVoidAsync("eval", "Toolbelt.Head.ready"); } catch { }
                         this._ScriptEnabled = true;
@@ -328,7 +348,7 @@ namespace Toolbelt.Blazor.HeadElement
 #if ENABLE_JSMODULE
         public async ValueTask DisposeAsync()
         {
-            DetachLocationChangedHandler();
+            this.DetachLocationChangedHandler();
             if (this._JSModule != null) { await this._JSModule.DisposeAsync(); }
         }
 #endif
