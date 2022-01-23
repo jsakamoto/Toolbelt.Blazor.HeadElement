@@ -51,3 +51,4 @@ class HTMLLinkElementMock {
         return this[name] || null;
     }
 }
+//# sourceMappingURL=linkElementsSet.js.map
