@@ -150,7 +150,11 @@ namespace Toolbelt.Blazor.HeadElement
         {
             var invoker = await this.EnsureScriptEnabledAsync<T>();
             if (invoker == null) return default;
-            return await invoker.Invoke(identifier, args);
+            try
+            {
+                return await invoker.Invoke(identifier, args);
+            }
+            catch (ObjectDisposedException) { return default; }
         }
 
         private void _NavigationManager_LocationChanged(object? sender, LocationChangedEventArgs e)
