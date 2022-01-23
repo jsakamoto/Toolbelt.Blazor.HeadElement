@@ -2,9 +2,10 @@
 
   <PropertyGroup>
     <TargetFrameworks>netstandard2.1;net5.0</TargetFrameworks>
-    <LangVersion>7.3</LangVersion>
     <RazorLangVersion>3.0</RazorLangVersion>
     <AddRazorSupportForMvc>true</AddRazorSupportForMvc>
+    <Nullable>enable</Nullable>
+    <WarningsAsErrors>nullable</WarningsAsErrors>
     <NoWarn>$(NoWarn);1591;BL0006</NoWarn>
     <GeneratePackageOnBuild Condition=" '$(Configuration)' == 'Release' ">true</GeneratePackageOnBuild>
     <AssemblyName>Toolbelt.Blazor.HeadElement</AssemblyName>

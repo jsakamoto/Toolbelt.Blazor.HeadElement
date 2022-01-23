@@ -3,6 +3,6 @@
     public class LinkElementCommand
     {
         public LinkElementOperations Operation;
-        public LinkElement Element;
+        public LinkElement? Element;
     }
 }

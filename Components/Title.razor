@@ -6,12 +6,12 @@
 @inject Toolbelt.Blazor.HeadElement.IHeadElementHelper HeadElementHelper
 @code {
     [Parameter]
-    public RenderFragment ChildContent { get; set; }
+    public RenderFragment? ChildContent { get; set; }
 
     protected override async Task OnParametersSetAsync()
     {
         var renderTreeBuilder = new RenderTreeBuilder();
-        this.ChildContent(renderTreeBuilder);
+        this.ChildContent?.Invoke(renderTreeBuilder);
 
         var frames = renderTreeBuilder.GetFrames();
         var title = new StringBuilder();

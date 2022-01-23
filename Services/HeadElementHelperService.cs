@@ -45,7 +45,7 @@ namespace Toolbelt.Blazor.HeadElement
 
         internal HeadElementHelperService(IServiceProvider services)
         {
-            this._JS = services.GetService<IJSRuntime>();
+            this._JS = services.GetRequiredService<IJSRuntime>();
             this._NavigationManager = services.GetRequiredService<NavigationManager>();
             this._Store = services.GetRequiredService<IHeadElementHelperStore>();
             this._NavigationManager.LocationChanged += this._NavigationManager_LocationChanged;
@@ -56,14 +56,14 @@ namespace Toolbelt.Blazor.HeadElement
             var assembly = this.GetType().Assembly;
             var version = assembly
                 .GetCustomAttribute<AssemblyInformationalVersionAttribute>()?
-                .InformationalVersion ?? assembly.GetName().Version.ToString();
+                .InformationalVersion ?? assembly.GetName().Version?.ToString() ?? "";
             return version;
         }
 
 #if ENABLE_JSMODULE
-        private IJSObjectReference _JSModule = null;
+        private IJSObjectReference? _JSModule = null;
 
-        private async ValueTask<ScriptInvoker<T>> EnsureScriptEnabledAsync<T>()
+        private async ValueTask<ScriptInvoker<T>?> EnsureScriptEnabledAsync<T>()
         {
             if (this._JS == null) return null;
             if (!this._ScriptEnabled)
@@ -111,7 +111,7 @@ namespace Toolbelt.Blazor.HeadElement
                 this._JS != null ? this._JS.InvokeAsync<T> : null;
         }
 #else
-        private async ValueTask<ScriptInvoker<T>> EnsureScriptEnabledAsync<T>()
+        private async ValueTask<ScriptInvoker<T>?> EnsureScriptEnabledAsync<T>()
         {
             if (this._JS == null) return null;
             if (!this._ScriptEnabled)
@@ -146,14 +146,14 @@ namespace Toolbelt.Blazor.HeadElement
         }
 #endif
 
-        private async ValueTask<T> InvokeJSAsync<T>(string identifier, params object[] args)
+        private async ValueTask<T?> InvokeJSAsync<T>(string identifier, params object[] args)
         {
             var invoker = await this.EnsureScriptEnabledAsync<T>();
             if (invoker == null) return default;
             return await invoker.Invoke(identifier, args);
         }
 
-        private void _NavigationManager_LocationChanged(object sender, LocationChangedEventArgs e)
+        private void _NavigationManager_LocationChanged(object? sender, LocationChangedEventArgs e)
         {
             this.ResetIfNeededAsync().ConfigureAwait(false);
         }
@@ -195,7 +195,7 @@ namespace Toolbelt.Blazor.HeadElement
             await this.GetDefaultLinkElementsAsync();
         }
 
-        public ValueTask<string> GetTitleAsync() => new(this._Store.Title);
+        public ValueTask<string> GetTitleAsync() => new(this._Store.Title ?? "");
 
         public async ValueTask SetTitleAsync(string title)
         {
@@ -212,7 +212,7 @@ namespace Toolbelt.Blazor.HeadElement
         private async ValueTask ResetTitleAsync()
         {
             this._Store.Title = this._Store.DefaultTitle;
-            await this.InvokeJSAsync<object>(NST + "set", this._Store.DefaultTitle);
+            await this.InvokeJSAsync<object>(NST + "set", this._Store.DefaultTitle ?? "");
         }
 
         private string NormalizeUrl(string uri)
@@ -233,7 +233,7 @@ namespace Toolbelt.Blazor.HeadElement
             {
                 this._Store.DefaultTitle = await this.InvokeJSAsync<string>(NST + "query");
             }
-            return this._Store.DefaultTitle;
+            return this._Store.DefaultTitle ?? "";
         }
 
         public async ValueTask<IEnumerable<MetaElement>> GetDefaultMetaElementsAsync()
@@ -242,7 +242,7 @@ namespace Toolbelt.Blazor.HeadElement
             {
                 this._Store.DefaultMetaElements = await this.InvokeJSAsync<MetaElement[]>(NSM + "query");
             }
-            return this._Store.DefaultMetaElements;
+            return this._Store.DefaultMetaElements ?? Enumerable.Empty<MetaElement>();
         }
 
         public async ValueTask SetMetaElementsAsync(params MetaElement[] elements)
@@ -281,7 +281,7 @@ namespace Toolbelt.Blazor.HeadElement
 
         private async ValueTask ResetMetaElementsAsync()
         {
-            await this.InvokeJSAsync<object>(NSM + "reset", this._Store.DefaultMetaElements);
+            await this.InvokeJSAsync<object>(NSM + "reset", this._Store.DefaultMetaElements ?? Enumerable.Empty<MetaElement>());
         }
 
         public async ValueTask<IEnumerable<LinkElement>> GetDefaultLinkElementsAsync()
@@ -290,7 +290,7 @@ namespace Toolbelt.Blazor.HeadElement
             {
                 this._Store.DefaultLinkElements = await this.InvokeJSAsync<LinkElement[]>(NSL + "query");
             }
-            return this._Store.DefaultLinkElements;
+            return this._Store.DefaultLinkElements ?? Enumerable.Empty<LinkElement>();
         }
 
         public async ValueTask SetLinkElementsAsync(params LinkElement[] elements)
@@ -329,7 +329,7 @@ namespace Toolbelt.Blazor.HeadElement
 
         private async ValueTask ResetLinkElementsAsync()
         {
-            await this.InvokeJSAsync<object>(NSL + "reset", this._Store.DefaultLinkElements);
+            await this.InvokeJSAsync<object>(NSL + "reset", this._Store.DefaultLinkElements ?? Enumerable.Empty<LinkElement>());
         }
 
         private void DetachLocationChangedHandler()

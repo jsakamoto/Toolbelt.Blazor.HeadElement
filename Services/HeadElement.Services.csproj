@@ -5,6 +5,8 @@
     <LangVersion>Latest</LangVersion>
     <RazorLangVersion>3.0</RazorLangVersion>
     <NoWarn>$(NoWarn);1591</NoWarn>
+    <Nullable>enable</Nullable>
+    <WarningsAsErrors>nullable</WarningsAsErrors>
     <GeneratePackageOnBuild Condition=" '$(Configuration)' == 'Release' ">true</GeneratePackageOnBuild>
     <AssemblyName>Toolbelt.Blazor.HeadElement.Services</AssemblyName>
     <RootNamespace>Toolbelt.Blazor.HeadElement</RootNamespace>

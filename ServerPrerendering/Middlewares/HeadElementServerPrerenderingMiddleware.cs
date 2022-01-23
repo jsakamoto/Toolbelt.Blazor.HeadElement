@@ -36,7 +36,7 @@ namespace Toolbelt.Blazor.HeadElement.Middlewares
                     var parser = new HtmlParser();
                     using var doc = parser.ParseDocument(filter.MemoryStream);
 
-                    var indentText = doc.Head.Descendents<IText>()
+                    var indentText = doc.Head?.Descendents<IText>()
                         .Select(t => t.Data.Trim('\r', '\n'))
                         .Where(t => Regex.IsMatch(t, @"^[\t ]+$"))
                         .OrderByDescending(t => t.Length)
@@ -46,7 +46,7 @@ namespace Toolbelt.Blazor.HeadElement.Middlewares
                     this.SetMetaElements(store, doc, indentText);
                     this.SetLinkElements(store, doc, indentText);
 
-                    doc.Head.AppendChild(doc.CreateTextNode("\n"));
+                    doc.Head?.AppendChild(doc.CreateTextNode("\n"));
 
                     filter.MemoryStream.SetLength(0);
                     var encoding = Encoding.UTF8;
@@ -78,11 +78,12 @@ namespace Toolbelt.Blazor.HeadElement.Middlewares
         {
             if (store.MetaElementCommands.Count == 0) return;
 
-            var metaTags = doc.Head.QuerySelectorAll("meta[name],meta[property],meta[http-equiv]").Cast<IHtmlMetaElement>().ToList();
+            var metaTags = doc.Head?.QuerySelectorAll("meta[name],meta[property],meta[http-equiv]").Cast<IHtmlMetaElement>().ToList() ?? new List<IHtmlMetaElement>();
             SaveDefault(doc, indentText, metaTags);
 
             foreach (var cmd in store.MetaElementCommands)
             {
+                cmd.Element ??= new MetaElement();
                 var meta = metaTags.FirstOrDefault(m =>
                     (cmd.Element.Name != "" && cmd.Element.Name == m.Name) ||
                     (cmd.Element.Property != "" && cmd.Element.Property == m.GetAttribute("property")) ||
@@ -108,7 +109,7 @@ namespace Toolbelt.Blazor.HeadElement.Middlewares
                 {
                     if (meta != null)
                     {
-                        doc.Head.RemoveChild(meta);
+                        doc.Head?.RemoveChild(meta);
                         metaTags.Remove(meta);
                     }
                 }
@@ -119,12 +120,12 @@ namespace Toolbelt.Blazor.HeadElement.Middlewares
         {
             if (store.LinkElementCommands.Count == 0) return;
 
-            var linkTags = doc.Head.QuerySelectorAll("link").Cast<IHtmlLinkElement>().ToList();
+            var linkTags = doc.Head?.QuerySelectorAll("link").Cast<IHtmlLinkElement>().ToList() ?? new List<IHtmlLinkElement>();
             SaveDefault(doc, indentText, linkTags);
 
             foreach (var cmd in store.LinkElementCommands)
             {
-                var e = cmd.Element;
+                var e = cmd.Element ?? new LinkElement();
                 var link = linkTags.FirstOrDefault(m => SameLink(m, e));
 
                 if (cmd.Operation == LinkElementOperations.Set)
@@ -155,7 +156,7 @@ namespace Toolbelt.Blazor.HeadElement.Middlewares
                 }
                 else if (cmd.Operation == LinkElementOperations.Remove && link != null)
                 {
-                    doc.Head.RemoveChild(link);
+                    doc.Head?.RemoveChild(link);
                     linkTags.Remove(link);
                 }
             }
@@ -177,22 +178,22 @@ namespace Toolbelt.Blazor.HeadElement.Middlewares
 
         private static TElement CreateAndAddToHead<TElement>(IHtmlDocument doc, string indentText) where TElement : IElement
         {
-            doc.Head.AppendChild(doc.CreateTextNode("\n" + indentText));
+            doc.Head?.AppendChild(doc.CreateTextNode("\n" + indentText));
             var element = doc.CreateElement<TElement>();
-            doc.Head.AppendChild(element);
+            doc.Head?.AppendChild(element);
             return element;
         }
 
-        private static string Href(string href) { return Regex.Replace(href ?? "", "^about:///", ""); }
+        private static string Href(string? href) { return Regex.Replace(href ?? "", "^about:///", ""); }
 
-        private static string Stringify(object obj)
+        private static string Stringify(object? obj)
         {
             if (obj == null) return "";
             else if (obj is string str)
                 return string.IsNullOrEmpty(str) ? "" : JsonSerializer.Serialize(str ?? "");
             else if (obj is bool b)
                 return b ? "!0" : "";
-            else return obj.ToString();
+            else return obj.ToString() ?? "";
         }
 
         private static void SaveDefault(IHtmlDocument doc, string indentText, IEnumerable<IHtmlLinkElement> linkTags)
@@ -239,7 +240,7 @@ namespace Toolbelt.Blazor.HeadElement.Middlewares
             var script = CreateAndAddToHead<IHtmlScriptElement>(doc, indentText);
             script.TextContent = text;
             script.SetAttribute("type", type);
-            doc.Head.AppendChild(script);
+            doc.Head?.AppendChild(script);
         }
     }
 }
