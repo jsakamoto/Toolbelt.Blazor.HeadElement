@@ -1,4 +1,7 @@
-﻿v.1.5.0
+﻿v.7.0.0
+- Turned on C# 8 nullable reference types.
+
+v.1.5.0
 - Reduce the size of the state string used for server prerendering.
 
 v.1.4.0

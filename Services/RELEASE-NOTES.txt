@@ -1,4 +1,8 @@
-﻿v.6.0.2
+﻿v.7.0.0
+- Turned on C# 8 nullable reference types.
+- Suppresses unnecessary "ObjectDisposedException" message from being logged.
+
+v.6.0.2
 - Improve PWA support.
 
 v.6.0.1
