@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Razor">
 
   <PropertyGroup>
-    <TargetFrameworks>netstandard2.0;net5.0</TargetFrameworks>
+    <TargetFrameworks>netstandard2.1;net5.0</TargetFrameworks>
     <LangVersion>Latest</LangVersion>
     <RazorLangVersion>3.0</RazorLangVersion>
     <NoWarn>$(NoWarn);1591</NoWarn>
@@ -14,7 +14,7 @@
     <TypeScriptCompileBlocked>false</TypeScriptCompileBlocked>
   </PropertyGroup>
   <PropertyGroup>
-    <DefineConstants Condition=" '$(TargetFramework)' != 'netstandard2.0' ">$(DefineConstants);ENABLE_JSMODULE</DefineConstants>
+    <DefineConstants Condition=" '$(TargetFramework)' != 'netstandard2.1' ">$(DefineConstants);ENABLE_JSMODULE</DefineConstants>
   </PropertyGroup>
 
   <PropertyGroup>
@@ -43,11 +43,11 @@
     </PackageReference>
   </ItemGroup>
 
-  <ItemGroup Condition=" '$(TargetFramework)' == 'netstandard2.0' ">
+  <ItemGroup Condition=" '$(TargetFramework)' == 'netstandard2.1' ">
     <PackageReference Include="Microsoft.AspNetCore.Components" Version="3.0.0" />
     <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="3.0.0" />
   </ItemGroup>
-  <ItemGroup Condition=" '$(TargetFramework)' != 'netstandard2.0' ">
+  <ItemGroup Condition=" '$(TargetFramework)' != 'netstandard2.1' ">
     <PackageReference Include="Microsoft.AspNetCore.Components" Version="5.0.0" />
     <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="5.0.0" />
   </ItemGroup>

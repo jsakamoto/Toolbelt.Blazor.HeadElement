@@ -19,6 +19,8 @@
         base.OnAfterRender(firstRender);
         if (firstRender)
         {
+            await Task.Delay(3000);
+
             this._Title = "2nd title";
             this._Keywords = "2nd keywords";
             this._MetaH2 = "value-H2-2nd";
