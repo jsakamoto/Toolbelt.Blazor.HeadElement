@@ -39,7 +39,7 @@
   </ItemGroup>
 
   <Target Name="NpmInstall" BeforeTargets="PreBuildEvent">
-    <Exec Command="npm install" Condition="!Exists(node_modules)" />
+    <Exec Command="npm ci" Condition="!Exists('node_modules')" />
   </Target> 
 
 </Project>
