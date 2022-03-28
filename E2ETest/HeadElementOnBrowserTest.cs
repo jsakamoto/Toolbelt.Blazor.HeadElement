@@ -24,13 +24,13 @@ namespace HeadElement.E2ETest
         private static readonly HostingModel[] _HostingModels = new[] {
             Wasm,
             WasmHosted,
-            Server 
+            Server
         };
 
         private static readonly BlazorVersion[] _BlazorVersions = new[] {
             NETCore31,
             NET50,
-            NET60 
+            NET60
         };
 
         public static IEnumerable<object[]> TestCases => _HostingModels.SelectMany(m => _BlazorVersions.Select(v => new object[] { m, v }));
@@ -215,7 +215,7 @@ namespace HeadElement.E2ETest
             driver.GoToUrlAndWait(host.GetUrl("/"));
             driver.ClickRedirect();
             driver.DumpMetaElements()
-                .Contains("'','','refresh','3;url=/'") // <- added 'refresh'
+                .Contains("||refresh||3;url=/") // <- added 'refresh'
                 .IsTrue();
 
             // Wait for redirected...
@@ -236,7 +236,7 @@ namespace HeadElement.E2ETest
             driver.GoToUrlAndWait(host.GetUrl("/"));
             driver.ClickRedirect();
             driver.DumpMetaElements()
-                .Contains("'','','refresh','3;url=/'") // <- added 'refresh'
+                .Contains("||refresh||3;url=/") // <- added 'refresh'
                 .IsTrue();
 
             // Navigate to "Counter"
@@ -261,7 +261,7 @@ namespace HeadElement.E2ETest
             driver.Wait(5000).Until(_ => driver.FindElement(By.XPath("//h1[text()='Redirect to Home']")));
             Thread.Sleep(200);
             driver.DumpMetaElements()
-                .Contains("'','','refresh','3;url=/'") // <- added 'refresh'
+                .Contains("||refresh||3;url=/") // <- added 'refresh'
                 .IsTrue();
 
             // Wait for redirected...
@@ -283,7 +283,7 @@ namespace HeadElement.E2ETest
             driver.Wait(5000).Until(_ => driver.FindElement(By.XPath("//h1[text()='Redirect to Home']")));
             Thread.Sleep(200);
             driver.DumpMetaElements()
-                .Contains("'','','refresh','3;url=/'") // <- added 'refresh'
+                .Contains("||refresh||3;url=/") // <- added 'refresh'
                 .IsTrue();
 
             // Navigate to "Fetch data"

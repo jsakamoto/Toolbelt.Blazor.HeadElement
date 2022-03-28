@@ -84,10 +84,11 @@ namespace HeadElement.E2ETest
                     Name: Regex.Match(m.Value, "name=\"(?<t>[^\"]+)\"").Groups["t"].Value,
                     Property: Regex.Match(m.Value, "property=\"(?<t>[^\"]+)\"").Groups["t"].Value,
                     HttpEquiv: Regex.Match(m.Value, "http\\-equiv=\"(?<t>[^\"]+)\"").Groups["t"].Value,
+                    Media: Regex.Match(m.Value, "media=\"(?<t>[^\"]+)\"").Groups["t"].Value,
                     Content: Regex.Match(m.Value, "content=\"(?<t>[^\"]+)\"").Groups["t"].Value
                 ))
-                .OrderBy(m => m.HttpEquiv).ThenBy(m => m.Property).ThenBy(m => m.Name)
-                .Select(m => $"'{m.Name}','{m.Property}','{m.HttpEquiv}','{m.Content}'")
+                .OrderBy(m => m.HttpEquiv).ThenBy(m => m.Property).ThenBy(m => m.Name).ThenBy(m => m.Media)
+                .Select(m => $"{m.Name}|{m.Property}|{m.HttpEquiv}|{m.Media}|{m.Content}")
                 .ToArray();
         }
 

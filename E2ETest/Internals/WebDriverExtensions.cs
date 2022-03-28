@@ -63,7 +63,7 @@ namespace HeadElement.E2ETest
         {
             var script = "return JSON.stringify(" +
                 "Array.from(document.querySelectorAll('meta'))" +
-                ".map(m=>[m.name, m.getAttribute('property'), m.httpEquiv, m.content])" +
+                ".map(m=>[m.name, m.getAttribute('property'), m.httpEquiv, m.media, m.content])" +
             ")";
             var metaJson = driver.ExecuteJavaScript<string>(script);
             var metaArray = System.Text.Json.JsonSerializer.Deserialize<string[][]>(metaJson);
@@ -72,9 +72,10 @@ namespace HeadElement.E2ETest
                     Name: m[0] ?? "",
                     Property: m[1] ?? "",
                     HttpEquiv: m[2] ?? "",
-                    Content: m[3] ?? ""))
-                .OrderBy(m => m.HttpEquiv).ThenBy(m => m.Property).ThenBy(m => m.Name)
-                .Select(m => $"'{m.Name}','{m.Property}','{m.HttpEquiv}','{m.Content}'")
+                    Media: m[3] ?? "",
+                    Content: m[4] ?? ""))
+                .OrderBy(m => m.HttpEquiv).ThenBy(m => m.Property).ThenBy(m => m.Name).ThenBy(m => m.Media)
+                .Select(m => $"{m.Name}|{m.Property}|{m.HttpEquiv}|{m.Media}|{m.Content}")
                 .ToArray();
             return metaElements;
         }
