@@ -1,5 +1,6 @@
 using HeadElement.ServerPrerendering.Test.Fixtures;
 using NUnit.Framework;
+using Toolbelt.Blazor.HeadElement;
 using static Toolbelt.Blazor.HeadElement.Middlewares.HeadElementServerPrerenderingMiddleware;
 
 namespace HeadElement.ServerPrerendering.Test;
@@ -7,6 +8,8 @@ namespace HeadElement.ServerPrerendering.Test;
 public class HeadElementServerPrerenderingMiddlewareTest
 {
     private readonly static LinkElementsSet LinkElementsSet = new();
+
+    private readonly static MetaElementsSet MetaElementsSet = new();
 
     [Test]
     public void SameLink_Canonical_Test()
@@ -102,6 +105,50 @@ public class HeadElementServerPrerenderingMiddlewareTest
             var shouldBeSame = link == LinkElementsSet.PreloadWithType;
             SameLink(link, new(rel: "preload", href: "https://example.com/fizz.woff2", @as: "woff2", type: "application/octetstream")).Is(shouldBeSame);
             SameLink(link, new(rel: "preload", href: "https://example.com/fizz.woff2", @as: "font", type: "font/woff2", media: "(min-width: 600px)")).IsFalse();
+        });
+    }
+
+    [Test]
+    public void SameMeta_Description_Test()
+    {
+        MetaElementsSet.ForEach(meta =>
+        {
+            var shouldBeSame = meta == MetaElementsSet.Description;
+            SameMeta(meta, MetaElement.ByName("description", "Hello, World.")).Is(shouldBeSame);
+            SameMeta(meta, MetaElement.ByName("description", "Nice to meet you.")).Is(shouldBeSame);
+        });
+    }
+
+    [Test]
+    public void SameMeta_ThemeColor_Test()
+    {
+        MetaElementsSet.ForEach(meta =>
+        {
+            var shouldBeSame = meta == MetaElementsSet.ThemeColorLight;
+            SameMeta(meta, MetaElement.ByName("theme-color", media: "(prefers-color-scheme: light)", content: "white")).Is(shouldBeSame);
+            SameMeta(meta, MetaElement.ByName("theme-color", media: "(prefers-color-scheme: light)", content: "red")).Is(shouldBeSame);
+        });
+    }
+
+    [Test]
+    public void SameMeta_ContentType_Test()
+    {
+        MetaElementsSet.ForEach(meta =>
+        {
+            var shouldBeSame = meta == MetaElementsSet.ContentType;
+            SameMeta(meta, MetaElement.ByHttpEquiv("content-type", content: "text/html; charset=utf-8")).Is(shouldBeSame);
+            SameMeta(meta, MetaElement.ByHttpEquiv("content-type", content: "text/html; charset=iso2022jp")).Is(shouldBeSame);
+        });
+    }
+
+    [Test]
+    public void SameMeta_OgType_Test()
+    {
+        MetaElementsSet.ForEach(meta =>
+        {
+            var shouldBeSame = meta == MetaElementsSet.OgType;
+            SameMeta(meta, MetaElement.ByProp("og:type", content: "website")).Is(shouldBeSame);
+            SameMeta(meta, MetaElement.ByProp("og:type", content: "article")).Is(shouldBeSame);
         });
     }
 }

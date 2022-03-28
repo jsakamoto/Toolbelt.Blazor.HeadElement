@@ -83,11 +83,8 @@ namespace Toolbelt.Blazor.HeadElement.Middlewares
 
             foreach (var cmd in store.MetaElementCommands)
             {
-                cmd.Element ??= new MetaElement();
-                var meta = metaTags.FirstOrDefault(m =>
-                    (cmd.Element.Name != "" && cmd.Element.Name == m.Name) ||
-                    (cmd.Element.Property != "" && cmd.Element.Property == m.GetAttribute("property")) ||
-                    (cmd.Element.HttpEquiv != "" && cmd.Element.HttpEquiv == m.HttpEquivalent));
+                var e = (cmd.Element ??= new MetaElement());
+                var meta = metaTags.FirstOrDefault(m => SameMeta(m, e));
 
                 if (cmd.Operation == MetaElementOperations.Set)
                 {
@@ -102,6 +99,8 @@ namespace Toolbelt.Blazor.HeadElement.Middlewares
                             meta.SetAttribute("property", cmd.Element.Property);
                         if (cmd.Element.HttpEquiv != "")
                             meta.HttpEquivalent = cmd.Element.HttpEquiv;
+                        if (cmd.Element.Media != "")
+                            meta.SetAttribute("media", cmd.Element.Media);
                     }
                     meta.Content = cmd.Element.Content;
                 }
@@ -162,6 +161,16 @@ namespace Toolbelt.Blazor.HeadElement.Middlewares
             }
         }
 
+        internal static bool SameMeta(IHtmlMetaElement m, MetaElement a)
+        {
+            return
+                ((m.GetAttribute("media") ?? "") == a.Media) &&
+
+                ((a.Name != "" && a.Name == m.Name) ||
+                (a.Property != "" && a.Property == m.GetAttribute("property")) ||
+                (a.HttpEquiv != "" && a.HttpEquiv == m.HttpEquivalent));
+        }
+
         internal static bool SameLink(IHtmlLinkElement m, LinkElement a)
         {
             return m.Relation == a.Rel && (a.Rel switch
@@ -220,6 +229,7 @@ namespace Toolbelt.Blazor.HeadElement.Middlewares
                 Stringify(m.GetAttribute("property")),
                 Stringify(m.Name),
                 Stringify(m.HttpEquivalent),
+                Stringify(m.GetAttribute("media") ?? ""),
                 Stringify(m.Content)
             });
         }

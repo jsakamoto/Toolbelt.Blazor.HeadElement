@@ -19,7 +19,6 @@ export var Toolbelt;
             window.stop(); };
         const getAttr = (e, attrName) => e.getAttribute(attrName);
         const setAttr = (e, attrName, value) => e.setAttribute(attrName, value);
-        const sameMeta = (m, a) => a.n !== '' ? m.name === a.n : (a.h !== '' ? m.httpEquiv === a.h : getAttr(m, property) === a.p);
         const linkComparer = {
             canonical: () => true,
             prev: () => true,
@@ -36,7 +35,7 @@ export var Toolbelt;
         Head.MetaTag = {
             set: (args) => {
                 args.forEach(arg => {
-                    let meta = q(metaElementName).find(m => sameMeta(m, arg)) || null;
+                    let meta = q(metaElementName).find(m => Head.MetaTag.sameMeta(m, arg)) || null;
                     let n = null;
                     if (meta === null) {
                         meta = crealeElem(metaElementName);
@@ -48,31 +47,36 @@ export var Toolbelt;
                         setAttr(meta, property, arg.p);
                     if (arg.n !== '')
                         meta.name = arg.n;
+                    if (arg.m !== '')
+                        meta.media = arg.m;
                     meta.content = arg.c;
                     if (n !== null)
                         head.appendChild(n);
                 });
             },
             reset: (args) => {
-                q(selectorForMata).filter(m => !args.some(arg => sameMeta(m, arg))).forEach(removeMeta);
+                q(selectorForMata).filter(m => !args.some(arg => Head.MetaTag.sameMeta(m, arg))).forEach(removeMeta);
                 Head.MetaTag.set(args);
             },
-            del: (args) => args.forEach(arg => q(selectorForMata).filter(m => sameMeta(m, arg)).forEach(removeMeta)),
+            del: (args) => args.forEach(arg => q(selectorForMata).filter(m => Head.MetaTag.sameMeta(m, arg)).forEach(removeMeta)),
             query: () => {
                 const defaultMetas = eval((q(selectorForScript + 'meta-elements"]').pop() || { text: nullText }).text) ||
                     q(selectorForMata).map(m => [
                         getAttr(m, property),
                         m.name,
                         m.httpEquiv,
+                        m.media,
                         m.content
                     ]);
                 return defaultMetas.map(a => ({
                     p: fixstr(a[0]),
                     n: fixstr(a[1]),
                     h: fixstr(a[2]),
-                    c: fixstr(a[3]),
+                    m: fixstr(a[3]),
+                    c: fixstr(a[4]),
                 }));
-            }
+            },
+            sameMeta: (m, a) => (a.n !== '' ? m.name === a.n : (a.h !== '' ? m.httpEquiv === a.h : getAttr(m, property) === a.p)) && a.m == m.media
         };
         Head.LinkTag = {
             set: (args) => {

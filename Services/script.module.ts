@@ -1,9 +1,15 @@
 ﻿export namespace Toolbelt.Head {
 
     export interface MetaElement {
+        /** name */
         n: string;
+        /** property */
         p: string;
+        /** httpEquiv */
         h: string;
+        /** media */
+        m: string;
+        /** content */
         c: string;
     }
 
@@ -53,7 +59,6 @@
     const removeMeta = (m: HTMLMetaElement) => { removeChild(m); if (m.httpEquiv === 'refresh') window.stop(); }
     const getAttr = (e: HTMLElement, attrName: string) => e.getAttribute(attrName);
     const setAttr = (e: HTMLElement, attrName: string, value: string) => e.setAttribute(attrName, value);
-    const sameMeta = (m: HTMLMetaElement, a: MetaElement) => a.n !== '' ? m.name === a.n : (a.h !== '' ? m.httpEquiv === a.h : getAttr(m, property) === a.p);
     const linkComparer: { [key: string]: (m: HTMLLinkElement, a: LinkElement) => boolean } = {
         canonical: () => true,
         prev: () => true,
@@ -75,7 +80,7 @@
 
         set: (args: MetaElement[]) => {
             args.forEach(arg => {
-                let meta = q<HTMLMetaElement>(metaElementName).find(m => sameMeta(m, arg)) || null;
+                let meta = q<HTMLMetaElement>(metaElementName).find(m => MetaTag.sameMeta(m, arg)) || null;
                 let n: HTMLMetaElement | null = null;
                 if (meta === null) {
                     meta = crealeElem(metaElementName);
@@ -84,17 +89,18 @@
                 if (arg.h !== '') meta!.httpEquiv = arg.h;
                 if (arg.p !== '') setAttr(meta!, property, arg.p);
                 if (arg.n !== '') meta!.name = arg.n;
+                if (arg.m !== '') (meta as any).media = arg.m;
                 meta!.content = arg.c;
                 if (n !== null) head.appendChild(n);
             });
         },
 
         reset: (args: MetaElement[]) => {
-            q<HTMLMetaElement>(selectorForMata).filter(m => !args.some(arg => sameMeta(m, arg))).forEach(removeMeta);
+            q<HTMLMetaElement>(selectorForMata).filter(m => !args.some(arg => MetaTag.sameMeta(m, arg))).forEach(removeMeta);
             MetaTag.set(args);
         },
 
-        del: (args: MetaElement[]) => args.forEach(arg => q<HTMLMetaElement>(selectorForMata).filter(m => sameMeta(m, arg)).forEach(removeMeta)),
+        del: (args: MetaElement[]) => args.forEach(arg => q<HTMLMetaElement>(selectorForMata).filter(m => MetaTag.sameMeta(m, arg)).forEach(removeMeta)),
 
         query: () => {
             const defaultMetas =
@@ -103,15 +109,19 @@
                     getAttr(m, property),
                     m.name,
                     m.httpEquiv,
+                    (m as any).media,
                     m.content
                 ]);
             return defaultMetas.map<MetaElement>(a => ({
                 p: fixstr(a[0]),
                 n: fixstr(a[1]),
                 h: fixstr(a[2]),
-                c: fixstr(a[3]),
+                m: fixstr(a[3]),
+                c: fixstr(a[4]),
             }));
-        }
+        },
+
+        sameMeta: (m: HTMLMetaElement, a: MetaElement) => (a.n !== '' ? m.name === a.n : (a.h !== '' ? m.httpEquiv === a.h : getAttr(m, property) === a.p)) && a.m == (m as any).media
     }
 
     export const LinkTag = {
@@ -198,6 +208,7 @@
                 d: a[11] || false,
             }));
         },
+
         sameLink: (m: HTMLLinkElement, a: LinkElement) => m.rel === a.r && (
             (linkComparer[a.r] || ((m, a) => getAttr(m, href) === a.h))(m, a)
         )

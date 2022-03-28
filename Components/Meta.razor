@@ -12,6 +12,9 @@
     public string? HttpEquiv { get; set; } = "";
 
     [Parameter]
+    public string? Media { get; set; } = "";
+
+    [Parameter]
     public string? Content { get; set; } = "";
 
     [Parameter(CaptureUnmatchedValues = true)]
@@ -27,6 +30,7 @@
             Name = this.Name ?? "",
             Property = this.Property ?? "",
             HttpEquiv = httpEquiv ?? "",
+            Media = this.Media ?? "",
             Content = this.Content ?? ""
         });
     }
