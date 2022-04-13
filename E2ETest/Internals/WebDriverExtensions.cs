@@ -12,8 +12,8 @@ namespace HeadElement.E2ETest
         public static void GoToUrlAndWait(this IWebDriver driver, string url, string path = "")
         {
             driver.Navigate().GoToUrl(url.TrimEnd('/') + "/" + path.TrimStart('/'));
-            driver.Wait(5000).Until(_ => driver.FindElement(By.CssSelector("a.navbar-brand")));
-            driver.Wait(5000).Until(_ => driver.FindElements(By.CssSelector(".loading")).Count == 0);
+            driver.Wait(20000).Until(_ => driver.FindElements(By.CssSelector(".loading")).Count == 0);
+            driver.Wait(20000).Until(_ => driver.FindElement(By.CssSelector("a.navbar-brand")));
             Thread.Sleep(200);
         }
 

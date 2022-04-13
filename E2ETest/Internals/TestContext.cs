@@ -45,9 +45,9 @@ namespace HeadElement.E2ETest
         {
         }
 
-        public SampleSite StartHost(HostingModel hostingModel, BlazorVersion blazorVersion)
+        public ValueTask<SampleSite> StartHostAsync(HostingModel hostingModel, BlazorVersion blazorVersion)
         {
-            return this.SampleSites[(hostingModel, blazorVersion)].Start();
+            return this.SampleSites[(hostingModel, blazorVersion)].StartAsync();
         }
 
         public void Dispose()

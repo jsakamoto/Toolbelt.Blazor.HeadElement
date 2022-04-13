@@ -38,7 +38,7 @@ namespace HeadElement.E2ETest
         [MemberData(nameof(TestCases))]
         public async Task ChangeTitle_on_Server_Test(HostingModel hostingModel, BlazorVersion blazorVersion)
         {
-            var host = this._TestContext.StartHost(hostingModel, blazorVersion);
+            var host = await this._TestContext.StartHostAsync(hostingModel, blazorVersion);
 
             var httpClient = new HttpClient();
 
@@ -59,7 +59,7 @@ namespace HeadElement.E2ETest
         [MemberData(nameof(TestCases))]
         public async Task ChangeMetaElements_on_Server_Test(HostingModel hostingModel, BlazorVersion blazorVersion)
         {
-            var host = this._TestContext.StartHost(hostingModel, blazorVersion);
+            var host = await this._TestContext.StartHostAsync(hostingModel, blazorVersion);
             var httpClient = new HttpClient();
 
             var contentAtHome = await httpClient.GetStringAsync(host.GetUrl("/"));
@@ -96,7 +96,7 @@ namespace HeadElement.E2ETest
         [MemberData(nameof(TestCases))]
         public async Task ChangeLinkElements_on_Server_Test(HostingModel hostingModel, BlazorVersion blazorVersion)
         {
-            var host = this._TestContext.StartHost(hostingModel, blazorVersion);
+            var host = await this._TestContext.StartHostAsync(hostingModel, blazorVersion);
             var httpClient = new HttpClient();
 
             var contentAtHome = await httpClient.GetStringAsync(host.GetUrl("/"));
@@ -116,7 +116,7 @@ namespace HeadElement.E2ETest
         [MemberData(nameof(TestCases))]
         public async Task AddLinkElementsOnly_on_Server_Test(HostingModel hostingModel, BlazorVersion blazorVersion)
         {
-            var host = this._TestContext.StartHost(hostingModel, blazorVersion);
+            var host = await this._TestContext.StartHostAsync(hostingModel, blazorVersion);
             var httpClient = new HttpClient();
             var contentOfCanonical = await httpClient.GetStringAsync(host.GetUrl("/canonical"));
 
@@ -157,7 +157,7 @@ namespace HeadElement.E2ETest
         [MemberData(nameof(TestCases))]
         public async Task Change_at_OnAfterRender_on_Server_Test(HostingModel hostingModel, BlazorVersion blazorVersion)
         {
-            var host = this._TestContext.StartHost(hostingModel, blazorVersion);
+            var host = await this._TestContext.StartHostAsync(hostingModel, blazorVersion);
             var httpClient = new HttpClient();
             var contentAtOnAfterRender = await httpClient.GetStringAsync(host.GetUrl("/change-at-onafterrender"));
 

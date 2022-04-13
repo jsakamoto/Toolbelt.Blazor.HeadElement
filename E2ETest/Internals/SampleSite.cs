@@ -1,8 +1,9 @@
 ﻿using System;
-using System.Diagnostics;
 using System.IO;
-using System.Linq;
 using System.Threading;
+using System.Threading.Tasks;
+using Toolbelt;
+using Toolbelt.Diagnostics;
 
 namespace HeadElement.E2ETest
 {
@@ -14,7 +15,7 @@ namespace HeadElement.E2ETest
 
         private readonly string TargetFramework;
 
-        private Process dotnetCLI;
+        private XProcess dotnetCLI;
 
         private readonly ManualResetEventSlim ListeningWaiter = new ManualResetEventSlim(initialState: false);
 
@@ -29,54 +30,24 @@ namespace HeadElement.E2ETest
 
         internal string GetUrl(string subPath) => this.GetUrl() + "/" + subPath.TrimStart('/');
 
-        public SampleSite Start()
+        public async ValueTask<SampleSite> StartAsync()
         {
             if (this.dotnetCLI != null) return this;
 
-            var workDir = AppDomain.CurrentDomain.BaseDirectory;
-            while (!Directory.GetDirectories(workDir, "_SampleSites").Any()) workDir = Path.GetDirectoryName(workDir);
-            workDir = Path.Combine(workDir, "_SampleSites", this.ProjectSubFolder);
+            var solutionDir = FileIO.FindContainerDirToAncestor("*.sln");
+            var workDir = Path.Combine(solutionDir, "_SampleSites", this.ProjectSubFolder);
 
-            this.dotnetCLI = new Process
-            {
-                EnableRaisingEvents = true,
-                StartInfo = new ProcessStartInfo
-                {
-                    FileName = "dotnet",
-                    Arguments = $"run --urls {this.GetUrl()} -f {this.TargetFramework}",
-                    UseShellExecute = false,
-                    CreateNoWindow = true,
-                    ErrorDialog = false,
-                    RedirectStandardError = true,
-                    RedirectStandardOutput = true,
-                    WorkingDirectory = workDir
-                },
-            };
-            this.dotnetCLI.OutputDataReceived += this.Process_OutputDataReceived;
+            this.dotnetCLI = XProcess.Start("dotnet", $"run --urls {this.GetUrl()} -f {this.TargetFramework}", workDir);
+            var success = await this.dotnetCLI.WaitForOutputAsync(output => output.Contains("Now listening on: http://"), millsecondsTimeout: 15000);
+            if (!success) throw new TimeoutException("\"dotnet run\" did not respond \"Now listening on: http://\".\r\n" + this.dotnetCLI.Output);
 
-            this.dotnetCLI.Start();
-            this.dotnetCLI.BeginOutputReadLine();
-            this.dotnetCLI.BeginErrorReadLine();
-
-            var timedOut = !this.ListeningWaiter.Wait(millisecondsTimeout: 15000);
-            if (timedOut) throw new TimeoutException("\"dotnet run\" did not respond \"Now listening on: http://\".");
             Thread.Sleep(200);
             return this;
         }
 
-        private void Process_OutputDataReceived(object sender, DataReceivedEventArgs e)
-        {
-            if (e.Data?.Contains("Now listening on: http://") == true) this.ListeningWaiter.Set();
-        }
-
         public void Stop()
         {
-            if (this.dotnetCLI != null)
-            {
-                //dotnetCLI.OutputDataReceived -= Process_OutputDataReceived;
-                if (!this.dotnetCLI.HasExited) this.dotnetCLI.Kill();
-                this.dotnetCLI.Dispose();
-            }
+            this.dotnetCLI?.Dispose();
             this.ListeningWaiter.Dispose();
         }
     }
