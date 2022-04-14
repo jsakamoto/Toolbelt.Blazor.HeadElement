@@ -3,6 +3,7 @@
     public enum HostingModel
     {
         Wasm,
+        WasmPublished,
         WasmHosted,
         Server
     }

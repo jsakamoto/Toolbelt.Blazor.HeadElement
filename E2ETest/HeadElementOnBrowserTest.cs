@@ -25,6 +25,7 @@ namespace HeadElement.E2ETest
         private static readonly HostingModel[] _HostingModels = new[] {
             Wasm,
             WasmHosted,
+            WasmPublished,
             Server
         };
 
@@ -34,7 +35,9 @@ namespace HeadElement.E2ETest
             NET60
         };
 
-        public static IEnumerable<object[]> TestCases => _HostingModels.SelectMany(m => _BlazorVersions.Select(v => new object[] { m, v }));
+        public static IEnumerable<object[]> TestCases => _HostingModels
+            .SelectMany(m => _BlazorVersions.Select(v => new object[] { m, v }))
+            .Where(args => TestContext.SampleSites.ContainsKey(((HostingModel)args[0], (BlazorVersion)args[1])));
 
         [Theory(DisplayName = "Change Title on Browser (from Home)")]
         [MemberData(nameof(TestCases))]

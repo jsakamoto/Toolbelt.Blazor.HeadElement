@@ -16,15 +16,21 @@ namespace SampleSite.Client
         {
             var builder = WebAssemblyHostBuilder.CreateDefault(args);
             builder.RootComponents.Add<App>("app");
-            builder.Services
-                .AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) })
+
+            ConfigureServices(builder.Services, builder.HostEnvironment);
+
+            await builder.Build().RunAsync();
+        }
+
+        private static void ConfigureServices(IServiceCollection services, IWebAssemblyHostEnvironment hostEnvironment)
+        {
+            services
+                .AddScoped(sp => new HttpClient { BaseAddress = new Uri(hostEnvironment.BaseAddress) })
                 .AddScoped<IWeatherForecastService, WeatherForecastService>()
                 .AddHeadElementHelper(options =>
                 {
                     // options.DisableClientScriptAutoInjection = true;
                 });
-
-            await builder.Build().RunAsync();
         }
     }
 }
