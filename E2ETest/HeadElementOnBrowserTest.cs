@@ -256,7 +256,7 @@ public class HeadElementOnBrowserTest
         var host = await this._TestContext.StartHostAsync(hostingModel, blazorVersion);
         var driver = this._TestContext.WebDriver;
 
-        driver.Navigate().GoToUrl(host.GetUrl("/").TrimEnd('/') + "/redirect");
+        driver.GoToUrlAndWait(host.GetUrl("/redirect"));
         driver.Wait(5000).Until(_ => driver.FindElement(By.XPath("//h1[text()='Redirect to Home']")));
         Thread.Sleep(200);
         driver.DumpMetaElements()
@@ -278,8 +278,7 @@ public class HeadElementOnBrowserTest
         var host = await this._TestContext.StartHostAsync(hostingModel, blazorVersion);
         var driver = this._TestContext.WebDriver;
 
-        driver.Navigate().GoToUrl(host.GetUrl("/").TrimEnd('/') + "/redirect");
-        driver.Wait(5000).Until(_ => driver.FindElement(By.XPath("//h1[text()='Redirect to Home']")));
+        driver.GoToUrlAndWait(host.GetUrl("/redirect"));
         Thread.Sleep(200);
         driver.DumpMetaElements()
             .Contains("||refresh||3;url=/") // <- added 'refresh'
@@ -293,7 +292,7 @@ public class HeadElementOnBrowserTest
 
         // Validate current page is not redirected, stay on "Counter".
         driver.Wait(1000).Until(_ => driver.FindElement(By.XPath("//h1[text()='Weather forecast']")));
-        driver.Url.TrimEnd('/').Is(host.GetUrl("/").TrimEnd('/') + "/fetchdata");
+        driver.Url.TrimEnd('/').Is(host.GetUrl("/fetchdata"));
     }
 
     [Theory(DisplayName = "Change at OnAfterRender on Browser (from Home)")]

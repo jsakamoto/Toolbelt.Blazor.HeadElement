@@ -17,6 +17,8 @@ public class SampleSite
 
     private XProcess? dotnetCLI;
 
+    private WorkDirectory? WorkDir;
+
     public SampleSite(int listenPort, string projectSubFolder, string targetFramework, bool published = false)
     {
         this.ListenPort = listenPort;
@@ -34,19 +36,21 @@ public class SampleSite
         if (this.dotnetCLI != null) return this;
 
         var solutionDir = FileIO.FindContainerDirToAncestor("*.sln");
-        var workDir = Path.Combine(solutionDir, "_SampleSites", this.ProjectSubFolder);
+        var sampleSiteDir = Path.Combine(solutionDir, "_SampleSites");
+        this.WorkDir = WorkDirectory.CreateCopyFrom(sampleSiteDir, arg => arg.Name is (not "obj" and not "bin"));
+        var projDir = Path.Combine(this.WorkDir, this.ProjectSubFolder);
 
         if (this.Published)
         {
-            var publishDir = Path.Combine($"{workDir}/bin/Release/{this.TargetFramework}/publish/wwwroot".Split('/'));
+            var publishDir = Path.Combine($"{projDir}/bin/Release/{this.TargetFramework}/publish/wwwroot".Split('/'));
 
-            await Start("dotnet", $"tool restore", workDir).ExitCodeIsAsync(0);
-            await Start("dotnet", $"publish -c:Release -f:{this.TargetFramework} -p:UsingBrowserRuntimeWorkload=false -p:BlazorEnableCompression=false", workDir).ExitCodeIsAsync(0);
-            this.dotnetCLI = Start("dotnet", $"serve -p:{this.ListenPort} -d:\"{publishDir}\"", workDir);
+            await Start("dotnet", $"tool restore", projDir).ExitCodeIsAsync(0);
+            await Start("dotnet", $"publish -c:Release -f:{this.TargetFramework} -p:UsingBrowserRuntimeWorkload=false -p:BlazorEnableCompression=false", projDir).ExitCodeIsAsync(0);
+            this.dotnetCLI = Start("dotnet", $"serve -p:{this.ListenPort} -d:\"{publishDir}\"", projDir);
         }
         else
         {
-            this.dotnetCLI = Start("dotnet", $"run --urls {this.GetUrl()} -f {this.TargetFramework}", workDir);
+            this.dotnetCLI = Start("dotnet", $"run --urls {this.GetUrl()} -f {this.TargetFramework}", projDir);
         }
 
         var success = await this.dotnetCLI.WaitForOutputAsync(output => output.Contains(this.GetUrl()), millsecondsTimeout: 15000);
@@ -65,5 +69,6 @@ public class SampleSite
     public void Stop()
     {
         this.dotnetCLI?.Dispose();
+        this.WorkDir?.Dispose();
     }
 }
