@@ -1,10 +1,9 @@
-﻿namespace HeadElement.E2ETest.Internals
+﻿namespace HeadElement.E2ETest.Internals;
+
+public enum HostingModel
 {
-    public enum HostingModel
-    {
-        Wasm,
-        WasmPublished,
-        WasmHosted,
-        Server
-    }
+    Wasm,
+    WasmPublished,
+    WasmHosted,
+    Server
 }

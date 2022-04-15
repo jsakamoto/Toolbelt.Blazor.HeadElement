@@ -1,9 +1,8 @@
-﻿namespace HeadElement.E2ETest.Internals
+﻿namespace HeadElement.E2ETest.Internals;
+
+public enum BlazorVersion
 {
-    public enum BlazorVersion
-    {
-        NETCore31,
-        NET50,
-        NET60
-    }
+    NETCore31,
+    NET50,
+    NET60
 }
