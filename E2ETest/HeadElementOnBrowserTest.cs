@@ -2,8 +2,6 @@ using HeadElement.E2ETest.Internals;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Support.Extensions;
 using Xunit;
-using static HeadElement.E2ETest.Internals.BlazorVersion;
-using static HeadElement.E2ETest.Internals.HostingModel;
 
 namespace HeadElement.E2ETest;
 
@@ -12,27 +10,13 @@ public class HeadElementOnBrowserTest
 {
     private readonly TestContext _TestContext;
 
+    public static IEnumerable<object[]> TestCases => TestContext.SampleSites.Keys
+        .Select(key => new object[] { key.HostingModel, key.BlazorVersion });
+
     public HeadElementOnBrowserTest(TestContext testContext)
     {
         this._TestContext = testContext;
     }
-
-    private static readonly HostingModel[] _HostingModels = new[] {
-        Wasm,
-        WasmHosted,
-        WasmPublished,
-        Server
-    };
-
-    private static readonly BlazorVersion[] _BlazorVersions = new[] {
-        NETCore31,
-        NET50,
-        NET60
-    };
-
-    public static IEnumerable<object[]> TestCases => _HostingModels
-        .SelectMany(m => _BlazorVersions.Select(v => new object[] { m, v }))
-        .Where(args => TestContext.SampleSites.ContainsKey(((HostingModel)args[0], (BlazorVersion)args[1])));
 
     [Theory(DisplayName = "Change Title on Browser (from Home)")]
     [MemberData(nameof(TestCases))]

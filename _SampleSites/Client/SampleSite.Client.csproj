@@ -5,6 +5,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <!--<PackageReference Include="Toolbelt.Blazor.HeadElement" Version="7.1.0" />-->
     <PackageReference Include="BlazorWasmPreRendering.Build" Version="1.0.0-preview.23.0" />
   </ItemGroup>
 

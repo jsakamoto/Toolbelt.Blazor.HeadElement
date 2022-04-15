@@ -1,7 +1,6 @@
 ﻿using System.Text.RegularExpressions;
 using HeadElement.E2ETest.Internals;
 using Xunit;
-using static HeadElement.E2ETest.Internals.BlazorVersion;
 using static HeadElement.E2ETest.Internals.HostingModel;
 
 namespace HeadElement.E2ETest;
@@ -11,23 +10,14 @@ public class HeadElementServerPreRenderingTest
 {
     private readonly TestContext _TestContext;
 
+    public static IEnumerable<object[]> TestCases => TestContext.SampleSites.Keys
+        .Where(key => key.HostingModel is WasmHosted or WasmPublished or Server)
+        .Select(key => new object[] { key.HostingModel, key.BlazorVersion });
+
     public HeadElementServerPreRenderingTest(TestContext testContext)
     {
         this._TestContext = testContext;
     }
-
-    private static readonly HostingModel[] _HostingModels = new[] {
-        WasmHosted,
-        Server
-    };
-
-    private static readonly BlazorVersion[] _BlazorVersions = new[] {
-        NETCore31,
-        NET50,
-        NET60
-    };
-
-    public static IEnumerable<object[]> TestCases => _HostingModels.SelectMany(m => _BlazorVersions.Select(v => new object[] { m, v }));
 
     [Theory(DisplayName = "Change Title on Server")]
     [MemberData(nameof(TestCases))]
