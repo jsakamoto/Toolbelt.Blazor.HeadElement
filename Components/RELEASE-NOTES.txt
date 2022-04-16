@@ -1,4 +1,7 @@
-﻿v.7.1.0
+﻿v.7.1.1
+- Fix: It breaks in combination with the "BlazorWasmPreRendering.Build".
+
+v.7.1.0
 - Improve: Add support for a media attribute on meta elements.
 
 v.7.0.0
