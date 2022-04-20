@@ -15,7 +15,7 @@
   </PropertyGroup>
 
   <PropertyGroup>
-    <Version>7.1.1</Version>
+    <Version>7.2.0</Version>
     <Authors>J.Sakamoto</Authors>
     <Copyright>Copyright © 2019-2022 J.Sakamoto, Mozilla Public License 2.0</Copyright>
     <Description>Head element support (change the document title, "meta" elements such as OGP, and "link" elements such as canonical url, favicon) for Blazor apps.</Description>
@@ -27,6 +27,10 @@
     <PackageIcon>nupkg-icon.png</PackageIcon>
     <PackageReadmeFile>README.md</PackageReadmeFile>
   </PropertyGroup>
+
+  <ItemGroup>
+    <AssemblyMetadata Include="BlazorWasmPreRendering.Build.MiddlewarePackageReference" Value="Toolbelt.Blazor.HeadElement.ServerPrerendering,,7.1.0" />
+  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="3.0.0" Condition="'$(TargetFramework)' == 'netstandard2.1'" />

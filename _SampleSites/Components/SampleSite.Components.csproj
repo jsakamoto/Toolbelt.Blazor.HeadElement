@@ -6,7 +6,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Toolbelt.Blazor.HeadElement" Version="7.1.1" />
+    <PackageReference Include="Toolbelt.Blazor.HeadElement" Version="7.2.0" />
     <!--<ProjectReference Include="..\..\Components\HeadElement.csproj" />-->
   </ItemGroup>
 

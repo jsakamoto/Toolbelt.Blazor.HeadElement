@@ -1,4 +1,7 @@
-﻿v.7.1.1
+﻿v.7.2.0
+- Improve: co-working with "BlazorWasmPreRendering.Build" well, even indirect dependencies.
+
+v.7.1.1
 - Fix: It breaks in combination with the "BlazorWasmPreRendering.Build".
 
 v.7.1.0
