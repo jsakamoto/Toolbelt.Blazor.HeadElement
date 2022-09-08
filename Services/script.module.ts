@@ -46,6 +46,7 @@
     const selectorForLinks = linkElementName;
     const selectorForScript = 'script[type="text/default-';
     const property = 'property';
+    const media = 'media';
     const href = 'href';
     const nullText = 'null';
 
@@ -89,7 +90,7 @@
                 if (arg.h !== '') meta!.httpEquiv = arg.h;
                 if (arg.p !== '') setAttr(meta!, property, arg.p);
                 if (arg.n !== '') meta!.name = arg.n;
-                if (arg.m !== '') (meta as any).media = arg.m;
+                if (arg.m !== '') setAttr(meta!, media, arg.m);
                 meta!.content = arg.c;
                 if (n !== null) head.appendChild(n);
             });
@@ -109,7 +110,7 @@
                     getAttr(m, property),
                     m.name,
                     m.httpEquiv,
-                    (m as any).media,
+                    getAttr(m, media) || '',
                     m.content
                 ]);
             return defaultMetas.map<MetaElement>(a => ({
@@ -121,7 +122,7 @@
             }));
         },
 
-        sameMeta: (m: HTMLMetaElement, a: MetaElement) => (a.n !== '' ? m.name === a.n : (a.h !== '' ? m.httpEquiv === a.h : getAttr(m, property) === a.p)) && a.m == (m as any).media
+        sameMeta: (m: HTMLMetaElement, a: MetaElement) => (a.n !== '' ? m.name === a.n : (a.h !== '' ? m.httpEquiv === a.h : getAttr(m, property) === a.p)) && a.m === (getAttr(m, media) || '')
     }
 
     export const LinkTag = {

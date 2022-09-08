@@ -263,7 +263,7 @@ public class HeadElementOnBrowserTest
         var driver = this._TestContext.WebDriver;
 
         driver.GoToUrlAndWait(host.GetUrl("/redirect"));
-        Thread.Sleep(200);
+        await Task.Delay(1000);
         driver.DumpMetaElements()
             .Contains("||refresh||3;url=/") // <- added 'refresh'
             .IsTrue();

@@ -11,6 +11,7 @@ var Toolbelt;
         const selectorForLinks = linkElementName;
         const selectorForScript = 'script[type="text/default-';
         const property = 'property';
+        const media = 'media';
         const href = 'href';
         const nullText = 'null';
         const d = typeof document !== 'undefined' ? document : {};
@@ -51,7 +52,7 @@ var Toolbelt;
                     if (arg.n !== '')
                         meta.name = arg.n;
                     if (arg.m !== '')
-                        meta.media = arg.m;
+                        setAttr(meta, media, arg.m);
                     meta.content = arg.c;
                     if (n !== null)
                         head.appendChild(n);
@@ -68,7 +69,7 @@ var Toolbelt;
                         getAttr(m, property),
                         m.name,
                         m.httpEquiv,
-                        m.media,
+                        getAttr(m, media) || '',
                         m.content
                     ]);
                 return defaultMetas.map(a => ({

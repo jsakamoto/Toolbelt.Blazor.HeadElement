@@ -8,6 +8,7 @@ export var Toolbelt;
         const selectorForLinks = linkElementName;
         const selectorForScript = 'script[type="text/default-';
         const property = 'property';
+        const media = 'media';
         const href = 'href';
         const nullText = 'null';
         const d = typeof document !== 'undefined' ? document : {};
@@ -48,7 +49,7 @@ export var Toolbelt;
                     if (arg.n !== '')
                         meta.name = arg.n;
                     if (arg.m !== '')
-                        meta.media = arg.m;
+                        setAttr(meta, media, arg.m);
                     meta.content = arg.c;
                     if (n !== null)
                         head.appendChild(n);
@@ -65,7 +66,7 @@ export var Toolbelt;
                         getAttr(m, property),
                         m.name,
                         m.httpEquiv,
-                        m.media,
+                        getAttr(m, media) || '',
                         m.content
                     ]);
                 return defaultMetas.map(a => ({
@@ -76,7 +77,7 @@ export var Toolbelt;
                     c: fixstr(a[4]),
                 }));
             },
-            sameMeta: (m, a) => (a.n !== '' ? m.name === a.n : (a.h !== '' ? m.httpEquiv === a.h : getAttr(m, property) === a.p)) && a.m == m.media
+            sameMeta: (m, a) => (a.n !== '' ? m.name === a.n : (a.h !== '' ? m.httpEquiv === a.h : getAttr(m, property) === a.p)) && a.m === (getAttr(m, media) || '')
         };
         Head.LinkTag = {
             set: (args) => {

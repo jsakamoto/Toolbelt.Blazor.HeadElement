@@ -9,8 +9,8 @@ public static class WebDriverExtensions
     public static void GoToUrlAndWait(this IWebDriver driver, string url, string path = "")
     {
         driver.Navigate().GoToUrl(url.TrimEnd('/') + "/" + path.TrimStart('/'));
-        driver.Wait(20000).Until(_ => driver.FindElements(By.CssSelector(".loading")).Count == 0);
-        driver.Wait(20000).Until(_ => driver.FindElement(By.CssSelector("a.navbar-brand")));
+        driver.Wait(30000).Until(_ => driver.FindElements(By.CssSelector(".loading")).Count == 0);
+        driver.Wait(30000).Until(_ => driver.FindElement(By.CssSelector("a.navbar-brand")));
         Thread.Sleep(200);
     }
 
@@ -60,7 +60,7 @@ public static class WebDriverExtensions
     {
         var script = "return JSON.stringify(" +
             "Array.from(document.querySelectorAll('meta'))" +
-            ".map(m=>[m.name, m.getAttribute('property'), m.httpEquiv, m.media, m.content])" +
+            ".map(m=>[m.name, m.getAttribute('property'), m.httpEquiv, m.getAttribute('media')||'', m.content])" +
         ")";
         var metaJson = driver.ExecuteJavaScript<string>(script);
         var metaArray = System.Text.Json.JsonSerializer.Deserialize<string[][]>(metaJson) ?? Array.Empty<string[]>();

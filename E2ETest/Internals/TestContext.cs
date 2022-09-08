@@ -1,6 +1,7 @@
 ﻿using HeadElement.E2ETest.Internals;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
+using OpenQA.Selenium.Firefox;
 using Xunit;
 using static HeadElement.E2ETest.Internals.BlazorVersion;
 using static HeadElement.E2ETest.Internals.HostingModel;
@@ -25,18 +26,25 @@ public class TestContext : IDisposable
         {new SampleSiteKey(Server,        NET60),  new SampleSite(5021, "Server", "net6.0")},
     };
 
-    private ChromeDriver? _WebDriver;
+    private ChromeDriver? _ChromeDriver;
+    private FirefoxDriver? _FirefoxDriver;
 
     public IWebDriver WebDriver
     {
         get
         {
-            if (this._WebDriver == null)
+            //if (this._WebDriver == null)
+            //{
+            //    this._WebDriver = new ChromeDriver();
+            //    // this._WebDriver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(3);
+            //}
+            //return this._WebDriver;
+            if (this._FirefoxDriver == null)
             {
-                this._WebDriver = new ChromeDriver();
+                this._FirefoxDriver = new FirefoxDriver();
                 // this._WebDriver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(3);
             }
-            return this._WebDriver;
+            return this._FirefoxDriver;
         }
     }
 
@@ -52,7 +60,8 @@ public class TestContext : IDisposable
     public void Dispose()
     {
         Parallel.ForEach(SampleSites.Values, sampleSite => sampleSite.Stop());
-        this._WebDriver?.Quit();
+        this._ChromeDriver?.Quit();
+        this._FirefoxDriver?.Quit();
     }
 }
 
