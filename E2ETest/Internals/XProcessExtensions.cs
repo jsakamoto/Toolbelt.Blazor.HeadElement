@@ -1,5 +1,5 @@
-﻿using Toolbelt.Diagnostics;
-using Xunit;
+﻿using NUnit.Framework;
+using Toolbelt.Diagnostics;
 
 namespace HeadElement.E2ETest.Internals;
 

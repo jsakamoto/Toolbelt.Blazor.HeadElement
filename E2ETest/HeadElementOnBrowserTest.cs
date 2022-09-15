@@ -1,29 +1,22 @@
 using HeadElement.E2ETest.Internals;
+using NUnit.Framework;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Support.Extensions;
-using Xunit;
 
 namespace HeadElement.E2ETest;
 
-[Collection(nameof(TestContext))]
 public class HeadElementOnBrowserTest
 {
-    private readonly TestContext _TestContext;
+    private TestContext TestContext => TestContext.Default!;
 
     public static IEnumerable<object[]> TestCases => TestContext.SampleSites.Keys
         .Select(key => new object[] { key.HostingModel, key.BlazorVersion });
 
-    public HeadElementOnBrowserTest(TestContext testContext)
-    {
-        this._TestContext = testContext;
-    }
-
-    [Theory(DisplayName = "Change Title on Browser (from Home)")]
-    [MemberData(nameof(TestCases))]
+    [@TestCaseSource(nameof(TestCases), Name = "Change Title on Browser (from Home)")]
     public async Task ChangeTitle_on_Browser_Start_from_Home_Test(HostingModel hostingModel, BlazorVersion blazorVersion)
     {
-        var host = await this._TestContext.StartHostAsync(hostingModel, blazorVersion);
-        var driver = this._TestContext.WebDriver;
+        var host = await this.TestContext.StartHostAsync(hostingModel, blazorVersion);
+        var driver = this.TestContext.WebDriver;
 
         // Navigate to Home
         driver.GoToUrlAndWait(host.GetUrl("/"));
@@ -56,12 +49,11 @@ public class HeadElementOnBrowserTest
         driver.Wait(1000).Until(_ => driver.Title == "Sample Site");
     }
 
-    [Theory(DisplayName = "Change Title on Browser (from Counter)")]
-    [MemberData(nameof(TestCases))]
+    [@TestCaseSource(nameof(TestCases), Name = "Change Title on Browser (from Counter)")]
     public async Task ChangeTitle_on_Browser_Start_from_Counter_Test(HostingModel hostingModel, BlazorVersion blazorVersion)
     {
-        var host = await this._TestContext.StartHostAsync(hostingModel, blazorVersion);
-        var driver = this._TestContext.WebDriver;
+        var host = await this.TestContext.StartHostAsync(hostingModel, blazorVersion);
+        var driver = this.TestContext.WebDriver;
 
         // Navigate to "Counter"
         driver.GoToUrlAndWait(host.GetUrl("/counter"));
@@ -83,12 +75,11 @@ public class HeadElementOnBrowserTest
     }
 
 
-    [Theory(DisplayName = "Change meta elements on Browser (from Home)")]
-    [MemberData(nameof(TestCases))]
+    [@TestCaseSource(nameof(TestCases), Name = "Change meta elements on Browser (from Home)")]
     public async Task ChangeMetaElements_on_Browser_Start_from_Home_Test(HostingModel hostingModel, BlazorVersion blazorVersion)
     {
-        var host = await this._TestContext.StartHostAsync(hostingModel, blazorVersion);
-        var driver = this._TestContext.WebDriver;
+        var host = await this.TestContext.StartHostAsync(hostingModel, blazorVersion);
+        var driver = this.TestContext.WebDriver;
 
         // Navigate to Home
         driver.GoToUrlAndWait(host.GetUrl("/"));
@@ -119,12 +110,11 @@ public class HeadElementOnBrowserTest
         actualAtReturnHome.Is(ExpectMeta.AtHome);
     }
 
-    [Theory(DisplayName = "Change meta elements on Browser (from Counter)")]
-    [MemberData(nameof(TestCases))]
+    [@TestCaseSource(nameof(TestCases), Name = "Change meta elements on Browser (from Counter)")]
     public async Task ChangeMetaElements_on_Browser_Start_from_Counter_Test(HostingModel hostingModel, BlazorVersion blazorVersion)
     {
-        var host = await this._TestContext.StartHostAsync(hostingModel, blazorVersion);
-        var driver = this._TestContext.WebDriver;
+        var host = await this.TestContext.StartHostAsync(hostingModel, blazorVersion);
+        var driver = this.TestContext.WebDriver;
 
         // Navigate to "Counter"
         driver.GoToUrlAndWait(host.GetUrl("/counter"));
@@ -142,12 +132,11 @@ public class HeadElementOnBrowserTest
     }
 
 
-    [Theory(DisplayName = "Change link elements on Browser (from Home)")]
-    [MemberData(nameof(TestCases))]
+    [@TestCaseSource(nameof(TestCases), Name = "Change link elements on Browser (from Home)")]
     public async Task ChangeLinkElements_on_Browser_Start_from_Home_Test(HostingModel hostingModel, BlazorVersion blazorVersion)
     {
-        var host = await this._TestContext.StartHostAsync(hostingModel, blazorVersion);
-        var driver = this._TestContext.WebDriver;
+        var host = await this.TestContext.StartHostAsync(hostingModel, blazorVersion);
+        var driver = this.TestContext.WebDriver;
 
         // Navigate to "Home", and validate link elements of "Home"
         driver.GoToUrlAndWait(host.GetUrl("/"));
@@ -170,12 +159,11 @@ public class HeadElementOnBrowserTest
         actualAtReturnHome.Is(ExpectLinks.AtHome);
     }
 
-    [Theory(DisplayName = "Change link elements on Browser (from Counter)")]
-    [MemberData(nameof(TestCases))]
+    [@TestCaseSource(nameof(TestCases), Name = "Change link elements on Browser (from Counter)")]
     public async Task ChangeLinkElements_on_Browser_Start_from_Counter_Test(HostingModel hostingModel, BlazorVersion blazorVersion)
     {
-        var host = await this._TestContext.StartHostAsync(hostingModel, blazorVersion);
-        var driver = this._TestContext.WebDriver;
+        var host = await this.TestContext.StartHostAsync(hostingModel, blazorVersion);
+        var driver = this.TestContext.WebDriver;
 
         // Navigate to "Counter", and validate link elements of "Counter"
         driver.GoToUrlAndWait(host.GetUrl("/counter"));
@@ -188,12 +176,11 @@ public class HeadElementOnBrowserTest
         actualAtHomem.Is(ExpectLinks.AtHome);
     }
 
-    [Theory(DisplayName = "Refresh on Browser (from Home)")]
-    [MemberData(nameof(TestCases))]
+    [@TestCaseSource(nameof(TestCases), Name = "Refresh on Browser (from Home)")]
     public async Task Refresh_on_Browser_Start_from_Home_Test(HostingModel hostingModel, BlazorVersion blazorVersion)
     {
-        var host = await this._TestContext.StartHostAsync(hostingModel, blazorVersion);
-        var driver = this._TestContext.WebDriver;
+        var host = await this.TestContext.StartHostAsync(hostingModel, blazorVersion);
+        var driver = this.TestContext.WebDriver;
 
         driver.GoToUrlAndWait(host.GetUrl("/"));
         driver.ClickRedirect();
@@ -209,12 +196,11 @@ public class HeadElementOnBrowserTest
         driver.Url.TrimEnd('/').Is(host.GetUrl("/").TrimEnd('/'));
     }
 
-    [Theory(DisplayName = "Refresh and Cancel on Browser (from Home)")]
-    [MemberData(nameof(TestCases))]
+    [@TestCaseSource(nameof(TestCases), Name = "Refresh and Cancel on Browser (from Home)")]
     public async Task Refresh_and_Cancel_on_Browser_Start_from_Home_Test(HostingModel hostingModel, BlazorVersion blazorVersion)
     {
-        var host = await this._TestContext.StartHostAsync(hostingModel, blazorVersion);
-        var driver = this._TestContext.WebDriver;
+        var host = await this.TestContext.StartHostAsync(hostingModel, blazorVersion);
+        var driver = this.TestContext.WebDriver;
 
         driver.GoToUrlAndWait(host.GetUrl("/"));
         driver.ClickRedirect();
@@ -233,12 +219,11 @@ public class HeadElementOnBrowserTest
         driver.Url.TrimEnd('/').Is(host.GetUrl("/").TrimEnd('/') + "/counter");
     }
 
-    [Theory(DisplayName = "Refresh on Browser (from Redirect)")]
-    [MemberData(nameof(TestCases))]
+    [@TestCaseSource(nameof(TestCases), Name = "Refresh on Browser (from Redirect)")]
     public async Task Refresh_on_Browser_Start_from_Redirect_Test(HostingModel hostingModel, BlazorVersion blazorVersion)
     {
-        var host = await this._TestContext.StartHostAsync(hostingModel, blazorVersion);
-        var driver = this._TestContext.WebDriver;
+        var host = await this.TestContext.StartHostAsync(hostingModel, blazorVersion);
+        var driver = this.TestContext.WebDriver;
 
         driver.GoToUrlAndWait(host.GetUrl("/redirect"));
         driver.Wait(5000).Until(_ => driver.FindElement(By.XPath("//h1[text()='Redirect to Home']")));
@@ -255,12 +240,11 @@ public class HeadElementOnBrowserTest
         driver.Url.TrimEnd('/').Is(host.GetUrl("/").TrimEnd('/'));
     }
 
-    [Theory(DisplayName = "Refresh and Cancel on Browser (from Redirect)")]
-    [MemberData(nameof(TestCases))]
+    [@TestCaseSource(nameof(TestCases), Name = "Refresh and Cancel on Browser (from Redirect)")]
     public async Task Refresh_and_Cancel_on_Browser_Start_from_Redirect_Test(HostingModel hostingModel, BlazorVersion blazorVersion)
     {
-        var host = await this._TestContext.StartHostAsync(hostingModel, blazorVersion);
-        var driver = this._TestContext.WebDriver;
+        var host = await this.TestContext.StartHostAsync(hostingModel, blazorVersion);
+        var driver = this.TestContext.WebDriver;
 
         driver.GoToUrlAndWait(host.GetUrl("/redirect"));
         await Task.Delay(1000);
@@ -279,12 +263,11 @@ public class HeadElementOnBrowserTest
         driver.Url.TrimEnd('/').Is(host.GetUrl("/fetchdata"));
     }
 
-    [Theory(DisplayName = "Change at OnAfterRender on Browser (from Home)")]
-    [MemberData(nameof(TestCases))]
+    [@TestCaseSource(nameof(TestCases), Name = "Change at OnAfterRender on Browser (from Home)")]
     public async Task Change_at_OnAfterRender_on_Browser_Start_from_Home_Test(HostingModel hostingModel, BlazorVersion blazorVersion)
     {
-        var host = await this._TestContext.StartHostAsync(hostingModel, blazorVersion);
-        var driver = this._TestContext.WebDriver;
+        var host = await this.TestContext.StartHostAsync(hostingModel, blazorVersion);
+        var driver = this.TestContext.WebDriver;
 
         // Navigate to Home, and validate the document title of "Home"
         driver.GoToUrlAndWait(host.GetUrl("/"));
@@ -311,12 +294,11 @@ public class HeadElementOnBrowserTest
         actualLinkAtHome.Is(ExpectLinks.AtHome);
     }
 
-    [Theory(DisplayName = "Change at OnAfterRender on Browser (from OnAfterRender)")]
-    [MemberData(nameof(TestCases))]
+    [@TestCaseSource(nameof(TestCases), Name = "Change at OnAfterRender on Browser (from OnAfterRender)")]
     public async Task Change_at_OnAfterRender_on_Browser_Start_from_OnAfterRender_Test(HostingModel hostingModel, BlazorVersion blazorVersion)
     {
-        var host = await this._TestContext.StartHostAsync(hostingModel, blazorVersion);
-        var driver = this._TestContext.WebDriver;
+        var host = await this.TestContext.StartHostAsync(hostingModel, blazorVersion);
+        var driver = this.TestContext.WebDriver;
 
         // Navigate to "Change at "OnAfterRender"", and validate the document title of it
         driver.GoToUrlAndWait(host.GetUrl("/change-at-onafterrender"));
@@ -342,12 +324,11 @@ public class HeadElementOnBrowserTest
         actualLinkAtHome.Is(ExpectLinks.AtHome);
     }
 
-    [Theory(DisplayName = "Check another helper script in the same namespace should not be overridden")]
-    [MemberData(nameof(TestCases))]
+    [@TestCaseSource(nameof(TestCases), Name = "Check another helper script in the same namespace should not be overridden")]
     public async Task HelperJavaScript_Namespace_Not_Conflict_Test(HostingModel hostingModel, BlazorVersion blazorVersion)
     {
-        var host = await this._TestContext.StartHostAsync(hostingModel, blazorVersion);
-        var driver = this._TestContext.WebDriver;
+        var host = await this.TestContext.StartHostAsync(hostingModel, blazorVersion);
+        var driver = this.TestContext.WebDriver;
         driver.GoToUrlAndWait(host.GetUrl("/counter"));
 
         var random = new Random();

@@ -1,15 +1,18 @@
 ﻿using HeadElement.E2ETest.Internals;
+using NUnit.Framework;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
 using OpenQA.Selenium.Firefox;
-using Xunit;
 using static HeadElement.E2ETest.Internals.BlazorVersion;
 using static HeadElement.E2ETest.Internals.HostingModel;
 
 namespace HeadElement.E2ETest;
 
-public class TestContext : IDisposable
+[SetUpFixture]
+public class TestContext
 {
+    public static TestContext? Default { get; private set; }
+
     public static readonly IReadOnlyDictionary<SampleSiteKey, SampleSite> SampleSites = new Dictionary<SampleSiteKey, SampleSite> {
         {new SampleSiteKey(Wasm,       NETCore31), new SampleSite(5011, "Client31", "netstandard2.1") },
         {new SampleSiteKey(WasmHosted, NETCore31), new SampleSite(5012, "Host",   "netcoreapp3.1")},
@@ -48,24 +51,22 @@ public class TestContext : IDisposable
         }
     }
 
-    public TestContext()
-    {
-    }
-
     public ValueTask<SampleSite> StartHostAsync(HostingModel hostingModel, BlazorVersion blazorVersion)
     {
         return SampleSites[new SampleSiteKey(hostingModel, blazorVersion)].StartAsync();
     }
 
-    public void Dispose()
+    [OneTimeSetUp]
+    public void OneTimeSetUp()
+    {
+        Default = this;
+    }
+
+    [OneTimeTearDown]
+    public void OneTimeTearDown()
     {
         Parallel.ForEach(SampleSites.Values, sampleSite => sampleSite.Stop());
         this._ChromeDriver?.Quit();
         this._FirefoxDriver?.Quit();
     }
-}
-
-[CollectionDefinition(nameof(TestContext))]
-public class TestContextDefinition : ICollectionFixture<TestContext>
-{
 }

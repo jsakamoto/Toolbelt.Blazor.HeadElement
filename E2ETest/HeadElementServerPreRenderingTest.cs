@@ -1,29 +1,23 @@
 ﻿using System.Text.RegularExpressions;
 using HeadElement.E2ETest.Internals;
-using Xunit;
+using NUnit.Framework;
 using static HeadElement.E2ETest.Internals.HostingModel;
+
 
 namespace HeadElement.E2ETest;
 
-[Collection(nameof(TestContext))]
 public class HeadElementServerPreRenderingTest
 {
-    private readonly TestContext _TestContext;
+    private TestContext TestContext => TestContext.Default!;
 
     public static IEnumerable<object[]> TestCases => TestContext.SampleSites.Keys
         .Where(key => key.HostingModel is WasmHosted or WasmPublished or Server)
         .Select(key => new object[] { key.HostingModel, key.BlazorVersion });
 
-    public HeadElementServerPreRenderingTest(TestContext testContext)
-    {
-        this._TestContext = testContext;
-    }
-
-    [Theory(DisplayName = "Change Title on Server")]
-    [MemberData(nameof(TestCases))]
+    [@TestCaseSource(nameof(TestCases), Name = "Change Title on Server")]
     public async Task ChangeTitle_on_Server_Test(HostingModel hostingModel, BlazorVersion blazorVersion)
     {
-        var host = await this._TestContext.StartHostAsync(hostingModel, blazorVersion);
+        var host = await this.TestContext.StartHostAsync(hostingModel, blazorVersion);
 
         var httpClient = new HttpClient();
 
@@ -40,11 +34,10 @@ public class HeadElementServerPreRenderingTest
             .Groups["title"].Value.Is("Fetch data");
     }
 
-    [Theory(DisplayName = "Change meta elements on Server")]
-    [MemberData(nameof(TestCases))]
+    [@TestCaseSource(nameof(TestCases), Name = "Change meta elements on Server")]
     public async Task ChangeMetaElements_on_Server_Test(HostingModel hostingModel, BlazorVersion blazorVersion)
     {
-        var host = await this._TestContext.StartHostAsync(hostingModel, blazorVersion);
+        var host = await this.TestContext.StartHostAsync(hostingModel, blazorVersion);
         var httpClient = new HttpClient();
 
         var contentAtHome = await httpClient.GetStringAsync(host.GetUrl("/"));
@@ -77,11 +70,10 @@ public class HeadElementServerPreRenderingTest
             .ToArray();
     }
 
-    [Theory(DisplayName = "Change link elements on Server")]
-    [MemberData(nameof(TestCases))]
+    [@TestCaseSource(nameof(TestCases), Name = "Change link elements on Server")]
     public async Task ChangeLinkElements_on_Server_Test(HostingModel hostingModel, BlazorVersion blazorVersion)
     {
-        var host = await this._TestContext.StartHostAsync(hostingModel, blazorVersion);
+        var host = await this.TestContext.StartHostAsync(hostingModel, blazorVersion);
         var httpClient = new HttpClient();
 
         var contentAtHome = await httpClient.GetStringAsync(host.GetUrl("/"));
@@ -97,11 +89,10 @@ public class HeadElementServerPreRenderingTest
         actualAtFetchData.Is(ExpectLinks.AtFetchData);
     }
 
-    [Theory(DisplayName = "Add link elements only on Server")]
-    [MemberData(nameof(TestCases))]
+    [@TestCaseSource(nameof(TestCases), Name = "Add link elements only on Server")]
     public async Task AddLinkElementsOnly_on_Server_Test(HostingModel hostingModel, BlazorVersion blazorVersion)
     {
-        var host = await this._TestContext.StartHostAsync(hostingModel, blazorVersion);
+        var host = await this.TestContext.StartHostAsync(hostingModel, blazorVersion);
         var httpClient = new HttpClient();
         var contentOfCanonical = await httpClient.GetStringAsync(host.GetUrl("/canonical"));
 
@@ -138,11 +129,10 @@ public class HeadElementServerPreRenderingTest
             .ToArray();
     }
 
-    [Theory(DisplayName = "Change at OnAfterRender on Server")]
-    [MemberData(nameof(TestCases))]
+    [@TestCaseSource(nameof(TestCases), Name = "Change at OnAfterRender on Server")]
     public async Task Change_at_OnAfterRender_on_Server_Test(HostingModel hostingModel, BlazorVersion blazorVersion)
     {
-        var host = await this._TestContext.StartHostAsync(hostingModel, blazorVersion);
+        var host = await this.TestContext.StartHostAsync(hostingModel, blazorVersion);
         var httpClient = new HttpClient();
         var contentAtOnAfterRender = await httpClient.GetStringAsync(host.GetUrl("/change-at-onafterrender"));
 
