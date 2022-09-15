@@ -16,62 +16,64 @@ public class HeadElementOnBrowserTest
     public async Task ChangeTitle_on_Browser_Start_from_Home_Test(HostingModel hostingModel, BlazorVersion blazorVersion)
     {
         var host = await this.TestContext.StartHostAsync(hostingModel, blazorVersion);
-        var driver = this.TestContext.WebDriver;
+        var page = await this.TestContext.GetPageAsync();
 
         // Navigate to Home
-        driver.GoToUrlAndWait(host.GetUrl("/"));
+        await page.GotoAsync(host.GetUrl("/"));
+        await page.WaitForBlazorHasBeenStarted();
 
         // Validate document title of "Home"
-        driver.Wait(1000).Until(_ => driver.Title == "Sample Site");
+        await page.WaitForTitleAsync("Sample Site");
 
         // Navigate to "Counter"
-        driver.ClickCounter();
+        await page.ClickCounterAsync();
 
         // Validate document title of "Counter"
-        driver.Wait(1000).Until(_ => driver.Title == "Counter(0)");
+        await page.WaitForTitleAsync("Counter(0)");
 
         // document title will be updated real time.
-        driver.FindElement(By.CssSelector("button.btn-primary")).Click();
-        driver.Wait(1000).Until(_ => driver.Title == "Counter(1)");
-        driver.FindElement(By.CssSelector("button.btn-primary")).Click();
-        driver.Wait(1000).Until(_ => driver.Title == "Counter(2)");
+        await page.ClickAsync("button.btn-primary");
+        await page.WaitForTitleAsync("Counter(1)");
+        await page.ClickAsync("button.btn-primary");
+        await page.WaitForTitleAsync("Counter(2)");
 
         // Navigate to "Fetch data"
-        driver.ClickFetchData();
+        await page.ClickFetchDataAsync();
 
         // Validate document title of "Fetch data"
-        driver.Wait(1000).Until(_ => driver.Title == "Fetch data");
+        await page.WaitForTitleAsync("Fetch data");
 
         // Go back to "Home"
-        driver.ClickHome();
+        await page.ClickHomeAsync();
 
         // Validate document title of "Home" was restored.
-        driver.Wait(1000).Until(_ => driver.Title == "Sample Site");
+        await page.WaitForTitleAsync("Sample Site");
     }
 
     [@TestCaseSource(nameof(TestCases), Name = "Change Title on Browser (from Counter)")]
     public async Task ChangeTitle_on_Browser_Start_from_Counter_Test(HostingModel hostingModel, BlazorVersion blazorVersion)
     {
         var host = await this.TestContext.StartHostAsync(hostingModel, blazorVersion);
-        var driver = this.TestContext.WebDriver;
+        var page = await this.TestContext.GetPageAsync();
 
         // Navigate to "Counter"
-        driver.GoToUrlAndWait(host.GetUrl("/counter"));
+        await page.GotoAsync(host.GetUrl("/counter"));
+        await page.WaitForBlazorHasBeenStarted();
 
         // Validate document title of "Counter"
-        driver.Wait(1000).Until(_ => driver.Title == "Counter(0)");
+        await page.WaitForTitleAsync("Counter(0)");
 
         // document title will be updated real time.
-        driver.FindElement(By.CssSelector("button.btn-primary")).Click();
-        driver.Wait(1000).Until(_ => driver.Title == "Counter(1)");
-        driver.FindElement(By.CssSelector("button.btn-primary")).Click();
-        driver.Wait(1000).Until(_ => driver.Title == "Counter(2)");
+        await page.ClickAsync("button.btn-primary");
+        await page.WaitForTitleAsync("Counter(1)");
+        await page.ClickAsync("button.btn-primary");
+        await page.WaitForTitleAsync("Counter(2)");
 
         // Go back to "Home"
-        driver.ClickHome();
+        await page.ClickHomeAsync();
 
         // Validate document title of "Home" was restored.
-        driver.Wait(1000).Until(_ => driver.Title == "Sample Site");
+        await page.WaitForTitleAsync("Sample Site");
     }
 
 

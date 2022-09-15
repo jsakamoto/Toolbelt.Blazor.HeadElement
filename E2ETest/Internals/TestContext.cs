@@ -1,4 +1,5 @@
 ﻿using HeadElement.E2ETest.Internals;
+using Microsoft.Playwright;
 using NUnit.Framework;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
@@ -30,7 +31,38 @@ public class TestContext
     };
 
     private ChromeDriver? _ChromeDriver;
+
     private FirefoxDriver? _FirefoxDriver;
+
+    private IPlaywright? _Playwrite;
+
+    private IBrowser? _Browser;
+
+    private IPage? _Page;
+
+    public async ValueTask<IPage> GetPageAsync()
+    {
+        if (this._Playwrite == null)
+        {
+            this._Playwrite = await Playwright.CreateAsync();
+        }
+        if (this._Browser == null)
+        {
+            //var browserType = this._Playwrite.Chromium;
+            var browserType = this._Playwrite.Firefox;
+            this._Browser = await browserType.LaunchAsync(new()
+            {
+                //Channel = "msedge",
+                Headless = false,
+            });
+        }
+        if (this._Page == null)
+        {
+            this._Page = await this._Browser.NewPageAsync();
+        }
+        return this._Page;
+    }
+
 
     public IWebDriver WebDriver
     {
@@ -63,8 +95,10 @@ public class TestContext
     }
 
     [OneTimeTearDown]
-    public void OneTimeTearDown()
+    public async Task OneTimeTearDownAsync()
     {
+        if (this._Browser != null) await this._Browser.DisposeAsync();
+        this._Playwrite?.Dispose();
         Parallel.ForEach(SampleSites.Values, sampleSite => sampleSite.Stop());
         this._ChromeDriver?.Quit();
         this._FirefoxDriver?.Quit();

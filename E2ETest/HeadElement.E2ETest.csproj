@@ -11,6 +11,7 @@
   <ItemGroup>
     <PackageReference Include="ChainingAssertion-NUnit.Bin" Version="1.8.1" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.3.1" />
+    <PackageReference Include="Microsoft.Playwright.NUnit" Version="1.25.0" />
     <PackageReference Include="Selenium.Support" Version="4.4.0" />
     <PackageReference Include="Selenium.WebDriver" Version="4.4.0" />
     <PackageReference Include="Selenium.WebDriver.ChromeDriver" Version="105.0.5195.5200" />

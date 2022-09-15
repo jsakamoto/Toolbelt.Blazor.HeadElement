@@ -1,4 +1,5 @@
 ﻿@inherits LayoutComponentBase
+@inject IJSRuntime JSRuntime
 
 <div class="sidebar">
     <NavMenu />
@@ -13,3 +14,10 @@
         @Body
     </div>
 </div>
+
+@code {
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        await JSRuntime.InvokeVoidAsync("Toolbelt.Blazor.log", "Blazor has been started.");
+    }
+}

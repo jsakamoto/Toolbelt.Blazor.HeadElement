@@ -3,7 +3,6 @@ using HeadElement.E2ETest.Internals;
 using NUnit.Framework;
 using static HeadElement.E2ETest.Internals.HostingModel;
 
-
 namespace HeadElement.E2ETest;
 
 public class HeadElementServerPreRenderingTest
