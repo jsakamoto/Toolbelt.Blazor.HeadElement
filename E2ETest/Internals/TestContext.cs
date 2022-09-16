@@ -1,9 +1,6 @@
 ﻿using HeadElement.E2ETest.Internals;
 using Microsoft.Playwright;
 using NUnit.Framework;
-using OpenQA.Selenium;
-using OpenQA.Selenium.Chrome;
-using OpenQA.Selenium.Firefox;
 using static HeadElement.E2ETest.Internals.BlazorVersion;
 using static HeadElement.E2ETest.Internals.HostingModel;
 
@@ -30,10 +27,6 @@ public class TestContext
         {new SampleSiteKey(Server,        NET60),  new SampleSite(5021, "Server", "net6.0")},
     };
 
-    private ChromeDriver? _ChromeDriver;
-
-    private FirefoxDriver? _FirefoxDriver;
-
     private IPlaywright? _Playwrite;
 
     private IBrowser? _Browser;
@@ -42,45 +35,22 @@ public class TestContext
 
     public async ValueTask<IPage> GetPageAsync()
     {
-        if (this._Playwrite == null)
-        {
-            this._Playwrite = await Playwright.CreateAsync();
-        }
+        this._Playwrite ??= await Playwright.CreateAsync();
+
         if (this._Browser == null)
         {
-            //var browserType = this._Playwrite.Chromium;
-            var browserType = this._Playwrite.Firefox;
+            var browserType = this._Playwrite.Chromium;
+            //var browserType = this._Playwrite.Firefox;
             this._Browser = await browserType.LaunchAsync(new()
             {
                 //Channel = "msedge",
                 Headless = false,
             });
         }
-        if (this._Page == null)
-        {
-            this._Page = await this._Browser.NewPageAsync();
-        }
+
+        this._Page ??= await this._Browser.NewPageAsync();
+
         return this._Page;
-    }
-
-
-    public IWebDriver WebDriver
-    {
-        get
-        {
-            //if (this._WebDriver == null)
-            //{
-            //    this._WebDriver = new ChromeDriver();
-            //    // this._WebDriver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(3);
-            //}
-            //return this._WebDriver;
-            if (this._FirefoxDriver == null)
-            {
-                this._FirefoxDriver = new FirefoxDriver();
-                // this._WebDriver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(3);
-            }
-            return this._FirefoxDriver;
-        }
     }
 
     public ValueTask<SampleSite> StartHostAsync(HostingModel hostingModel, BlazorVersion blazorVersion)
@@ -100,7 +70,5 @@ public class TestContext
         if (this._Browser != null) await this._Browser.DisposeAsync();
         this._Playwrite?.Dispose();
         Parallel.ForEach(SampleSites.Values, sampleSite => sampleSite.Stop());
-        this._ChromeDriver?.Quit();
-        this._FirefoxDriver?.Quit();
     }
 }

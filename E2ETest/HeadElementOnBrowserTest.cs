@@ -1,7 +1,5 @@
 using HeadElement.E2ETest.Internals;
 using NUnit.Framework;
-using OpenQA.Selenium;
-using OpenQA.Selenium.Support.Extensions;
 
 namespace HeadElement.E2ETest;
 
@@ -19,35 +17,34 @@ public class HeadElementOnBrowserTest
         var page = await this.TestContext.GetPageAsync();
 
         // Navigate to Home
-        await page.GotoAsync(host.GetUrl("/"));
-        await page.WaitForBlazorHasBeenStarted();
+        await page.GotoAndWaitForReadyAsync(host.GetUrl("/"));
 
         // Validate document title of "Home"
-        await page.WaitForTitleAsync("Sample Site");
+        await page.AssertTitleIsAsync("Sample Site");
 
         // Navigate to "Counter"
         await page.ClickCounterAsync();
 
         // Validate document title of "Counter"
-        await page.WaitForTitleAsync("Counter(0)");
+        await page.AssertTitleIsAsync("Counter(0)");
 
         // document title will be updated real time.
         await page.ClickAsync("button.btn-primary");
-        await page.WaitForTitleAsync("Counter(1)");
+        await page.AssertTitleIsAsync("Counter(1)");
         await page.ClickAsync("button.btn-primary");
-        await page.WaitForTitleAsync("Counter(2)");
+        await page.AssertTitleIsAsync("Counter(2)");
 
         // Navigate to "Fetch data"
         await page.ClickFetchDataAsync();
 
         // Validate document title of "Fetch data"
-        await page.WaitForTitleAsync("Fetch data");
+        await page.AssertTitleIsAsync("Fetch data");
 
         // Go back to "Home"
         await page.ClickHomeAsync();
 
         // Validate document title of "Home" was restored.
-        await page.WaitForTitleAsync("Sample Site");
+        await page.AssertTitleIsAsync("Sample Site");
     }
 
     [@TestCaseSource(nameof(TestCases), Name = "Change Title on Browser (from Counter)")]
@@ -57,80 +54,72 @@ public class HeadElementOnBrowserTest
         var page = await this.TestContext.GetPageAsync();
 
         // Navigate to "Counter"
-        await page.GotoAsync(host.GetUrl("/counter"));
-        await page.WaitForBlazorHasBeenStarted();
+        await page.GotoAndWaitForReadyAsync(host.GetUrl("/counter"));
 
         // Validate document title of "Counter"
-        await page.WaitForTitleAsync("Counter(0)");
+        await page.AssertTitleIsAsync("Counter(0)");
 
         // document title will be updated real time.
         await page.ClickAsync("button.btn-primary");
-        await page.WaitForTitleAsync("Counter(1)");
+        await page.AssertTitleIsAsync("Counter(1)");
         await page.ClickAsync("button.btn-primary");
-        await page.WaitForTitleAsync("Counter(2)");
+        await page.AssertTitleIsAsync("Counter(2)");
 
         // Go back to "Home"
         await page.ClickHomeAsync();
 
         // Validate document title of "Home" was restored.
-        await page.WaitForTitleAsync("Sample Site");
+        await page.AssertTitleIsAsync("Sample Site");
     }
-
 
     [@TestCaseSource(nameof(TestCases), Name = "Change meta elements on Browser (from Home)")]
     public async Task ChangeMetaElements_on_Browser_Start_from_Home_Test(HostingModel hostingModel, BlazorVersion blazorVersion)
     {
         var host = await this.TestContext.StartHostAsync(hostingModel, blazorVersion);
-        var driver = this.TestContext.WebDriver;
+        var page = await this.TestContext.GetPageAsync();
 
         // Navigate to Home
-        driver.GoToUrlAndWait(host.GetUrl("/"));
+        await page.GotoAndWaitForReadyAsync(host.GetUrl("/"));
 
         // Validate meta elements of "Home"
-        var actualAtHome = driver.DumpMetaElements();
-        actualAtHome.Is(ExpectMeta.AtHome);
+        await page.AssertEqualsAsync(_ => _.DumpMetaElementsAsync(), ExpectMeta.AtHome);
 
         // Navigate to "Counter"
-        driver.ClickCounter();
+        await page.ClickCounterAsync();
 
         // Validate meta elements of "Counter"
-        var actualAtCounter = driver.DumpMetaElements();
-        actualAtCounter.Is(ExpectMeta.AtCounter);
+        await page.AssertEqualsAsync(_ => _.DumpMetaElementsAsync(), ExpectMeta.AtCounter);
 
         // Navigate to "Fetch data"
-        driver.ClickFetchData();
+        await page.ClickFetchDataAsync();
 
         // Validate meta elements of "Fetch data"
-        var actualAtFetchData = driver.DumpMetaElements();
-        actualAtFetchData.Is(ExpectMeta.AtFetchData);
+        await page.AssertEqualsAsync(_ => _.DumpMetaElementsAsync(), ExpectMeta.AtFetchData);
 
         // Go back to "Home"
-        driver.ClickHome();
+        await page.ClickHomeAsync();
 
         // Validate meta elements of "Home" were restored.
-        var actualAtReturnHome = driver.DumpMetaElements();
-        actualAtReturnHome.Is(ExpectMeta.AtHome);
+        await page.AssertEqualsAsync(_ => _.DumpMetaElementsAsync(), ExpectMeta.AtHome);
     }
 
     [@TestCaseSource(nameof(TestCases), Name = "Change meta elements on Browser (from Counter)")]
     public async Task ChangeMetaElements_on_Browser_Start_from_Counter_Test(HostingModel hostingModel, BlazorVersion blazorVersion)
     {
         var host = await this.TestContext.StartHostAsync(hostingModel, blazorVersion);
-        var driver = this.TestContext.WebDriver;
+        var page = await this.TestContext.GetPageAsync();
 
         // Navigate to "Counter"
-        driver.GoToUrlAndWait(host.GetUrl("/counter"));
+        await page.GotoAndWaitForReadyAsync(host.GetUrl("/counter"));
 
         // Validate meta elements of "Counter"
-        var actualAtCounter = driver.DumpMetaElements();
-        actualAtCounter.Is(ExpectMeta.AtCounter);
+        await page.AssertEqualsAsync(_ => _.DumpMetaElementsAsync(), ExpectMeta.AtCounter);
 
         // Go back to "Home"
-        driver.ClickHome();
+        await page.ClickHomeAsync();
 
         // Validate meta elements of "Home" were restored.
-        var actualAtHome = driver.DumpMetaElements();
-        actualAtHome.Is(ExpectMeta.AtHome);
+        await page.AssertEqualsAsync(_ => _.DumpMetaElementsAsync(), ExpectMeta.AtHome);
     }
 
 
@@ -138,206 +127,190 @@ public class HeadElementOnBrowserTest
     public async Task ChangeLinkElements_on_Browser_Start_from_Home_Test(HostingModel hostingModel, BlazorVersion blazorVersion)
     {
         var host = await this.TestContext.StartHostAsync(hostingModel, blazorVersion);
-        var driver = this.TestContext.WebDriver;
+        var page = await this.TestContext.GetPageAsync();
 
         // Navigate to "Home", and validate link elements of "Home"
-        driver.GoToUrlAndWait(host.GetUrl("/"));
-        var actualAtHome = driver.DumpLinkElements();
-        actualAtHome.Is(ExpectLinks.AtHome);
+        await page.GotoAndWaitForReadyAsync(host.GetUrl("/"));
+        await page.AssertEqualsAsync(_ => _.DumpMetaElementsAsync(), ExpectMeta.AtHome);
 
         // Navigate to "Counter", and validate link elements of "Counter"
-        driver.ClickCounter();
-        var actualAtCounter = driver.DumpLinkElements();
-        actualAtCounter.Is(ExpectLinks.AtCounter);
+        await page.ClickCounterAsync();
+        await page.AssertEqualsAsync(_ => _.DumpLinkElementsAsync(), ExpectLinks.AtCounter);
 
         // Navigate to "Fetch data", and validate link elements of "Fetch data"
-        driver.ClickFetchData();
-        var actualAtFetchData = driver.DumpLinkElements();
-        actualAtFetchData.Is(ExpectLinks.AtFetchData);
+        await page.ClickFetchDataAsync();
+        await page.AssertEqualsAsync(_ => _.DumpLinkElementsAsync(), ExpectLinks.AtFetchData);
 
         // Go back to "Home", and validate link elements of "Home" were restored.
-        driver.ClickHome();
-        var actualAtReturnHome = driver.DumpLinkElements();
-        actualAtReturnHome.Is(ExpectLinks.AtHome);
+        await page.ClickHomeAsync();
+        await page.AssertEqualsAsync(_ => _.DumpLinkElementsAsync(), ExpectLinks.AtHome);
     }
 
     [@TestCaseSource(nameof(TestCases), Name = "Change link elements on Browser (from Counter)")]
     public async Task ChangeLinkElements_on_Browser_Start_from_Counter_Test(HostingModel hostingModel, BlazorVersion blazorVersion)
     {
         var host = await this.TestContext.StartHostAsync(hostingModel, blazorVersion);
-        var driver = this.TestContext.WebDriver;
+        var page = await this.TestContext.GetPageAsync();
 
         // Navigate to "Counter", and validate link elements of "Counter"
-        driver.GoToUrlAndWait(host.GetUrl("/counter"));
-        var actualAtCounter = driver.DumpLinkElements();
-        actualAtCounter.Is(ExpectLinks.AtCounter);
+        await page.GotoAndWaitForReadyAsync(host.GetUrl("/counter"));
+        await page.AssertEqualsAsync(_ => _.DumpLinkElementsAsync(), ExpectLinks.AtCounter);
 
         // Go back to "Home", and validate link elements of "Home" were restored.
-        driver.ClickHome();
-        var actualAtHomem = driver.DumpLinkElements();
-        actualAtHomem.Is(ExpectLinks.AtHome);
+        await page.ClickHomeAsync();
+        await page.AssertEqualsAsync(_ => _.DumpLinkElementsAsync(), ExpectLinks.AtHome);
     }
 
     [@TestCaseSource(nameof(TestCases), Name = "Refresh on Browser (from Home)")]
     public async Task Refresh_on_Browser_Start_from_Home_Test(HostingModel hostingModel, BlazorVersion blazorVersion)
     {
         var host = await this.TestContext.StartHostAsync(hostingModel, blazorVersion);
-        var driver = this.TestContext.WebDriver;
+        var page = await this.TestContext.GetPageAsync();
 
-        driver.GoToUrlAndWait(host.GetUrl("/"));
-        driver.ClickRedirect();
-        driver.DumpMetaElements()
-            .Contains("||refresh||3;url=/") // <- added 'refresh'
-            .IsTrue();
+        await page.GotoAndWaitForReadyAsync(host.GetUrl("/"));
+        await page.ClickRedirectAsync();
+        var metaElements = await page.DumpMetaElementsAsync();
+        await page.AssertItsTrueAsync(_ => _.DumpMetaElementsAsync(), m => m.Contains("||refresh||3;url=/")); //<- added 'refresh'
 
         // Wait for redirected...
-        Thread.Sleep(5000);
+        await Task.Delay(4000);
 
         // Validate current page is "Home".
-        driver.Wait(1000).Until(_ => driver.FindElement(By.XPath("//h1[text()='Hello, world!']")));
-        driver.Url.TrimEnd('/').Is(host.GetUrl("/").TrimEnd('/'));
+        await page.AssertH1IsAsync("Hello, world!");
+        var url = await page.EvaluateAsync<string>("window.location.href");
+        url.TrimEnd('/').Is(host.GetUrl("/").TrimEnd('/'));
     }
 
     [@TestCaseSource(nameof(TestCases), Name = "Refresh and Cancel on Browser (from Home)")]
     public async Task Refresh_and_Cancel_on_Browser_Start_from_Home_Test(HostingModel hostingModel, BlazorVersion blazorVersion)
     {
         var host = await this.TestContext.StartHostAsync(hostingModel, blazorVersion);
-        var driver = this.TestContext.WebDriver;
+        var page = await this.TestContext.GetPageAsync();
 
-        driver.GoToUrlAndWait(host.GetUrl("/"));
-        driver.ClickRedirect();
-        driver.DumpMetaElements()
-            .Contains("||refresh||3;url=/") // <- added 'refresh'
-            .IsTrue();
+        await page.GotoAndWaitForReadyAsync(host.GetUrl("/"));
+        await page.ClickRedirectAsync();
+        await page.AssertItsTrueAsync(_ => _.DumpMetaElementsAsync(), m => m.Contains("||refresh||3;url=/")); //<- added 'refresh'
 
         // Navigate to "Counter"
-        driver.ClickCounter();
+        await page.ClickCounterAsync();
 
         // Wait for redirected...
-        Thread.Sleep(5000);
+        await Task.Delay(4000);
 
         // Validate current page is not redirected, stay on "Counter".
-        driver.Wait(1000).Until(_ => driver.FindElement(By.XPath("//h1[text()='Counter']")));
-        driver.Url.TrimEnd('/').Is(host.GetUrl("/").TrimEnd('/') + "/counter");
+        await page.AssertH1IsAsync("Counter");
+        var url = await page.EvaluateAsync<string>("window.location.href");
+        url.TrimEnd('/').Is(host.GetUrl("/counter").TrimEnd('/'));
     }
 
     [@TestCaseSource(nameof(TestCases), Name = "Refresh on Browser (from Redirect)")]
     public async Task Refresh_on_Browser_Start_from_Redirect_Test(HostingModel hostingModel, BlazorVersion blazorVersion)
     {
         var host = await this.TestContext.StartHostAsync(hostingModel, blazorVersion);
-        var driver = this.TestContext.WebDriver;
+        var page = await this.TestContext.GetPageAsync();
 
-        driver.GoToUrlAndWait(host.GetUrl("/redirect"));
-        driver.Wait(5000).Until(_ => driver.FindElement(By.XPath("//h1[text()='Redirect to Home']")));
-        Thread.Sleep(200);
-        driver.DumpMetaElements()
-            .Contains("||refresh||3;url=/") // <- added 'refresh'
-            .IsTrue();
+        // NOTICE: in case of pre-rendered Blazor Wasm, the redirection by "meta refresh" happens sometimes 
+        // before complete to Blazor Wasm contents loading and initialization.
+
+        await page.GotoAsync(host.GetUrl("/redirect"));
+        if (hostingModel == HostingModel.Wasm) await page.WaitForBlazorHasBeenStarted();
+        await page.AssertItsTrueAsync(_ => _.DumpMetaElementsAsync(), m => m.Contains("||refresh||3;url=/")); //<- added 'refresh'
 
         // Wait for redirected...
-        Thread.Sleep(5000);
+        if (hostingModel != HostingModel.Wasm) await page.WaitForBlazorHasBeenStarted();
+        await Task.Delay(4000);
 
         // Validate current page is "Home".
-        driver.Wait(1000).Until(_ => driver.FindElement(By.XPath("//h1[text()='Hello, world!']")));
-        driver.Url.TrimEnd('/').Is(host.GetUrl("/").TrimEnd('/'));
+        await page.AssertUrlIsAsync(host.GetUrl("/"));
+        await page.AssertH1IsAsync("Hello, world!");
     }
 
     [@TestCaseSource(nameof(TestCases), Name = "Refresh and Cancel on Browser (from Redirect)")]
     public async Task Refresh_and_Cancel_on_Browser_Start_from_Redirect_Test(HostingModel hostingModel, BlazorVersion blazorVersion)
     {
         var host = await this.TestContext.StartHostAsync(hostingModel, blazorVersion);
-        var driver = this.TestContext.WebDriver;
+        var page = await this.TestContext.GetPageAsync();
 
-        driver.GoToUrlAndWait(host.GetUrl("/redirect"));
+        await page.GotoAndWaitForReadyAsync(host.GetUrl("/redirect"));
+        await page.AssertItsTrueAsync(_ => _.DumpMetaElementsAsync(), m => m.Contains("||refresh||3;url=/")); //<- added 'refresh'
         await Task.Delay(1000);
-        driver.DumpMetaElements()
-            .Contains("||refresh||3;url=/") // <- added 'refresh'
-            .IsTrue();
 
         // Navigate to "Fetch data"
-        driver.ClickFetchData();
+        await page.ClickFetchDataAsync();
 
         // Wait for redirected...
-        Thread.Sleep(5000);
+        await Task.Delay(3000);
 
-        // Validate current page is not redirected, stay on "Counter".
-        driver.Wait(1000).Until(_ => driver.FindElement(By.XPath("//h1[text()='Weather forecast']")));
-        driver.Url.TrimEnd('/').Is(host.GetUrl("/fetchdata"));
+        // Validate current page is not redirected, stay on "Weather Forecast".
+        await page.AssertH1IsAsync("Weather forecast");
+        await page.AssertUrlIsAsync(host.GetUrl("/fetchdata"));
     }
 
     [@TestCaseSource(nameof(TestCases), Name = "Change at OnAfterRender on Browser (from Home)")]
     public async Task Change_at_OnAfterRender_on_Browser_Start_from_Home_Test(HostingModel hostingModel, BlazorVersion blazorVersion)
     {
         var host = await this.TestContext.StartHostAsync(hostingModel, blazorVersion);
-        var driver = this.TestContext.WebDriver;
+        var page = await this.TestContext.GetPageAsync();
 
         // Navigate to Home, and validate the document title of "Home"
-        driver.GoToUrlAndWait(host.GetUrl("/"));
-        driver.Wait(1000).Until(_ => driver.Title == "Sample Site");
+        await page.GotoAndWaitForReadyAsync(host.GetUrl("/"));
+        await page.AssertTitleIsAsync("Sample Site");
 
         // Navigate to "Change at "OnAfterRender"", and validate the document title of it
-        driver.ClickOnAfterRender();
-        driver.Wait(1000).Until(_ => driver.Title == "2nd title");
+        await page.ClickOnAfterRenderAsync();
+        await page.AssertTitleIsAsync("2nd title");
 
         // Validate meta elements of "Change at "OnAfterRender""
-        var actualMetaAtOnAfterRender = driver.DumpMetaElements();
-        actualMetaAtOnAfterRender.Is(ExpectMeta.AtOnAfterRender);
+        await page.AssertEqualsAsync(_ => _.DumpMetaElementsAsync(), ExpectMeta.AtOnAfterRender);
 
         // Validate link elements of "Change at "OnAfterRender""
-        var actualLinkAtOnAfterRender = driver.DumpLinkElements();
-        actualLinkAtOnAfterRender.Is(ExpectLinks.AtOnAfterRender);
+        await page.AssertEqualsAsync(_ => _.DumpLinkElementsAsync(), ExpectLinks.AtOnAfterRender);
 
         // Go back to Home, and validate the document title, meta elements, link elements of "Home"
-        driver.ClickHome();
-        driver.Wait(1000).Until(_ => driver.Title == "Sample Site");
-        var actualMetaAtHome = driver.DumpMetaElements();
-        actualMetaAtHome.Is(ExpectMeta.AtHome);
-        var actualLinkAtHome = driver.DumpLinkElements();
-        actualLinkAtHome.Is(ExpectLinks.AtHome);
+        await page.ClickHomeAsync();
+        await page.AssertTitleIsAsync("Sample Site");
+        await page.AssertEqualsAsync(_ => _.DumpMetaElementsAsync(), ExpectMeta.AtHome);
+        await page.AssertEqualsAsync(_ => _.DumpLinkElementsAsync(), ExpectLinks.AtHome);
     }
 
     [@TestCaseSource(nameof(TestCases), Name = "Change at OnAfterRender on Browser (from OnAfterRender)")]
     public async Task Change_at_OnAfterRender_on_Browser_Start_from_OnAfterRender_Test(HostingModel hostingModel, BlazorVersion blazorVersion)
     {
         var host = await this.TestContext.StartHostAsync(hostingModel, blazorVersion);
-        var driver = this.TestContext.WebDriver;
+        var page = await this.TestContext.GetPageAsync();
 
         // Navigate to "Change at "OnAfterRender"", and validate the document title of it
-        driver.GoToUrlAndWait(host.GetUrl("/change-at-onafterrender"));
-        driver.Wait(5000).Until(_ => driver.FindElement(By.XPath("//h1[text()='Change at \"OnAfterRender\"']")));
-        Thread.Sleep(200);
-
-        driver.Wait(1000).Until(_ => driver.Title == "2nd title");
+        await page.GotoAndWaitForReadyAsync(host.GetUrl("/change-at-onafterrender"));
+        await page.AssertH1IsAsync("Change at \"OnAfterRender\"");
+        await page.AssertTitleIsAsync("2nd title");
 
         // Validate meta elements of "Change at "OnAfterRender""
-        var actualMetaAtOnAfterRender = driver.DumpMetaElements();
-        actualMetaAtOnAfterRender.Is(ExpectMeta.AtOnAfterRender);
+        await page.AssertEqualsAsync(_ => _.DumpMetaElementsAsync(), ExpectMeta.AtOnAfterRender);
 
         // Validate link elements of "Change at "OnAfterRender""
-        var actualLinkAtOnAfterRender = driver.DumpLinkElements();
-        actualLinkAtOnAfterRender.Is(ExpectLinks.AtOnAfterRender);
+        await page.AssertEqualsAsync(_ => _.DumpLinkElementsAsync(), ExpectLinks.AtOnAfterRender);
 
         // Go back to Home, and validate the document title, meta elements, link elements of "Home"
-        driver.ClickHome();
-        driver.Wait(1000).Until(_ => driver.Title == "Sample Site");
-        var actualMetaAtHome = driver.DumpMetaElements();
-        actualMetaAtHome.Is(ExpectMeta.AtHome);
-        var actualLinkAtHome = driver.DumpLinkElements();
-        actualLinkAtHome.Is(ExpectLinks.AtHome);
+        await page.ClickHomeAsync();
+        await page.AssertTitleIsAsync("Sample Site");
+        await page.AssertEqualsAsync(_ => _.DumpMetaElementsAsync(), ExpectMeta.AtHome);
+        await page.AssertEqualsAsync(_ => _.DumpLinkElementsAsync(), ExpectLinks.AtHome);
     }
 
     [@TestCaseSource(nameof(TestCases), Name = "Check another helper script in the same namespace should not be overridden")]
     public async Task HelperJavaScript_Namespace_Not_Conflict_Test(HostingModel hostingModel, BlazorVersion blazorVersion)
     {
         var host = await this.TestContext.StartHostAsync(hostingModel, blazorVersion);
-        var driver = this.TestContext.WebDriver;
-        driver.GoToUrlAndWait(host.GetUrl("/counter"));
+        var page = await this.TestContext.GetPageAsync();
+        await page.GotoAndWaitForReadyAsync(host.GetUrl("/counter"));
 
         var random = new Random();
         var a = random.Next(1, 10);
         var b = random.Next(1, 10);
-        var result = driver.ExecuteJavaScript<long>($"return Toolbelt.Blazor.add({a},{b})");
+        var result = await page.EvaluateAsync<long>($"Toolbelt.Blazor.add({a},{b})");
 
         result.Is(a + b);
     }
+#if false
+#endif
 }
