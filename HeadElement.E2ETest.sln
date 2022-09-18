@@ -8,6 +8,10 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{4C0560D7-4DBB-462A-9725-3B6C91595C77}"
 	ProjectSection(SolutionItems) = preProject
 		.editorconfig = .editorconfig
+		E2ETest\.settings\firefox-headless.runsettings = E2ETest\.settings\firefox-headless.runsettings
+		E2ETest\.settings\firefox.runsettings = E2ETest\.settings\firefox.runsettings
+		E2ETest\.settings\webkit-headless.runsettings = E2ETest\.settings\webkit-headless.runsettings
+		E2ETest\.settings\webkit.runsettings = E2ETest\.settings\webkit.runsettings
 	EndProjectSection
 EndProject
 Global

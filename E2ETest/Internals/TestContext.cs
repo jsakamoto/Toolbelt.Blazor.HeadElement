@@ -1,4 +1,5 @@
 ﻿using HeadElement.E2ETest.Internals;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Playwright;
 using NUnit.Framework;
 using static HeadElement.E2ETest.Internals.BlazorVersion;
@@ -33,24 +34,25 @@ public class TestContext
 
     private IPage? _Page;
 
-    public async ValueTask<IPage> GetPageAsync()
+    private class TestOptions
     {
-        this._Playwrite ??= await Playwright.CreateAsync();
+        public string Browser { get; set; } = "";
 
-        if (this._Browser == null)
-        {
-            var browserType = this._Playwrite.Chromium;
-            //var browserType = this._Playwrite.Firefox;
-            this._Browser = await browserType.LaunchAsync(new()
-            {
-                //Channel = "msedge",
-                Headless = false,
-            });
-        }
+        public bool Headless { get; set; } = true;
+    }
 
-        this._Page ??= await this._Browser.NewPageAsync();
+    private readonly TestOptions _Options = new();
 
-        return this._Page;
+    [OneTimeSetUp]
+    public void OneTimeSetUp()
+    {
+        var configuration = new ConfigurationBuilder()
+            .AddEnvironmentVariables(prefix: "DOTNET_")
+            .AddTestParameters()
+            .Build();
+        configuration.Bind(this._Options);
+
+        Default = this;
     }
 
     public ValueTask<SampleSite> StartHostAsync(HostingModel hostingModel, BlazorVersion blazorVersion)
@@ -58,10 +60,34 @@ public class TestContext
         return SampleSites[new SampleSiteKey(hostingModel, blazorVersion)].StartAsync();
     }
 
-    [OneTimeSetUp]
-    public void OneTimeSetUp()
+    public async ValueTask<IPage> GetPageAsync()
     {
-        Default = this;
+        this._Playwrite ??= await Playwright.CreateAsync();
+        this._Browser ??= await this.LaunchBrowserAsync(this._Playwrite);
+        this._Page ??= await this._Browser.NewPageAsync();
+        return this._Page;
+    }
+
+    private Task<IBrowser> LaunchBrowserAsync(IPlaywright playwright)
+    {
+        var browserType = this._Options.Browser.ToLower() switch
+        {
+            "firefox" => playwright.Firefox,
+            "webkit" => playwright.Webkit,
+            _ => playwright.Chromium
+        };
+
+        var channel = this._Options.Browser.ToLower() switch
+        {
+            "firefox" or "webkit" => "",
+            _ => this._Options.Browser.ToLower()
+        };
+
+        return browserType.LaunchAsync(new()
+        {
+            Channel = channel,
+            Headless = this._Options.Headless,
+        });
     }
 
     [OneTimeTearDown]
