@@ -13,7 +13,7 @@ public class HeadElementServerPreRenderingTest
         .Where(key => key.HostingModel is WasmHosted or WasmPublished or Server)
         .Select(key => new object[] { key.HostingModel, key.BlazorVersion });
 
-    [@TestCaseSource(nameof(TestCases), Name = "Change Title on Server")]
+    [@TestCaseSource(nameof(TestCases), TestName = "Change Title on Server")]
     public async Task ChangeTitle_on_Server_Test(HostingModel hostingModel, BlazorVersion blazorVersion)
     {
         var host = await this.TestContext.StartHostAsync(hostingModel, blazorVersion);
@@ -33,7 +33,7 @@ public class HeadElementServerPreRenderingTest
             .Groups["title"].Value.Is("Fetch data");
     }
 
-    [@TestCaseSource(nameof(TestCases), Name = "Change meta elements on Server")]
+    [@TestCaseSource(nameof(TestCases), TestName = "Change meta elements on Server")]
     public async Task ChangeMetaElements_on_Server_Test(HostingModel hostingModel, BlazorVersion blazorVersion)
     {
         var host = await this.TestContext.StartHostAsync(hostingModel, blazorVersion);
@@ -69,7 +69,7 @@ public class HeadElementServerPreRenderingTest
             .ToArray();
     }
 
-    [@TestCaseSource(nameof(TestCases), Name = "Change link elements on Server")]
+    [@TestCaseSource(nameof(TestCases), TestName = "Change link elements on Server")]
     public async Task ChangeLinkElements_on_Server_Test(HostingModel hostingModel, BlazorVersion blazorVersion)
     {
         var host = await this.TestContext.StartHostAsync(hostingModel, blazorVersion);
@@ -88,7 +88,7 @@ public class HeadElementServerPreRenderingTest
         actualAtFetchData.Is(ExpectLinks.AtFetchData);
     }
 
-    [@TestCaseSource(nameof(TestCases), Name = "Add link elements only on Server")]
+    [@TestCaseSource(nameof(TestCases), TestName = "Add link elements only on Server")]
     public async Task AddLinkElementsOnly_on_Server_Test(HostingModel hostingModel, BlazorVersion blazorVersion)
     {
         var host = await this.TestContext.StartHostAsync(hostingModel, blazorVersion);
@@ -128,7 +128,7 @@ public class HeadElementServerPreRenderingTest
             .ToArray();
     }
 
-    [@TestCaseSource(nameof(TestCases), Name = "Change at OnAfterRender on Server")]
+    [@TestCaseSource(nameof(TestCases), TestName = "Change at OnAfterRender on Server")]
     public async Task Change_at_OnAfterRender_on_Server_Test(HostingModel hostingModel, BlazorVersion blazorVersion)
     {
         var host = await this.TestContext.StartHostAsync(hostingModel, blazorVersion);

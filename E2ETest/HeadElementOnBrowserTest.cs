@@ -10,7 +10,7 @@ public class HeadElementOnBrowserTest
     public static IEnumerable<object[]> TestCases => TestContext.SampleSites.Keys
         .Select(key => new object[] { key.HostingModel, key.BlazorVersion });
 
-    [@TestCaseSource(nameof(TestCases), Name = "Change Title on Browser (from Home)")]
+    [@TestCaseSource(nameof(TestCases), TestName = "Change Title on Browser (from Home)")]
     public async Task ChangeTitle_on_Browser_Start_from_Home_Test(HostingModel hostingModel, BlazorVersion blazorVersion)
     {
         var host = await this.TestContext.StartHostAsync(hostingModel, blazorVersion);
@@ -47,7 +47,7 @@ public class HeadElementOnBrowserTest
         await page.AssertTitleIsAsync("Sample Site");
     }
 
-    [@TestCaseSource(nameof(TestCases), Name = "Change Title on Browser (from Counter)")]
+    [@TestCaseSource(nameof(TestCases), TestName = "Change Title on Browser (from Counter)")]
     public async Task ChangeTitle_on_Browser_Start_from_Counter_Test(HostingModel hostingModel, BlazorVersion blazorVersion)
     {
         var host = await this.TestContext.StartHostAsync(hostingModel, blazorVersion);
@@ -72,7 +72,7 @@ public class HeadElementOnBrowserTest
         await page.AssertTitleIsAsync("Sample Site");
     }
 
-    [@TestCaseSource(nameof(TestCases), Name = "Change meta elements on Browser (from Home)")]
+    [@TestCaseSource(nameof(TestCases), TestName = "Change meta elements on Browser (from Home)")]
     public async Task ChangeMetaElements_on_Browser_Start_from_Home_Test(HostingModel hostingModel, BlazorVersion blazorVersion)
     {
         var host = await this.TestContext.StartHostAsync(hostingModel, blazorVersion);
@@ -103,7 +103,7 @@ public class HeadElementOnBrowserTest
         await page.AssertEqualsAsync(_ => _.DumpMetaElementsAsync(), ExpectMeta.AtHome);
     }
 
-    [@TestCaseSource(nameof(TestCases), Name = "Change meta elements on Browser (from Counter)")]
+    [@TestCaseSource(nameof(TestCases), TestName = "Change meta elements on Browser (from Counter)")]
     public async Task ChangeMetaElements_on_Browser_Start_from_Counter_Test(HostingModel hostingModel, BlazorVersion blazorVersion)
     {
         var host = await this.TestContext.StartHostAsync(hostingModel, blazorVersion);
@@ -123,7 +123,7 @@ public class HeadElementOnBrowserTest
     }
 
 
-    [@TestCaseSource(nameof(TestCases), Name = "Change link elements on Browser (from Home)")]
+    [@TestCaseSource(nameof(TestCases), TestName = "Change link elements on Browser (from Home)")]
     public async Task ChangeLinkElements_on_Browser_Start_from_Home_Test(HostingModel hostingModel, BlazorVersion blazorVersion)
     {
         var host = await this.TestContext.StartHostAsync(hostingModel, blazorVersion);
@@ -146,7 +146,7 @@ public class HeadElementOnBrowserTest
         await page.AssertEqualsAsync(_ => _.DumpLinkElementsAsync(), ExpectLinks.AtHome);
     }
 
-    [@TestCaseSource(nameof(TestCases), Name = "Change link elements on Browser (from Counter)")]
+    [@TestCaseSource(nameof(TestCases), TestName = "Change link elements on Browser (from Counter)")]
     public async Task ChangeLinkElements_on_Browser_Start_from_Counter_Test(HostingModel hostingModel, BlazorVersion blazorVersion)
     {
         var host = await this.TestContext.StartHostAsync(hostingModel, blazorVersion);
@@ -161,7 +161,7 @@ public class HeadElementOnBrowserTest
         await page.AssertEqualsAsync(_ => _.DumpLinkElementsAsync(), ExpectLinks.AtHome);
     }
 
-    [@TestCaseSource(nameof(TestCases), Name = "Refresh on Browser (from Home)")]
+    [@TestCaseSource(nameof(TestCases), TestName = "Refresh on Browser (from Home)")]
     public async Task Refresh_on_Browser_Start_from_Home_Test(HostingModel hostingModel, BlazorVersion blazorVersion)
     {
         var host = await this.TestContext.StartHostAsync(hostingModel, blazorVersion);
@@ -181,7 +181,7 @@ public class HeadElementOnBrowserTest
         url.TrimEnd('/').Is(host.GetUrl("/").TrimEnd('/'));
     }
 
-    [@TestCaseSource(nameof(TestCases), Name = "Refresh and Cancel on Browser (from Home)")]
+    [@TestCaseSource(nameof(TestCases), TestName = "Refresh and Cancel on Browser (from Home)")]
     public async Task Refresh_and_Cancel_on_Browser_Start_from_Home_Test(HostingModel hostingModel, BlazorVersion blazorVersion)
     {
         var host = await this.TestContext.StartHostAsync(hostingModel, blazorVersion);
@@ -203,7 +203,7 @@ public class HeadElementOnBrowserTest
         url.TrimEnd('/').Is(host.GetUrl("/counter").TrimEnd('/'));
     }
 
-    [@TestCaseSource(nameof(TestCases), Name = "Refresh on Browser (from Redirect)")]
+    [@TestCaseSource(nameof(TestCases), TestName = "Refresh on Browser (from Redirect)")]
     public async Task Refresh_on_Browser_Start_from_Redirect_Test(HostingModel hostingModel, BlazorVersion blazorVersion)
     {
         var host = await this.TestContext.StartHostAsync(hostingModel, blazorVersion);
@@ -225,7 +225,7 @@ public class HeadElementOnBrowserTest
         await page.AssertH1IsAsync("Hello, world!");
     }
 
-    [@TestCaseSource(nameof(TestCases), Name = "Refresh and Cancel on Browser (from Redirect)")]
+    [@TestCaseSource(nameof(TestCases), TestName = "Refresh and Cancel on Browser (from Redirect)")]
     public async Task Refresh_and_Cancel_on_Browser_Start_from_Redirect_Test(HostingModel hostingModel, BlazorVersion blazorVersion)
     {
         var host = await this.TestContext.StartHostAsync(hostingModel, blazorVersion);
@@ -246,7 +246,7 @@ public class HeadElementOnBrowserTest
         await page.AssertUrlIsAsync(host.GetUrl("/fetchdata"));
     }
 
-    [@TestCaseSource(nameof(TestCases), Name = "Change at OnAfterRender on Browser (from Home)")]
+    [@TestCaseSource(nameof(TestCases), TestName = "Change at OnAfterRender on Browser (from Home)")]
     public async Task Change_at_OnAfterRender_on_Browser_Start_from_Home_Test(HostingModel hostingModel, BlazorVersion blazorVersion)
     {
         var host = await this.TestContext.StartHostAsync(hostingModel, blazorVersion);
@@ -273,7 +273,7 @@ public class HeadElementOnBrowserTest
         await page.AssertEqualsAsync(_ => _.DumpLinkElementsAsync(), ExpectLinks.AtHome);
     }
 
-    [@TestCaseSource(nameof(TestCases), Name = "Change at OnAfterRender on Browser (from OnAfterRender)")]
+    [@TestCaseSource(nameof(TestCases), TestName = "Change at OnAfterRender on Browser (from OnAfterRender)")]
     public async Task Change_at_OnAfterRender_on_Browser_Start_from_OnAfterRender_Test(HostingModel hostingModel, BlazorVersion blazorVersion)
     {
         var host = await this.TestContext.StartHostAsync(hostingModel, blazorVersion);
@@ -297,7 +297,7 @@ public class HeadElementOnBrowserTest
         await page.AssertEqualsAsync(_ => _.DumpLinkElementsAsync(), ExpectLinks.AtHome);
     }
 
-    [@TestCaseSource(nameof(TestCases), Name = "Check another helper script in the same namespace should not be overridden")]
+    [@TestCaseSource(nameof(TestCases), TestName = "Check another helper script in the same namespace should not be overridden")]
     public async Task HelperJavaScript_Namespace_Not_Conflict_Test(HostingModel hostingModel, BlazorVersion blazorVersion)
     {
         var host = await this.TestContext.StartHostAsync(hostingModel, blazorVersion);
