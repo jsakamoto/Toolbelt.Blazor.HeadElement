@@ -8,8 +8,9 @@ public static class PlaywrightExtensions
 {
     public static async ValueTask GotoAndWaitForReadyAsync(this IPage page, string url)
     {
+        var waiter = page.WaitForBlazorHasBeenStarted();
         await page.GotoAsync(url);
-        await page.WaitForBlazorHasBeenStarted();
+        await waiter;
     }
 
     public static async ValueTask WaitForAsync(this IPage page, Func<IPage, ValueTask<bool>> predictAsync, bool throwOnTimeout = true)
