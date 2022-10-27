@@ -33,7 +33,14 @@ namespace Toolbelt.Blazor.HeadElement
 
         private const string NST = "Toolbelt.Head.Title.";
 
-        private bool _ScriptEnabled = false;
+        private enum ScriptState
+        {
+            NotInitialized,
+            Available,
+            Unavailable
+        }
+
+        private ScriptState _ScriptState = ScriptState.NotInitialized;
 
         private bool _DetachedLocationChangedHandler = false;
 
@@ -66,12 +73,12 @@ namespace Toolbelt.Blazor.HeadElement
         private async ValueTask<ScriptInvoker<T>?> EnsureScriptEnabledAsync<T>()
         {
             if (this._JS == null) return null;
-            if (!this._ScriptEnabled)
+            if (this._ScriptState == ScriptState.NotInitialized)
             {
                 await this._EnsureScriptSyncer.WaitAsync();
                 try
                 {
-                    if (!this._ScriptEnabled)
+                    if (this._ScriptState == ScriptState.NotInitialized)
                     {
                         if (!this.Options.DisableClientScriptAutoInjection)
                         {
@@ -96,17 +103,23 @@ namespace Toolbelt.Blazor.HeadElement
 
                                 await inlineJsModule.InvokeVoidAsync("ready");
                             }
-                            catch { }
+                            catch (InvalidOperationException e) when ((uint)e.HResult == 0x80131509)
+                            {
+                                this._ScriptState = ScriptState.Unavailable;
+                            }
                         }
-                        this._ScriptEnabled = true;
+                        this._ScriptState = ScriptState.Available;
                     }
                 }
-                catch { }
+                catch (InvalidOperationException e) when ((uint)e.HResult == 0x80131509)
+                {
+                    this._ScriptState = ScriptState.Unavailable;
+                }
                 finally { this._EnsureScriptSyncer.Release(); }
             }
 
             return
-                this._ScriptEnabled == false ? null :
+                this._ScriptState == ScriptState.Unavailable ? null :
                 this._JSModule != null ? this._JSModule.InvokeAsync<T> :
                 this._JS != null ? this._JS.InvokeAsync<T> : null;
         }
@@ -114,12 +127,12 @@ namespace Toolbelt.Blazor.HeadElement
         private async ValueTask<ScriptInvoker<T>?> EnsureScriptEnabledAsync<T>()
         {
             if (this._JS == null) return null;
-            if (!this._ScriptEnabled)
+            if (this._ScriptState == ScriptState.NotInitialized)
             {
                 await this._EnsureScriptSyncer.WaitAsync();
                 try
                 {
-                    if (!this._ScriptEnabled)
+                    if (this._ScriptState == ScriptState.NotInitialized)
                     {
                         if (!this.Options.DisableClientScriptAutoInjection)
                         {
@@ -133,14 +146,17 @@ namespace Toolbelt.Blazor.HeadElement
                             await this._JS.InvokeVoidAsync("eval", "new Promise(r=>((d,t,s,v)=>(h=>h.querySelector(t+`[src^=\"${s}\"]`)?r():(e=>(e.src=(s+v),e.onload=r,h.appendChild(e)))(d.createElement(t)))(d.head))(document,'script','" + scriptPath + "','" + versionQuery + "'))");
                         }
                         try { await this._JS.InvokeVoidAsync("eval", "Toolbelt.Head.ready"); } catch { }
-                        this._ScriptEnabled = true;
+                        this._ScriptState = ScriptState.Available;
                     }
                 }
-                catch { }
+                catch (InvalidOperationException e) when ((uint)e.HResult == 0x80131509)
+                {
+                    this._ScriptState = ScriptState.Unavailable;
+                }
                 finally { this._EnsureScriptSyncer.Release(); }
             }
             return
-                this._ScriptEnabled == false ? null :
+                this._ScriptState == ScriptState.Unavailable ? null :
                 this._JS != null ? this._JS.InvokeAsync<T> :
                 null;
         }
