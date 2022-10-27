@@ -2,6 +2,7 @@
 
   <PropertyGroup>
     <TargetFrameworks>netstandard2.1;net5.0</TargetFrameworks>
+    <CheckEolTargetFramework>false</CheckEolTargetFramework>
     <LangVersion>Latest</LangVersion>
     <RazorLangVersion>3.0</RazorLangVersion>
     <NoWarn>$(NoWarn);1591</NoWarn>
@@ -20,7 +21,7 @@
   </PropertyGroup>
 
   <PropertyGroup>
-    <Version>7.1.1</Version>
+    <Version>7.3.0-preview.1</Version>
     <Authors>J.Sakamoto</Authors>
     <Copyright>Copyright © 2019-2022 J.Sakamoto, Mozilla Public License 2.0</Copyright>
     <Description>Head element support (change the document title, "meta" elements such as OGP, and "link" elements such as canonical url, favicon) for Blazor apps.</Description>
