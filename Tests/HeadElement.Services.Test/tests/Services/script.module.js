@@ -80,7 +80,7 @@ var Toolbelt;
                     c: fixstr(a[4]),
                 }));
             },
-            sameMeta: (m, a) => (a.n !== '' ? m.name === a.n : (a.h !== '' ? m.httpEquiv === a.h : getAttr(m, property) === a.p)) && a.m == m.media
+            sameMeta: (m, a) => (a.n !== '' ? m.name === a.n : (a.h !== '' ? m.httpEquiv === a.h : getAttr(m, property) === a.p)) && a.m === (getAttr(m, media) || '')
         };
         Head.LinkTag = {
             set: (args) => {

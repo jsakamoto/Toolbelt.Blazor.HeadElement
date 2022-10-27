@@ -10,8 +10,8 @@
 
   <ItemGroup>
     <PackageReference Include="ChainingAssertion-NUnit.Bin" Version="1.8.1" />
-    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.3.1" />
-    <PackageReference Include="Microsoft.Playwright.NUnit" Version="1.25.0" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.3.2" />
+    <PackageReference Include="Microsoft.Playwright.NUnit" Version="1.27.1" />
     <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="6.0.0" />
     <PackageReference Include="Microsoft.Extensions.Configuration.EnvironmentVariables" Version="6.0.1" />
     <PackageReference Include="Toolbelt.FileIO" Version="1.0.0" />
@@ -27,7 +27,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Using Include="Toolbelt.NUnit.TestName.TestCaseSourceAttribute" Alias="TestCaseSource "/>
+    <Using Include="Toolbelt.NUnit.TestName.TestCaseSourceAttribute" Alias="TestCaseSource " />
   </ItemGroup>
   
 </Project>
