@@ -1,4 +1,7 @@
-﻿v.7.2.1
+﻿v.7.3.0
+- Improve: the performance of server-side process.
+
+v.7.2.1
 - Fix: Did not work correctly on Firefox.
 
 v.7.2.0
