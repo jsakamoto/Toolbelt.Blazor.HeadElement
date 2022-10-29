@@ -26,6 +26,11 @@ public class TestContext
         {new SampleSiteKey(WasmPublished, NET60),  new SampleSite(5019, "Client", "net6.0", published: true)},
         {new SampleSiteKey(WasmHosted,    NET60),  new SampleSite(5020, "Host",   "net6.0")},
         {new SampleSiteKey(Server,        NET60),  new SampleSite(5021, "Server", "net6.0")},
+
+        {new SampleSiteKey(Wasm,          NET70),  new SampleSite(5030, "Client", "net7.0")},
+        {new SampleSiteKey(WasmPublished, NET70),  new SampleSite(5031, "Client", "net7.0", published: true)},
+        {new SampleSiteKey(WasmHosted,    NET70),  new SampleSite(5032, "Host",   "net7.0")},
+        {new SampleSiteKey(Server,        NET70),  new SampleSite(5033, "Server", "net7.0")},
     };
 
     private IPlaywright? _Playwrite;
