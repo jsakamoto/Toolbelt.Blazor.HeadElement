@@ -2,7 +2,6 @@
 
 public enum BlazorVersion
 {
-    NETCore31,
-    NET50,
-    NET60
+    NET60,
+    NET70
 }

@@ -133,6 +133,12 @@ public static class PlaywrightExtensions
         var linksJson = await page.EvaluateAsync<string>(script);
         var linksElements = JsonSerializer.Deserialize<LinkElement[]>(linksJson, new JsonSerializerOptions() { PropertyNameCaseInsensitive = true }) ?? Array.Empty<LinkElement>();
         var dump = linksElements
+
+            // NOTE: Exclude <link rel="modulepreload" href="_framework/dotnet...js" .../>
+            //       that is automatically injected by Blazor Wasm Runtime,
+            //       because it is a noise for this E2E test.
+            .Where(l => !(l.Rel == "modulepreload" && toPathAndQuery(l.Href).StartsWith("/_framework/dotnet.")))
+
             .OrderBy(l => l.Rel).ThenBy(l => l.Href).ThenBy(l => l.Media).ThenBy(l => l.Hreflang)
             .Select(l => $"rel:{l.Rel}, href:{toPathAndQuery(l.Href)}, type:{l.Type}, media:{l.Media}, title:{l.Title}, sizes:{l.Sizes}, as:{l.As}, crossorigin:{l.CrossOrigin}, hreflang:{l.Hreflang}, imagesizes:{l.ImageSizes}, imagesrcset:{l.ImageSrcset}, disabled:{l.Disabled}")
             .ToArray();

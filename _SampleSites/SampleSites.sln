@@ -11,8 +11,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SampleSite.Server", "Server
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SampleSite.Host", "Host\SampleSite.Host.csproj", "{C9652D9C-7ABE-42E6-BC62-8272B3118968}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SampleSite.Client.Net31", "Client31\SampleSite.Client.Net31.csproj", "{2CEF54E9-EC03-475E-A1ED-DA50D7702872}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -71,18 +69,6 @@ Global
 		{C9652D9C-7ABE-42E6-BC62-8272B3118968}.Release|x64.Build.0 = Release|Any CPU
 		{C9652D9C-7ABE-42E6-BC62-8272B3118968}.Release|x86.ActiveCfg = Release|Any CPU
 		{C9652D9C-7ABE-42E6-BC62-8272B3118968}.Release|x86.Build.0 = Release|Any CPU
-		{2CEF54E9-EC03-475E-A1ED-DA50D7702872}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{2CEF54E9-EC03-475E-A1ED-DA50D7702872}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{2CEF54E9-EC03-475E-A1ED-DA50D7702872}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{2CEF54E9-EC03-475E-A1ED-DA50D7702872}.Debug|x64.Build.0 = Debug|Any CPU
-		{2CEF54E9-EC03-475E-A1ED-DA50D7702872}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{2CEF54E9-EC03-475E-A1ED-DA50D7702872}.Debug|x86.Build.0 = Debug|Any CPU
-		{2CEF54E9-EC03-475E-A1ED-DA50D7702872}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{2CEF54E9-EC03-475E-A1ED-DA50D7702872}.Release|Any CPU.Build.0 = Release|Any CPU
-		{2CEF54E9-EC03-475E-A1ED-DA50D7702872}.Release|x64.ActiveCfg = Release|Any CPU
-		{2CEF54E9-EC03-475E-A1ED-DA50D7702872}.Release|x64.Build.0 = Release|Any CPU
-		{2CEF54E9-EC03-475E-A1ED-DA50D7702872}.Release|x86.ActiveCfg = Release|Any CPU
-		{2CEF54E9-EC03-475E-A1ED-DA50D7702872}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

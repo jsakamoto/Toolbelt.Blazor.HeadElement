@@ -13,19 +13,15 @@ public class TestContext
     public static TestContext? Default { get; private set; }
 
     public static readonly IReadOnlyDictionary<SampleSiteKey, SampleSite> SampleSites = new Dictionary<SampleSiteKey, SampleSite> {
-        {new SampleSiteKey(Wasm,       NETCore31), new SampleSite(5011, "Client31", "netstandard2.1") },
-        {new SampleSiteKey(WasmHosted, NETCore31), new SampleSite(5012, "Host",   "netcoreapp3.1")},
-        {new SampleSiteKey(Server,     NETCore31), new SampleSite(5013, "Server", "netcoreapp3.1")},
-
-        {new SampleSiteKey(Wasm,          NET50),  new SampleSite(5014, "Client", "net5.0")},
-        {new SampleSiteKey(WasmPublished, NET50),  new SampleSite(5015, "Client", "net5.0", published: true)},
-        {new SampleSiteKey(WasmHosted,    NET50),  new SampleSite(5016, "Host",   "net5.0")},
-        {new SampleSiteKey(Server,        NET50),  new SampleSite(5017, "Server", "net5.0")},
-
         {new SampleSiteKey(Wasm,          NET60),  new SampleSite(5018, "Client", "net6.0")},
         {new SampleSiteKey(WasmPublished, NET60),  new SampleSite(5019, "Client", "net6.0", published: true)},
         {new SampleSiteKey(WasmHosted,    NET60),  new SampleSite(5020, "Host",   "net6.0")},
         {new SampleSiteKey(Server,        NET60),  new SampleSite(5021, "Server", "net6.0")},
+
+        {new SampleSiteKey(Wasm,          NET70),  new SampleSite(5030, "Client", "net7.0")},
+        {new SampleSiteKey(WasmPublished, NET70),  new SampleSite(5031, "Client", "net7.0", published: true)},
+        {new SampleSiteKey(WasmHosted,    NET70),  new SampleSite(5032, "Host",   "net7.0")},
+        {new SampleSiteKey(Server,        NET70),  new SampleSite(5033, "Server", "net7.0")},
     };
 
     private IPlaywright? _Playwrite;
@@ -39,6 +35,8 @@ public class TestContext
         public string Browser { get; set; } = "";
 
         public bool Headless { get; set; } = true;
+
+        public bool SkipInstallBrowser { get; set; } = false;
     }
 
     private readonly TestOptions _Options = new();
@@ -53,6 +51,11 @@ public class TestContext
         configuration.Bind(this._Options);
 
         Default = this;
+
+        if (!this._Options.SkipInstallBrowser)
+        {
+            Microsoft.Playwright.Program.Main(new[] { "install" });
+        }
     }
 
     public ValueTask<SampleSite> StartHostAsync(HostingModel hostingModel, BlazorVersion blazorVersion)
