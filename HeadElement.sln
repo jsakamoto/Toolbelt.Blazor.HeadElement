@@ -26,13 +26,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SampleSite.Client", "_Sampl
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SampleSite.Host", "_SampleSites\Host\SampleSite.Host.csproj", "{83467819-04E9-4BC5-A92B-A7AD0487EB80}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SampleSite.Client.Net31", "_SampleSites\Client31\SampleSite.Client.Net31.csproj", "{4E28900A-ADE7-42A3-8D4F-18C30766AC49}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeadElement.ServerPrerendering.Test", "Tests\HeadElement.ServerPrerendering.Test\HeadElement.ServerPrerendering.Test.csproj", "{E70A2503-64B0-430E-ADBC-69C29A5A7DDE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HeadElement.ServerPrerendering.Test", "Tests\HeadElement.ServerPrerendering.Test\HeadElement.ServerPrerendering.Test.csproj", "{E70A2503-64B0-430E-ADBC-69C29A5A7DDE}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Unit Tests", "Unit Tests", "{E6D15486-52A4-4311-82CF-06953EC6739C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeadElement.Services.Test", "Tests\HeadElement.Services.Test\HeadElement.Services.Test.csproj", "{3F113F53-88BF-428F-A149-EC0453E71809}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HeadElement.Services.Test", "Tests\HeadElement.Services.Test\HeadElement.Services.Test.csproj", "{3F113F53-88BF-428F-A149-EC0453E71809}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -72,10 +70,6 @@ Global
 		{83467819-04E9-4BC5-A92B-A7AD0487EB80}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{83467819-04E9-4BC5-A92B-A7AD0487EB80}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{83467819-04E9-4BC5-A92B-A7AD0487EB80}.Release|Any CPU.Build.0 = Release|Any CPU
-		{4E28900A-ADE7-42A3-8D4F-18C30766AC49}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{4E28900A-ADE7-42A3-8D4F-18C30766AC49}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{4E28900A-ADE7-42A3-8D4F-18C30766AC49}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{4E28900A-ADE7-42A3-8D4F-18C30766AC49}.Release|Any CPU.Build.0 = Release|Any CPU
 		{E70A2503-64B0-430E-ADBC-69C29A5A7DDE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{E70A2503-64B0-430E-ADBC-69C29A5A7DDE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E70A2503-64B0-430E-ADBC-69C29A5A7DDE}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -93,7 +87,6 @@ Global
 		{E6082FE8-989D-441C-8AEC-0B1A699E44C1} = {23D8A478-2C7A-46F9-9FD1-6A64DFE23ED5}
 		{0FB7AA6E-35A9-4181-BA57-3613DFA97EC6} = {23D8A478-2C7A-46F9-9FD1-6A64DFE23ED5}
 		{83467819-04E9-4BC5-A92B-A7AD0487EB80} = {23D8A478-2C7A-46F9-9FD1-6A64DFE23ED5}
-		{4E28900A-ADE7-42A3-8D4F-18C30766AC49} = {23D8A478-2C7A-46F9-9FD1-6A64DFE23ED5}
 		{E70A2503-64B0-430E-ADBC-69C29A5A7DDE} = {E6D15486-52A4-4311-82CF-06953EC6739C}
 		{3F113F53-88BF-428F-A149-EC0453E71809} = {E6D15486-52A4-4311-82CF-06953EC6739C}
 	EndGlobalSection

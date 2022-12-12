@@ -1,8 +1,10 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Razor">
 
   <PropertyGroup>
-    <TargetFrameworks>netstandard2.1;net5.0;net6.0;net7.0</TargetFrameworks>
-    <RazorLangVersion>3.0</RazorLangVersion>
+    <TargetFrameworks>net6.0;net7.0</TargetFrameworks>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <WarningsAsErrors>nullable</WarningsAsErrors>
   </PropertyGroup>
 
   <ItemGroup>
@@ -10,12 +12,10 @@
     <!--<ProjectReference Include="..\..\Components\HeadElement.csproj" />-->
   </ItemGroup>
 
-  <ItemGroup Condition=" '$(TargetFramework)' == 'netstandard2.1' ">
-    <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="3.1.0" />
+  <ItemGroup>
+    <SupportedPlatform Include="browser" />
   </ItemGroup>
-  <ItemGroup Condition=" '$(TargetFramework)' == 'net5.0' ">
-    <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="5.0.1" />
-  </ItemGroup>
+
   <ItemGroup Condition=" '$(TargetFramework)' == 'net6.0' ">
     <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="6.0.0" />
   </ItemGroup>
