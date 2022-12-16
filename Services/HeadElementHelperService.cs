@@ -87,27 +87,36 @@ namespace Toolbelt.Blazor.HeadElement
                             // Add version string for refresh token only when navigator is online.
                             // (If the app runs on the offline mode, the module url with query parameters might cause the "resource not found" error.)
                             const string moduleScript = "export function isOnLine(){ return navigator.onLine; }";
-                            await using var inlineJsModule = await this._JS.InvokeAsync<IJSObjectReference>("import", "data:text/javascript;charset=utf-8," + Uri.EscapeDataString(moduleScript));
-                            var isOnLine = await inlineJsModule.InvokeAsync<bool>("isOnLine");
-
-                            if (isOnLine) scriptPath += $"?v={this.GetVersionText()}";
-
-                            this._JSModule = await this._JS.InvokeAsync<IJSObjectReference>("import", scriptPath);
+                            var inlineJsModule = default(IJSObjectReference);
+                            try
+                            {
+                                inlineJsModule = await this._JS.InvokeAsync<IJSObjectReference>("import", "data:text/javascript;charset=utf-8," + Uri.EscapeDataString(moduleScript));
+                                var isOnLine = await inlineJsModule.InvokeAsync<bool>("isOnLine");
+                                if (isOnLine) scriptPath += $"?v={this.GetVersionText()}";
+                                this._JSModule = await this._JS.InvokeAsync<IJSObjectReference>("import", scriptPath);
+                            }
+                            finally
+                            {
+                                try { if (inlineJsModule != null) await inlineJsModule.DisposeAsync(); }
+                                catch (Exception e) when (e.GetType().Name == "JSDisconnectedException") { }
+                            }
                         }
                         else
                         {
+                            var inlineJsModule = default(IJSObjectReference);
                             try
                             {
-                                const string moduleScript = "export function ready(){ return Toolbelt.Blazor.HotKeys.ready; }";
-                                await using var inlineJsModule = await this._JS.InvokeAsync<IJSObjectReference>("import", "data:text/javascript;charset=utf-8," + Uri.EscapeDataString(moduleScript));
-
+                                const string moduleScript = "export function ready(){ return Toolbelt.Head.ready; }";
+                                inlineJsModule = await this._JS.InvokeAsync<IJSObjectReference>("import", "data:text/javascript;charset=utf-8," + Uri.EscapeDataString(moduleScript));
                                 await inlineJsModule.InvokeVoidAsync("ready");
                             }
-                            catch (InvalidOperationException e) when ((uint)e.HResult == 0x80131509)
+                            finally
                             {
-                                this._ScriptState = ScriptState.Unavailable;
+                                try { if (inlineJsModule != null) await inlineJsModule.DisposeAsync(); }
+                                catch (Exception e) when (e.GetType().Name == "JSDisconnectedException") { }
                             }
                         }
+
                         this._ScriptState = ScriptState.Available;
                     }
                 }
@@ -369,7 +378,11 @@ namespace Toolbelt.Blazor.HeadElement
         public async ValueTask DisposeAsync()
         {
             this.DetachLocationChangedHandler();
-            if (this._JSModule != null) { await this._JSModule.DisposeAsync(); }
+            if (this._JSModule != null)
+            {
+                try { await this._JSModule.DisposeAsync(); }
+                catch (Exception e) when (e.GetType().Name == "JSDisconnectedException") { }
+            }
         }
 #endif
     }

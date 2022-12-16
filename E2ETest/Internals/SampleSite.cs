@@ -15,16 +15,19 @@ public class SampleSite
 
     private readonly bool Published;
 
+    private readonly bool DisableScriptInjection;
+
     private XProcess? dotnetCLI;
 
     private WorkDirectory? WorkDir;
 
-    public SampleSite(int listenPort, string projectSubFolder, string targetFramework, bool published = false)
+    public SampleSite(int listenPort, string projectSubFolder, string targetFramework, bool published = false, bool disableScriptInjection = false)
     {
         this.ListenPort = listenPort;
         this.ProjectSubFolder = projectSubFolder;
         this.TargetFramework = targetFramework;
         this.Published = published;
+        this.DisableScriptInjection = disableScriptInjection;
     }
 
     public string GetUrl() => $"http://localhost:{this.ListenPort}";
@@ -50,7 +53,12 @@ public class SampleSite
         }
         else
         {
-            this.dotnetCLI = Start("dotnet", $"run --urls {this.GetUrl()} -f {this.TargetFramework}", projDir);
+            var args = new List<string> {
+                $"run --urls {this.GetUrl()}",
+                $"-f {this.TargetFramework}"
+            };
+            if (this.DisableScriptInjection) { args.Add("--DisableClientScriptAutoInjection true"); }
+            this.dotnetCLI = Start("dotnet", string.Join(" ", args), projDir);
         }
 
         var success = await this.dotnetCLI.WaitForOutputAsync(output => output.Contains(this.GetUrl()), millsecondsTimeout: 15000);

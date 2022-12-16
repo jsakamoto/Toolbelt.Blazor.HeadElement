@@ -1,13 +1,18 @@
 using SampleSite.Components.Services;
+using SampleSite.Server;
 using SampleSite.Server.Data;
 using Toolbelt.Blazor.Extensions.DependencyInjection;
 
 var builder = WebApplication.CreateBuilder(args);
 
+var appOptions = new AppOptions();
+builder.Configuration.Bind(appOptions);
+builder.Services.AddSingleton(appOptions);
+
 // Add services to the container.
 builder.Services.AddHeadElementHelper(options =>
 {
-    //options.DisableClientScriptAutoInjection = true;
+    options.DisableClientScriptAutoInjection = appOptions.DisableClientScriptAutoInjection;
 });
 builder.Services.AddSingleton<IWeatherForecastService, WeatherForecastService>();
 builder.Services.AddRazorPages();

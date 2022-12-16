@@ -1,4 +1,8 @@
-﻿v.7.3.0
+﻿v.7.3.1
+- Fix: Did not work correctly when the DisableClientScriptAutoInjection option is true.
+- Improve: suppress JSDisconnectedException exceptions
+
+v.7.3.0
 - Improve: the performance of server-side process.
 
 v.7.2.1

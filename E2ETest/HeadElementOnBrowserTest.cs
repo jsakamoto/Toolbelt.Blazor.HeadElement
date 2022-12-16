@@ -8,12 +8,12 @@ public class HeadElementOnBrowserTest
     private TestContext TestContext => TestContext.Default!;
 
     public static IEnumerable<object[]> TestCases => TestContext.SampleSites.Keys
-        .Select(key => new object[] { key.HostingModel, key.BlazorVersion });
+        .Select(key => new object[] { key.HostingModel, key.BlazorVersion, key.DisableScriptInjection });
 
     [@TestCaseSource(nameof(TestCases), TestName = "Change Title on Browser (from Home)")]
-    public async Task ChangeTitle_on_Browser_Start_from_Home_Test(HostingModel hostingModel, BlazorVersion blazorVersion)
+    public async Task ChangeTitle_on_Browser_Start_from_Home_Test(HostingModel hostingModel, BlazorVersion blazorVersion, bool disableScriptInjection)
     {
-        var host = await this.TestContext.StartHostAsync(hostingModel, blazorVersion);
+        var host = await this.TestContext.StartHostAsync(hostingModel, blazorVersion, disableScriptInjection);
         var page = await this.TestContext.GetPageAsync();
 
         // Navigate to Home
@@ -48,9 +48,9 @@ public class HeadElementOnBrowserTest
     }
 
     [@TestCaseSource(nameof(TestCases), TestName = "Change Title on Browser (from Counter)")]
-    public async Task ChangeTitle_on_Browser_Start_from_Counter_Test(HostingModel hostingModel, BlazorVersion blazorVersion)
+    public async Task ChangeTitle_on_Browser_Start_from_Counter_Test(HostingModel hostingModel, BlazorVersion blazorVersion, bool disableScriptInjection)
     {
-        var host = await this.TestContext.StartHostAsync(hostingModel, blazorVersion);
+        var host = await this.TestContext.StartHostAsync(hostingModel, blazorVersion, disableScriptInjection);
         var page = await this.TestContext.GetPageAsync();
 
         // Navigate to "Counter"
@@ -73,9 +73,9 @@ public class HeadElementOnBrowserTest
     }
 
     [@TestCaseSource(nameof(TestCases), TestName = "Change meta elements on Browser (from Home)")]
-    public async Task ChangeMetaElements_on_Browser_Start_from_Home_Test(HostingModel hostingModel, BlazorVersion blazorVersion)
+    public async Task ChangeMetaElements_on_Browser_Start_from_Home_Test(HostingModel hostingModel, BlazorVersion blazorVersion, bool disableScriptInjection)
     {
-        var host = await this.TestContext.StartHostAsync(hostingModel, blazorVersion);
+        var host = await this.TestContext.StartHostAsync(hostingModel, blazorVersion, disableScriptInjection);
         var page = await this.TestContext.GetPageAsync();
 
         // Navigate to Home
@@ -104,9 +104,9 @@ public class HeadElementOnBrowserTest
     }
 
     [@TestCaseSource(nameof(TestCases), TestName = "Change meta elements on Browser (from Counter)")]
-    public async Task ChangeMetaElements_on_Browser_Start_from_Counter_Test(HostingModel hostingModel, BlazorVersion blazorVersion)
+    public async Task ChangeMetaElements_on_Browser_Start_from_Counter_Test(HostingModel hostingModel, BlazorVersion blazorVersion, bool disableScriptInjection)
     {
-        var host = await this.TestContext.StartHostAsync(hostingModel, blazorVersion);
+        var host = await this.TestContext.StartHostAsync(hostingModel, blazorVersion, disableScriptInjection);
         var page = await this.TestContext.GetPageAsync();
 
         // Navigate to "Counter"
@@ -124,9 +124,9 @@ public class HeadElementOnBrowserTest
 
 
     [@TestCaseSource(nameof(TestCases), TestName = "Change link elements on Browser (from Home)")]
-    public async Task ChangeLinkElements_on_Browser_Start_from_Home_Test(HostingModel hostingModel, BlazorVersion blazorVersion)
+    public async Task ChangeLinkElements_on_Browser_Start_from_Home_Test(HostingModel hostingModel, BlazorVersion blazorVersion, bool disableScriptInjection)
     {
-        var host = await this.TestContext.StartHostAsync(hostingModel, blazorVersion);
+        var host = await this.TestContext.StartHostAsync(hostingModel, blazorVersion, disableScriptInjection);
         var page = await this.TestContext.GetPageAsync();
 
         // Navigate to "Home", and validate link elements of "Home"
@@ -147,9 +147,9 @@ public class HeadElementOnBrowserTest
     }
 
     [@TestCaseSource(nameof(TestCases), TestName = "Change link elements on Browser (from Counter)")]
-    public async Task ChangeLinkElements_on_Browser_Start_from_Counter_Test(HostingModel hostingModel, BlazorVersion blazorVersion)
+    public async Task ChangeLinkElements_on_Browser_Start_from_Counter_Test(HostingModel hostingModel, BlazorVersion blazorVersion, bool disableScriptInjection)
     {
-        var host = await this.TestContext.StartHostAsync(hostingModel, blazorVersion);
+        var host = await this.TestContext.StartHostAsync(hostingModel, blazorVersion, disableScriptInjection);
         var page = await this.TestContext.GetPageAsync();
 
         // Navigate to "Counter", and validate link elements of "Counter"
@@ -162,9 +162,9 @@ public class HeadElementOnBrowserTest
     }
 
     [@TestCaseSource(nameof(TestCases), TestName = "Refresh on Browser (from Home)")]
-    public async Task Refresh_on_Browser_Start_from_Home_Test(HostingModel hostingModel, BlazorVersion blazorVersion)
+    public async Task Refresh_on_Browser_Start_from_Home_Test(HostingModel hostingModel, BlazorVersion blazorVersion, bool disableScriptInjection)
     {
-        var host = await this.TestContext.StartHostAsync(hostingModel, blazorVersion);
+        var host = await this.TestContext.StartHostAsync(hostingModel, blazorVersion, disableScriptInjection);
         var page = await this.TestContext.GetPageAsync();
 
         await page.GotoAndWaitForReadyAsync(host.GetUrl("/"));
@@ -182,9 +182,9 @@ public class HeadElementOnBrowserTest
     }
 
     [@TestCaseSource(nameof(TestCases), TestName = "Refresh and Cancel on Browser (from Home)")]
-    public async Task Refresh_and_Cancel_on_Browser_Start_from_Home_Test(HostingModel hostingModel, BlazorVersion blazorVersion)
+    public async Task Refresh_and_Cancel_on_Browser_Start_from_Home_Test(HostingModel hostingModel, BlazorVersion blazorVersion, bool disableScriptInjection)
     {
-        var host = await this.TestContext.StartHostAsync(hostingModel, blazorVersion);
+        var host = await this.TestContext.StartHostAsync(hostingModel, blazorVersion, disableScriptInjection);
         var page = await this.TestContext.GetPageAsync();
 
         await page.GotoAndWaitForReadyAsync(host.GetUrl("/"));
@@ -204,9 +204,9 @@ public class HeadElementOnBrowserTest
     }
 
     [@TestCaseSource(nameof(TestCases), TestName = "Refresh on Browser (from Redirect)")]
-    public async Task Refresh_on_Browser_Start_from_Redirect_Test(HostingModel hostingModel, BlazorVersion blazorVersion)
+    public async Task Refresh_on_Browser_Start_from_Redirect_Test(HostingModel hostingModel, BlazorVersion blazorVersion, bool disableScriptInjection)
     {
-        var host = await this.TestContext.StartHostAsync(hostingModel, blazorVersion);
+        var host = await this.TestContext.StartHostAsync(hostingModel, blazorVersion, disableScriptInjection);
         var page = await this.TestContext.GetPageAsync();
 
         // NOTICE: in case of pre-rendered Blazor Wasm, the redirection by "meta refresh" happens sometimes 
@@ -226,9 +226,9 @@ public class HeadElementOnBrowserTest
     }
 
     [@TestCaseSource(nameof(TestCases), TestName = "Refresh and Cancel on Browser (from Redirect)")]
-    public async Task Refresh_and_Cancel_on_Browser_Start_from_Redirect_Test(HostingModel hostingModel, BlazorVersion blazorVersion)
+    public async Task Refresh_and_Cancel_on_Browser_Start_from_Redirect_Test(HostingModel hostingModel, BlazorVersion blazorVersion, bool disableScriptInjection)
     {
-        var host = await this.TestContext.StartHostAsync(hostingModel, blazorVersion);
+        var host = await this.TestContext.StartHostAsync(hostingModel, blazorVersion, disableScriptInjection);
         var page = await this.TestContext.GetPageAsync();
 
         await page.GotoAndWaitForReadyAsync(host.GetUrl("/redirect"));
@@ -247,9 +247,9 @@ public class HeadElementOnBrowserTest
     }
 
     [@TestCaseSource(nameof(TestCases), TestName = "Change at OnAfterRender on Browser (from Home)")]
-    public async Task Change_at_OnAfterRender_on_Browser_Start_from_Home_Test(HostingModel hostingModel, BlazorVersion blazorVersion)
+    public async Task Change_at_OnAfterRender_on_Browser_Start_from_Home_Test(HostingModel hostingModel, BlazorVersion blazorVersion, bool disableScriptInjection)
     {
-        var host = await this.TestContext.StartHostAsync(hostingModel, blazorVersion);
+        var host = await this.TestContext.StartHostAsync(hostingModel, blazorVersion, disableScriptInjection);
         var page = await this.TestContext.GetPageAsync();
 
         // Navigate to Home, and validate the document title of "Home"
@@ -274,9 +274,9 @@ public class HeadElementOnBrowserTest
     }
 
     [@TestCaseSource(nameof(TestCases), TestName = "Change at OnAfterRender on Browser (from OnAfterRender)")]
-    public async Task Change_at_OnAfterRender_on_Browser_Start_from_OnAfterRender_Test(HostingModel hostingModel, BlazorVersion blazorVersion)
+    public async Task Change_at_OnAfterRender_on_Browser_Start_from_OnAfterRender_Test(HostingModel hostingModel, BlazorVersion blazorVersion, bool disableScriptInjection)
     {
-        var host = await this.TestContext.StartHostAsync(hostingModel, blazorVersion);
+        var host = await this.TestContext.StartHostAsync(hostingModel, blazorVersion, disableScriptInjection);
         var page = await this.TestContext.GetPageAsync();
 
         // Navigate to "Change at "OnAfterRender"", and validate the document title of it
@@ -298,9 +298,9 @@ public class HeadElementOnBrowserTest
     }
 
     [@TestCaseSource(nameof(TestCases), TestName = "Check another helper script in the same namespace should not be overridden")]
-    public async Task HelperJavaScript_Namespace_Not_Conflict_Test(HostingModel hostingModel, BlazorVersion blazorVersion)
+    public async Task HelperJavaScript_Namespace_Not_Conflict_Test(HostingModel hostingModel, BlazorVersion blazorVersion, bool disableScriptInjection)
     {
-        var host = await this.TestContext.StartHostAsync(hostingModel, blazorVersion);
+        var host = await this.TestContext.StartHostAsync(hostingModel, blazorVersion, disableScriptInjection);
         var page = await this.TestContext.GetPageAsync();
         await page.GotoAndWaitForReadyAsync(host.GetUrl("/counter"));
 

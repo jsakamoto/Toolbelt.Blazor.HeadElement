@@ -1,6 +1,7 @@
 ﻿@page "/"
 @namespace SampleSite.Components
 @addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+@inject SampleSite.Server.AppOptions AppOptions
 
 <!DOCTYPE html>
 <html>
@@ -30,7 +31,6 @@
     <link rel="preload" href="_content/SampleSite.Components/css/red.png" as="image" media="(min-width: 601px)" hreflang="en-US" /><!-- 'red.png min-width:601' will be removed at counter. -->
     <link rel="preload" href="_content/SampleSite.Components/css/orange.png" as="image" />
     <link rel="preload" href="_content/SampleSite.Components/css/custom-X.css" as="style" crossorigin="anonymous" /><!-- 'custom-X.css' will be removed at counter. -->
-
     <!-- test for <link rel=alternate hreflang=... /> -->
     <link rel="alternate" href="/en/home" hreflang="en" />
     <link rel="alternate" href="/ja/home" hreflang="ja" />
@@ -43,7 +43,10 @@
     <link rel="stylesheet" href="_content/SampleSite.Components/css/site.css" />
     <link rel="stylesheet" href="_content/SampleSite.Components/css/custom-A.css" title="custom" />
     <link rel="stylesheet" href="_content/SampleSite.Components/css/custom-X.css" /><!-- will be stayed. -->
-    @*<script src="_content/Toolbelt.Blazor.HeadElement.Services/script.min.js"></script>*@
+    @if (AppOptions.DisableClientScriptAutoInjection)
+    {
+        <script src="_content/Toolbelt.Blazor.HeadElement.Services/script.min.js"></script>
+    }
     <script src="_content/SampleSite.Components/helper.js"></script>
 </head>
 

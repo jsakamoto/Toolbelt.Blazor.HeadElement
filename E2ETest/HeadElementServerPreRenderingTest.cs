@@ -11,12 +11,12 @@ public class HeadElementServerPreRenderingTest
 
     public static IEnumerable<object[]> TestCases => TestContext.SampleSites.Keys
         .Where(key => key.HostingModel is WasmHosted or WasmPublished or Server)
-        .Select(key => new object[] { key.HostingModel, key.BlazorVersion });
+        .Select(key => new object[] { key.HostingModel, key.BlazorVersion, key.DisableScriptInjection });
 
     [@TestCaseSource(nameof(TestCases), TestName = "Change Title on Server")]
-    public async Task ChangeTitle_on_Server_Test(HostingModel hostingModel, BlazorVersion blazorVersion)
+    public async Task ChangeTitle_on_Server_Test(HostingModel hostingModel, BlazorVersion blazorVersion, bool disableScriptInjection)
     {
-        var host = await this.TestContext.StartHostAsync(hostingModel, blazorVersion);
+        var host = await this.TestContext.StartHostAsync(hostingModel, blazorVersion, disableScriptInjection);
 
         var httpClient = new HttpClient();
 
@@ -34,9 +34,9 @@ public class HeadElementServerPreRenderingTest
     }
 
     [@TestCaseSource(nameof(TestCases), TestName = "Change meta elements on Server")]
-    public async Task ChangeMetaElements_on_Server_Test(HostingModel hostingModel, BlazorVersion blazorVersion)
+    public async Task ChangeMetaElements_on_Server_Test(HostingModel hostingModel, BlazorVersion blazorVersion, bool disableScriptInjection)
     {
-        var host = await this.TestContext.StartHostAsync(hostingModel, blazorVersion);
+        var host = await this.TestContext.StartHostAsync(hostingModel, blazorVersion, disableScriptInjection);
         var httpClient = new HttpClient();
 
         var contentAtHome = await httpClient.GetStringAsync(host.GetUrl("/"));
@@ -70,9 +70,9 @@ public class HeadElementServerPreRenderingTest
     }
 
     [@TestCaseSource(nameof(TestCases), TestName = "Change link elements on Server")]
-    public async Task ChangeLinkElements_on_Server_Test(HostingModel hostingModel, BlazorVersion blazorVersion)
+    public async Task ChangeLinkElements_on_Server_Test(HostingModel hostingModel, BlazorVersion blazorVersion, bool disableScriptInjection)
     {
-        var host = await this.TestContext.StartHostAsync(hostingModel, blazorVersion);
+        var host = await this.TestContext.StartHostAsync(hostingModel, blazorVersion, disableScriptInjection);
         var httpClient = new HttpClient();
 
         var contentAtHome = await httpClient.GetStringAsync(host.GetUrl("/"));
@@ -89,9 +89,9 @@ public class HeadElementServerPreRenderingTest
     }
 
     [@TestCaseSource(nameof(TestCases), TestName = "Add link elements only on Server")]
-    public async Task AddLinkElementsOnly_on_Server_Test(HostingModel hostingModel, BlazorVersion blazorVersion)
+    public async Task AddLinkElementsOnly_on_Server_Test(HostingModel hostingModel, BlazorVersion blazorVersion, bool disableScriptInjection)
     {
-        var host = await this.TestContext.StartHostAsync(hostingModel, blazorVersion);
+        var host = await this.TestContext.StartHostAsync(hostingModel, blazorVersion, disableScriptInjection);
         var httpClient = new HttpClient();
         var contentOfCanonical = await httpClient.GetStringAsync(host.GetUrl("/canonical"));
 
@@ -129,9 +129,9 @@ public class HeadElementServerPreRenderingTest
     }
 
     [@TestCaseSource(nameof(TestCases), TestName = "Change at OnAfterRender on Server")]
-    public async Task Change_at_OnAfterRender_on_Server_Test(HostingModel hostingModel, BlazorVersion blazorVersion)
+    public async Task Change_at_OnAfterRender_on_Server_Test(HostingModel hostingModel, BlazorVersion blazorVersion, bool disableScriptInjection)
     {
-        var host = await this.TestContext.StartHostAsync(hostingModel, blazorVersion);
+        var host = await this.TestContext.StartHostAsync(hostingModel, blazorVersion, disableScriptInjection);
         var httpClient = new HttpClient();
         var contentAtOnAfterRender = await httpClient.GetStringAsync(host.GetUrl("/change-at-onafterrender"));
 

@@ -17,11 +17,13 @@ public class TestContext
         {new SampleSiteKey(WasmPublished, NET60),  new SampleSite(5019, "Client", "net6.0", published: true)},
         {new SampleSiteKey(WasmHosted,    NET60),  new SampleSite(5020, "Host",   "net6.0")},
         {new SampleSiteKey(Server,        NET60),  new SampleSite(5021, "Server", "net6.0")},
+        {new SampleSiteKey(Server,        NET60,   DisableScriptInjection: true),  new SampleSite(5022, "Server", "net6.0", disableScriptInjection: true)},
 
         {new SampleSiteKey(Wasm,          NET70),  new SampleSite(5030, "Client", "net7.0")},
         {new SampleSiteKey(WasmPublished, NET70),  new SampleSite(5031, "Client", "net7.0", published: true)},
         {new SampleSiteKey(WasmHosted,    NET70),  new SampleSite(5032, "Host",   "net7.0")},
         {new SampleSiteKey(Server,        NET70),  new SampleSite(5033, "Server", "net7.0")},
+        {new SampleSiteKey(Server,        NET70,   DisableScriptInjection: true),  new SampleSite(5034, "Server", "net7.0", disableScriptInjection: true)},
     };
 
     private IPlaywright? _Playwrite;
@@ -58,9 +60,9 @@ public class TestContext
         }
     }
 
-    public ValueTask<SampleSite> StartHostAsync(HostingModel hostingModel, BlazorVersion blazorVersion)
+    public ValueTask<SampleSite> StartHostAsync(HostingModel hostingModel, BlazorVersion blazorVersion, bool disableScriptInjection)
     {
-        return SampleSites[new SampleSiteKey(hostingModel, blazorVersion)].StartAsync();
+        return SampleSites[new SampleSiteKey(hostingModel, blazorVersion, disableScriptInjection)].StartAsync();
     }
 
     public async ValueTask<IPage> GetPageAsync()
